@@ -1,0 +1,147 @@
+{
+  "baseline_strategy": "Always-UNKNOWN",
+  "dataset": {
+    "path": "datasets/development/v0.1.json",
+    "version": "v0.1",
+    "purpose": "ชุดข้อมูลพัฒนาจากข้อความสมมติภาษาไทยสำหรับกำหนดพฤติกรรม V0.1 และวัดค่าอ้างอิง Always-UNKNOWN",
+    "sha256": "dde615e2e63116f0f410027833f4f76dcc7928e44814f6e33fc5864078cbcaed"
+  },
+  "evaluation_method": "เปรียบเทียบ Intent ที่ทำนายกับค่าที่คาดหวังทีละตัวอย่าง โดยคำนวณ Accuracy จากจำนวนที่ทายถูกหารด้วยจำนวนตัวอย่าง",
+  "confusion_matrix_axes": {
+    "rows": "expected_intent",
+    "columns": "predicted_intent"
+  },
+  "python_version": "3.14.8",
+  "platform": "Darwin arm64",
+  "limitations": "ผลจากตัวจำแนกอ้างอิงบน Development Dataset เท่านั้น ยังไม่มี AI V0.1 ที่ Implement แล้วสำหรับการวัด และยังไม่มีผลประเมินอิสระ",
+  "metrics": {
+    "total_samples": 32,
+    "correct_predictions": 4,
+    "incorrect_predictions": 28,
+    "intent_accuracy": 0.125,
+    "per_intent": {
+      "GREETING": {
+        "support": 4,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "BOT_IDENTITY": {
+        "support": 4,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "BOT_CAPABILITIES": {
+        "support": 4,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "THANKS": {
+        "support": 4,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "FAREWELL": {
+        "support": 4,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "HELP": {
+        "support": 4,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "UNKNOWN": {
+        "support": 4,
+        "correct": 4,
+        "accuracy": 1.0
+      },
+      "EMPTY_INPUT": {
+        "support": 4,
+        "correct": 0,
+        "accuracy": 0.0
+      }
+    },
+    "confusion_matrix": {
+      "GREETING": {
+        "GREETING": 0,
+        "BOT_IDENTITY": 0,
+        "BOT_CAPABILITIES": 0,
+        "THANKS": 0,
+        "FAREWELL": 0,
+        "HELP": 0,
+        "UNKNOWN": 4,
+        "EMPTY_INPUT": 0
+      },
+      "BOT_IDENTITY": {
+        "GREETING": 0,
+        "BOT_IDENTITY": 0,
+        "BOT_CAPABILITIES": 0,
+        "THANKS": 0,
+        "FAREWELL": 0,
+        "HELP": 0,
+        "UNKNOWN": 4,
+        "EMPTY_INPUT": 0
+      },
+      "BOT_CAPABILITIES": {
+        "GREETING": 0,
+        "BOT_IDENTITY": 0,
+        "BOT_CAPABILITIES": 0,
+        "THANKS": 0,
+        "FAREWELL": 0,
+        "HELP": 0,
+        "UNKNOWN": 4,
+        "EMPTY_INPUT": 0
+      },
+      "THANKS": {
+        "GREETING": 0,
+        "BOT_IDENTITY": 0,
+        "BOT_CAPABILITIES": 0,
+        "THANKS": 0,
+        "FAREWELL": 0,
+        "HELP": 0,
+        "UNKNOWN": 4,
+        "EMPTY_INPUT": 0
+      },
+      "FAREWELL": {
+        "GREETING": 0,
+        "BOT_IDENTITY": 0,
+        "BOT_CAPABILITIES": 0,
+        "THANKS": 0,
+        "FAREWELL": 0,
+        "HELP": 0,
+        "UNKNOWN": 4,
+        "EMPTY_INPUT": 0
+      },
+      "HELP": {
+        "GREETING": 0,
+        "BOT_IDENTITY": 0,
+        "BOT_CAPABILITIES": 0,
+        "THANKS": 0,
+        "FAREWELL": 0,
+        "HELP": 0,
+        "UNKNOWN": 4,
+        "EMPTY_INPUT": 0
+      },
+      "UNKNOWN": {
+        "GREETING": 0,
+        "BOT_IDENTITY": 0,
+        "BOT_CAPABILITIES": 0,
+        "THANKS": 0,
+        "FAREWELL": 0,
+        "HELP": 0,
+        "UNKNOWN": 4,
+        "EMPTY_INPUT": 0
+      },
+      "EMPTY_INPUT": {
+        "GREETING": 0,
+        "BOT_IDENTITY": 0,
+        "BOT_CAPABILITIES": 0,
+        "THANKS": 0,
+        "FAREWELL": 0,
+        "HELP": 0,
+        "UNKNOWN": 4,
+        "EMPTY_INPUT": 0
+      }
+    }
+  }
+}

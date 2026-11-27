@@ -2,7 +2,7 @@
 
 > เอกสารกลางสำหรับการออกแบบ แผนพัฒนา และประวัติการทดลองของโครงการจบ  
 > ฉบับเอกสาร: 0.2 (ปรับสถานะ Repository และ Adaptive Roadmap) | วันที่: 27 พฤศจิกายน 2569 (2026-11-27)  
-> สถานะ AI: ยังไม่มี Implementation หรือ Benchmark; มี Local Repository ตามภาพที่เจ้าของโครงการส่ง  
+> สถานะ AI: มีข้อกำหนด V0.1 และรายงาน Reference Baseline บน Development Dataset แล้ว ยังไม่มี AI Engine หรือผลประเมิน AI แบบอิสระ  
 > Repository: `thai-anti-scam-ai` (ชื่อที่เจ้าของโครงการเลือก); ชื่อทางการของงานวิจัยยังไม่สรุป
 
 ## 1. วัตถุประสงค์และขอบเขต
@@ -116,6 +116,8 @@ Codex เสนอ Memory ใน V0.1; เอกสารนี้เสนอ�
 
 ยังไม่ยืนยันเวลาในการตอบ RAM ความเข้ากันได้ขณะรันบนเครื่องโครงการ หรือ Benchmark ซ้ำของ PyBot ตามรายงาน TASK-001 ไม่มีการติดตั้ง แก้ไฟล์ Clone รันโค้ดที่ดาวน์โหลด หรือใช้ Git; เป็นการรายงานของ Codex ไม่ใช่ Audit ระบบไฟล์อิสระ
 
+เอกสารต่อยอดจาก TASK-004-R4 รวบรวม Static Source Trace ที่ตรวจซ้ำจาก Public Snapshot ตาราง Mapping เหตุผลที่เลือกและไม่เลือกแนวทาง รวมถึงคำถามสำหรับนำเสนอ [PyBot Reference Mapping และเหตุผลด้านสถาปัตยกรรม](docs/pybot-reference-and-design-rationale.md)
+
 ## 5. สถาปัตยกรรม AI ของเรา (ข้อเสนอ)
 
 ### 5.1 Prototype V0.1
@@ -133,17 +135,9 @@ flowchart TD
 
 Engine แยกจาก CLI เพื่อให้ทดสอบและนำกลับไปใช้ได้ กฎมีลำดับที่ชัดเจนและผลซ้ำได้เมื่อ Input เท่ากัน ไม่ทำให้ข้อผิดพลาดภายในกลายเป็นคำตอบที่เหมือนประมวลผลสำเร็จ; แยก Unknown จาก Error เก็บ Original Text ไว้ระหว่างประมวลผลและสร้าง Normalized Text แบบระมัดระวัง (เสนอ NFC และจัดช่องว่างรอบข้อความ) ไม่ลบช่องว่างหรืออักขระภาษาไทยโดยพลการ ไม่บันทึกข้อความผู้ใช้จริงลง Log โดยอัตโนมัติ
 
-Intent เริ่มต้นที่เสนอ: `greeting`, `farewell`, `capabilities`, `unknown` (Fallback) ยังไม่ต้องจำชื่อ ตอบความรู้ทั่วไป หรือประเมินความเสี่ยง ให้กำหนดพฤติกรรมและ Expected Results ก่อนเขียนกฎ
+TASK-004 กำหนด Intent V0.1 แปดประเภท ได้แก่ `GREETING`, `BOT_IDENTITY`, `BOT_CAPABILITIES`, `THANKS`, `FAREWELL`, `HELP`, `UNKNOWN` และ `EMPTY_INPUT` ตาม D-013 ข้อกำหนดฉบับปัจจุบันแยกคำถามความสามารถออกจากการขอความช่วยเหลือทั่วไป และแยกข้อความว่างออกจากข้อความนอกขอบเขต [ข้อกำหนดพฤติกรรม AI V0.1](docs/v0.1-behavior.md)
 
-| Input ตัวอย่างสมมติ | Expected Intent | พฤติกรรมที่คาดหวัง (ยังไม่รัน) |
-| --- | --- | --- |
-| สวัสดีครับ | `greeting` | ทักทายภาษาไทย |
-| ลาก่อน | `farewell` | ตอบลา |
-| คุณทำอะไรได้บ้าง | `capabilities` | อธิบายขอบเขตจริง ไม่อ้างว่าตรวจ Scam ได้แล้ว |
-| วันนี้ฝนจะตกไหม | `unknown` | แจ้งขอบเขตหรือขอรายละเอียด ไม่แต่งข้อมูล |
-| ข้อความว่าง / ช่องว่าง | `unknown` | ขอให้กรอกข้อความ ไม่ Crash |
-
-ตัวอย่างข้างต้นเป็นข้อเสนอ Test Cases ไม่ใช่ชุดประเมินลับหรือผลทดลอง เกณฑ์ผ่าน V0.1 เชิงหน้าที่: Test ที่กำหนดไว้ล่วงหน้าผ่านครบ CLI ใช้งานได้และหยุดได้อย่างเหมาะสม Engine ไม่ผูกกับ CLI ไม่ใช้ LLM/Dependency ภายนอก และมีรายงาน Baseline จริงก่อน Merge; ไม่ใช้เปอร์เซ็นต์ผ่านชุดเล็กอ้างความแม่นยำทั่วไป
+Proposed Contract รับ Python `str` และคืน `intent`, `response` ภาษาไทย และ `rule_id` ตาม D-014 เกณฑ์เชิงหน้าที่สำหรับต้นแบบคือผ่าน Behavioral Regression Tests ที่กำหนดจาก Test Specification ใช้ CLI แยกจาก Engine และใช้ Python Standard Library โดยไม่มี LLM ขณะทำงาน
 
 ### 5.2 เป้าหมายสถาปัตยกรรมระยะยาว
 
@@ -284,20 +278,30 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 
 รายการข้างต้นเป็นข้อพิจารณาสำหรับงานในอนาคต การตรวจรอบนี้แก้เฉพาะเอกสาร
 
+### 6.4 Engineering Principles และ Quality Gate
+
+ให้ความถูกต้อง ความน่าเชื่อถือ ความเสถียร และการดูแลต่อได้มาก่อนความเร็ว เลือกเทคโนโลยีและ Algorithm จากหลักฐาน ความเหมาะสม ข้อจำกัด และมาตรฐานทางวิศวกรรม Python Standard Library เป็นจุดเริ่มต้น การใช้ Dependency ภายนอกต้องมีเหตุผล ผลการศึกษา ความเหมาะสม License และการอนุมัติก่อนใช้ [Engineering Principles สำหรับ Agent](AGENTS.md#engineering-principles)
+
+ให้พัฒนา ทดสอบ วิเคราะห์ข้อผิดพลาด และปรับกฎหลายรอบได้ใน Version เดิม เก็บหลักฐานที่ทำซ้ำได้ อธิบายผลจากกฎที่ทำงานจริง ตรวจผล Regression และปกป้องข้อมูลส่วนตัว การเพิ่ม Version ต้องมีความสามารถและผลทดสอบรองรับ และการปรับ Roadmap ต้องบันทึกเหตุผลและขออนุมัติ
+
+**ก่อน Commit และ Push** ตรวจงานตาม Acceptance Criteria ทบทวนผลจริงและข้อจำกัด อัปเดต DESIGN.md แล้วจัดระดับข้อค้นพบเป็น BLOCKER, HIGH, MEDIUM หรือ LOW หากพบ BLOCKER หรือ HIGH ที่กระทบเกณฑ์ ให้ใช้ `NEEDS_REVISION` และระบุงานแก้ไข ให้ใช้ `READY_FOR_COMMIT` เมื่อผลตรวจผ่านและไม่มีประเด็นที่ขัดขวางการส่งงาน
+
+**ก่อน Merge** ตรวจหลักฐาน Remote CI แยกจาก Local Verification และบันทึก Git ตามข้อมูลที่เจ้าของโครงการยืนยัน
+
 ## 7. Roadmap ตาม Branch (Adaptive Roadmap)
 
 แผนด้านล่างเป็นทิศทางเบื้องต้น ไม่ใช่รายการงานที่ล็อกไว้; ทบทวนก่อนเริ่มแต่ละ Branch ตามผลการศึกษาและการทดสอบ
 
 เดิมหลัง Project Foundation มีแผนเข้าสู่ `test/v0.1-baseline` ตาม H-006 ต่อมาเจ้าของโครงการเสนอเพิ่ม GitHub Actions CI เพื่อลดความผิดพลาดจากการตรวจด้วยมือ จึงแทรก `ci/github-actions` ก่อน Baseline ตาม D-011 ชื่อและลำดับของ Branch และ Task ในอนาคตยังปรับได้เมื่อเจ้าของโครงการอนุมัติและบันทึกเหตุผลไว้
 
-สถานะที่ใช้: `PLANNED`, `IN_PROGRESS`, `BLOCKED`, `FAILED`, `VERIFIED` (ผ่านเกณฑ์แต่ยังไม่ Merge), `READY_FOR_COMMIT` (ผ่านเกณฑ์สำหรับขั้นก่อน Commit และเอกสารพร้อมให้เจ้าของโครงการดำเนินการ), `MERGED` (ยืนยัน Merge จริง) ส่วนงานก่อนมี Git ใช้ `PRE-REPO` ไม่สร้างประวัติย้อนหลังว่าเป็น Commit ที่เกิดขึ้นจริง
+สถานะที่ใช้: `PLANNED`, `IN_PROGRESS`, `BLOCKED`, `FAILED`, `VERIFIED` (ผ่านเกณฑ์แต่ยังไม่ Merge), `READY_FOR_COMMIT` (ผ่านเกณฑ์สำหรับขั้นก่อน Commit และเอกสารพร้อมให้เจ้าของโครงการดำเนินการ), `NEEDS_REVISION` (พบประเด็นที่ต้องแก้ก่อนปิด Branch), `MERGED` (ยืนยัน Merge จริง) ส่วนงานก่อนมี Git ใช้ `PRE-REPO` ไม่สร้างประวัติย้อนหลังว่าเป็น Commit ที่เกิดขึ้นจริง
 
 | ลำดับ | Branch | Milestone | สถานะ |
 | --- | --- | --- | --- |
 | 00 | `main` — เอกสารตั้งต้น | เริ่ม Repository | เจ้าของโครงการยืนยันแล้ว |
 | 01 | `chore/project-foundation` | โครงสร้างและข้อกำหนด (TASK-002) | MERGED |
-| 02 | `ci/github-actions` | GitHub Actions CI (TASK-003) | READY_FOR_COMMIT · Remote CI: PENDING_REMOTE_VERIFICATION |
-| 03 | `test/v0.1-baseline` | Test Design & Baseline (เสนอเป็น TASK-004) | PLANNED |
+| 02 | `ci/github-actions` | GitHub Actions CI (TASK-003) | MERGED · Remote CI ผ่านตามที่เจ้าของโครงการยืนยัน |
+| 03 | `test/v0.1-baseline` | AI Behavior Specification & Baseline Evaluation (TASK-004) | READY_FOR_COMMIT หลัง R4 · Remote CI: PENDING_REMOTE_VERIFICATION |
 | 04 | `feat/v0.1-basic-chatbot` | AI Prototype V0.1 (เสนอเป็น TASK-005) | PLANNED |
 | 05 | `feat/v0.2-intent-variants` | V0.2 | PLANNED |
 | 06 | `feat/v0.3-informal-thai` | V0.3 | PLANNED |
@@ -334,18 +338,23 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 
 **เป้าหมาย:** เพิ่มการตรวจ Syntax และชุดทดสอบอัตโนมัติก่อนเริ่มพัฒนา AI Engine ตามข้อเสนอของเจ้าของโครงการ
 
-**เกณฑ์ผ่าน:** Workflow ใช้ Official Actions แบบ Pin Full SHA และสิทธิ์อ่านเท่านั้น ชุดทดสอบ Local ผ่าน และเจ้าของโครงการยืนยันการรันบน GitHub Actions หลัง Push รายละเอียดอยู่ในข้อ 6.3 และ H-008
+**เกณฑ์ผ่าน:** Workflow ใช้ Official Actions แบบ Pin Full SHA และสิทธิ์อ่านเท่านั้น ชุดทดสอบ Local ผ่าน และเจ้าของโครงการยืนยันการรันบน GitHub Actions หลัง Push รายละเอียดอยู่ในข้อ 6.3 และ H-008 ถึง H-010
 
-### 03 — `test/v0.1-baseline` / เสนอเป็น TASK-004 Test Design & Baseline
+### 03 — `test/v0.1-baseline` / TASK-004 AI Behavior Specification & Baseline Evaluation
 
 **เป้าหมาย:** กำหนดสัญญาพฤติกรรมก่อนเขียนกฎเพื่อป้องกันการปรับข้อสอบตามคำตอบ
 
-- ตกลง Intent และ Expected Behavior สำหรับ Greeting, Farewell, Capabilities, Unknown รวมข้อความว่างและ Negative Cases
-- ออกแบบ Development Cases และ Regression Cases พร้อม Case ID; แยก Held-out ภายนอก Workspace
-- สร้าง Test Harness และ Engine Interface ขั้นต่ำที่ยังไม่อ้างว่ามีความสามารถ; บันทึก Baseline ก่อนปรับกฎโดยระบุว่าเป็น Stub หากใช้ Stub
-- หากยังไม่มี Engine ที่รันได้ ให้รายงาน Baseline ว่า N/A พร้อมเหตุผล ไม่ใส่ 0% สมมติ; หาก Test ยัง Fail โดยตั้งใจ ให้ใช้สถานะเฉพาะสำหรับ Test-first Baseline
+- ระบุ Taxonomy แปดประเภทและ Proposed Input/Output Contract พร้อม Expected Behavior ใน Test Specification
+- สร้าง Development Dataset สมมติพร้อม Case ID และประเมิน Always-UNKNOWN ใน Evaluation Script แยกจาก AI Runtime
+- ทดสอบ Dataset และสูตรคำนวณด้วย `unittest` เก็บ Behavior Specification ไว้สร้าง Behavioral Regression Tests เมื่อมี Engine ใน TASK-005
 
-**เกณฑ์ผ่าน:** Test Harness รันได้และผลตรงสถานะเริ่มต้นที่กำหนด มี Expected Result ชัดเจน ไม่ซ่อน Fail; อนุญาต Merge Branch นี้เฉพาะเมื่อเจ้าของโครงการยอมรับสภาพ Test-first ที่บันทึกไว้ โดยระบุชัดว่า `main` ยังไม่ใช่ Release; หากไม่ต้องการ Test Fail บน `main` ให้รวมงานนี้กับ `feat/v0.1-basic-chatbot` ก่อน Merge
+**เกณฑ์ผ่าน:** Dataset ผ่าน Validation ผล Reference Baseline รันซ้ำได้ สูตรคำนวณผ่าน Test ที่ทราบคำตอบ และ Local Suite ผ่านโดยไม่ Skip เพื่อปกปิดข้อผิดพลาด
+
+#### TASK-004-R3 — README Project Homepage & Visual Documentation
+
+ปรับ Project Homepage และ Project Overview ให้เห็น Current Capabilities และ Planned Capabilities ชัดเจน เพิ่ม AI System Architecture Diagram, Development and CI Workflow, Iterative Rule Refinement Workflow, Getting Started, Testing and Evaluation Guide, Repository Structure, Documentation Index และ Development Roadmap
+
+ใช้ Mermaid ที่แก้ไขต่อได้ แยก Current Implementation จาก Planned Architecture และจัดทำแผนภาพของโครงการเองโดยไม่คัดลอกจาก PyBot งานเอกสารผ่านการตรวจในเครื่องและอยู่ในสถานะ `READY_FOR_COMMIT` ตาม H-014 ส่วน Remote CI ยังรอหลักฐานของ Branch นี้
 
 ### 04 — `feat/v0.1-basic-chatbot` / เสนอเป็น TASK-005 AI Prototype V0.1
 
@@ -459,16 +468,37 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 - ใช้ `unittest`, JSON/JSONL และรายงาน Markdown/JSON/CSV ตามความจำเป็น ใช้ `time.perf_counter()` สำหรับเวลา (ข้อเสนอ) และกำหนดวิธีวัด RAM ก่อนอ้างผล
 - ควบคุม Environment, เวอร์ชัน Python/กฎ/Dataset, Warm-up, จำนวนรอบ และวิธีจับเวลาให้เทียบกันได้ รายงานทั้งเวลาเริ่มต้นและเวลาต่อข้อความเมื่อเหมาะสม
 - Metric และเกณฑ์ต้องแยกตามขอบเขตเวอร์ชัน: Intent Accuracy = จำนวน Intent ถูก / จำนวนตัวอย่างทั้งหมด; Context/Negation Accuracy วัดในชุดเฉพาะ; Precision = TP/(TP+FP), Recall = TP/(TP+FN), F1 = 2PR/(P+R), FPR = FP/(FP+TN), FNR = FN/(FN+TP); รายงานกรณีตัวหารเป็นศูนย์ตามวิธีที่ระบุและนับ Abstention แยกอย่างโปร่งใส
-- ไม่กำหนดเป้าหมาย 90% หรือจำนวน Dataset โดยพลการ; ตัวเลขของ PyBot ไม่ใช่ Baseline ของเรา; ไม่มีผล Benchmark จริงในเอกสารฉบับนี้
+- เกณฑ์เชิงตัวเลขสำหรับงานวิจัยต้องตกลงตามขอบเขตการประเมิน ตัวเลขของ PyBot ใช้ประกอบกรณีศึกษา ส่วน Baseline ของโครงการมาจากการทดลองในข้อ 8.1
+- คะแนนจาก Development Set ใช้ปรับและเปรียบเทียบกฎระหว่างพัฒนา การรายงานความแม่นยำสุดท้ายต้องใช้ Independent Evaluation ด้วยชุดที่ไม่ถูกใช้ปรับกฎและเก็บนอก Public Repository กับ CI ปกติ
 
-คำสั่งที่คาดว่าจะใช้หลังสร้างโมดูลและ Test Harness แล้ว (ยังไม่ได้รันในโครงการใหม่):
+### 8.1 Reference Baseline V0.1
 
-```bash
-python3 -m thai_ai
-python3 -m unittest discover -s tests -v
-# เพิ่มเมื่อสร้าง Benchmark Runner และกำหนด Interface แล้ว
-python3 -m tests.evaluate
-```
+[Development Dataset v0.1](datasets/development/v0.1.json) มีข้อความสมมติ 32 ตัวอย่าง แบ่งแปด Intent ประเภทละสี่ตัวอย่าง ตัวจำแนกอ้างอิง Always-UNKNOWN คืน `UNKNOWN` เสมอ รวมถึงข้อความว่าง เก็บ Predictor ใน `scripts/evaluate_baseline.py` แยกจาก `thai_ai/` ตัว Evaluator รับ Predictor ที่รับข้อความแล้วคืน Intent จึงใช้สูตรเดิมกับ Predictor อื่นได้
+
+รัน `python3 -B -m scripts.evaluate_baseline` เพื่อดูผล หรือใช้ `--output reports/baseline-v0.1.json` เพื่อบันทึก JSON ที่ตรงกับผลใน Terminal รายงานระบุ Dataset Version, SHA-256, Python, Platform และ Confusion Matrix โดยแถวคือ Expected Intent และคอลัมน์คือ Predicted Intent ผลที่รันจริงอยู่ใน H-011 และ [รายงาน Baseline](reports/baseline-v0.1.json)
+
+### 8.2 Quality Review ของ Baseline (TASK-004-R1)
+
+- **Dataset** ตรวจความหมาย Label และ Expected Behavior ครบ 32 ตัวอย่าง มี 8 Intent ประเภทละ 4 รายการ ไม่มี ID หรือ Input ซ้ำตรงตัว `DEV-V01-029` ถึง `032` เป็นสตริงว่าง ช่องว่าง แท็บ และ whitespace ผสมที่ตั้งใจเก็บแยกกัน `DEV-V01-004` เป็นคำทักทายที่มีลักษณะเป็นคำบอกการกระทำได้ `DEV-V01-007` อาจสื่อถึงชนิดหรือหน้าที่ของบอต และ `DEV-V01-021` อาจฟังเหมือนขอความช่วยเหลือเร่งด่วน Label เดิมสมเหตุสมผลในบทสนทนาที่ไม่มีบริบทเพิ่มเติม สำหรับ `DEV-V01-006` ควรระบุว่าคำตอบต้องระบุชื่อบอตหรือชื่อโครงการหรือไม่ กลุ่ม `009` กับ `012`, `013` กับ `015` และ `019` กับ `020` มีความหมายใกล้กัน จึงมีข้อจำกัดเมื่อต้องวัดความหลากหลาย
+- **Evaluator** `validate_dataset()` ตรวจข้อมูลก่อนเริ่มทำนาย `evaluate()` รับ Predictor แยกจากการอ่านไฟล์ และคำนวณจาก Confusion Matrix แถว Expected และคอลัมน์ Predicted ไม่มีการฝังคะแนน 12.5% Class ที่ไม่มีตัวอย่างได้ Support 0, Correct 0 และ Accuracy `null` ส่วน `build_report()` คำนวณ Hash จากไบต์เดียวกับที่นำไปอ่าน
+- **Test Quality** สูตรและ Matrix ใน `tests/test_baseline.py` เทียบกับจำนวนและเซลล์ที่ระบุไว้ล่วงหน้า `tests/test_dataset.py` ตรวจ Schema ขั้นพื้นฐานและคำบ่งชี้ใน Expected Behavior ส่วน Foundation Tests และ Runner Tests ตรวจการโหลดไฟล์และสถานะของ Suite ตามลำดับ การตรวจคำบ่งชี้ไม่ได้ยืนยันความถูกต้องเชิงความหมาย การตรวจในหน่วยความจำรอบนี้เพิ่ม Invalid JSON, Predictor Exception, All Correct, All Incorrect และการเทียบรายงานเต็มโดยไม่เพิ่มไฟล์ทดสอบ
+
+| Severity | ประเภทและหลักฐาน | ผลกระทบและแนวทางที่เสนอ |
+| --- | --- | --- |
+| HIGH | ยืนยันแล้วใน `build_report()` และ `main()` ของ `scripts/evaluate_baseline.py` ที่บรรทัด 97–101 และ 125–138 การจำลอง Input จากหน่วยความจำที่มี `NaN` ในฟิลด์เพิ่มเติมยังคืน Exit 0 และออกรายงาน อีกกรณีที่มี `expected_intent` ซ้ำ โดยค่าแรกผิดและค่าท้ายถูก ก็คืน Exit 0 และออกรายงาน [RFC 8259 ข้อ 4 และ 6](https://www.rfc-editor.org/rfc/rfc8259) | กระทบเกณฑ์ Validation เพราะคำสั่งอาจรายงานผลสำเร็จจาก JSON ที่ผิดมาตรฐานหรือ Label ที่ถูกทับก่อนตรวจ เสนอให้ TASK-004-R2 ปฏิเสธค่าตัวเลขนอกมาตรฐานและชื่อสมาชิกซ้ำก่อน Schema Validation พร้อมเพิ่ม Regression Tests ยืนยัน Exit 1 และไม่มีรายงานสำหรับข้อมูลผิด |
+| MEDIUM | ช่องว่างด้านการทดสอบใน `tests/test_baseline.py` มี Mixed และ Zero Support อยู่แล้ว แต่กรณี JSON ผิด, Predictor Exception, All Correct, All Incorrect และการเทียบรายงานเต็มยังไม่อยู่ใน Suite ถาวร | ผลตรวจเพิ่มในรอบนี้ทำซ้ำได้ในหน่วยความจำ แต่ CI ยังไม่คุ้มครองกรณีเหล่านี้ เสนอให้เพิ่ม Regression ตามความเสี่ยง โดยให้ความสำคัญกับ Validation |
+| MEDIUM | ข้อเสนอเชิงออกแบบใน `docs/v0.1-behavior.md` ส่วน Proposed Contract ยังต้องระบุวิธีตรวจความหมายคำตอบ ขอบเขต whitespace และเงื่อนไข `rule_id` ใน Fallback ให้ชัด | เสนอให้ยืนยันก่อน TASK-005 ว่า Input เดิมใน Engine และ Rule Version เดียวกันให้ผลเดิม ระบุเงื่อนไขที่ต้องมี `rule_id` และกรณีที่ใช้ `null` ตรวจผลตอบจากองค์ประกอบที่ต้องมีและสิ่งที่ห้ามอ้าง ตัวอย่างเช่น `EMPTY_INPUT` ต้องขอให้ป้อนข้อความ และ `UNKNOWN` ต้องแจ้งขอบเขตหรือชวนระบุคำขอใหม่โดยไม่ตอบข้อเท็จจริงนอกขอบเขต |
+| LOW | ข้อจำกัดด้านความหลากหลายและความกำกวมของตัวอย่างตามรายการ Dataset ข้างต้น | เก็บชุดและ Hash ปัจจุบันเป็นหลักฐานเดิม พิจารณาเพิ่มคู่ตัวอย่างข้าม Intent และรูปประโยคที่ต่างกันในรอบที่เจ้าของโครงการอนุมัติ |
+
+ข้อเสนอ `TypeError` สำหรับ Non-string เหมาะกับ Python Contract เพราะทำให้ผู้เรียกแยกข้อผิดพลาดชนิดข้อมูลจาก `EMPTY_INPUT` และ `UNKNOWN` ได้ ให้ยืนยันก่อน Implementation เมื่อกำหนด Behavioral Regression Tests ให้ตรวจชนิดและค่าของ `intent` ตรวจข้อความตอบที่ไม่ว่างและองค์ประกอบตาม Intent ตรวจ `rule_id` ตามเงื่อนไขของกฎ และตรวจ Input ซ้ำภายใต้การตั้งค่าเดียวกัน โดยยอมรับถ้อยคำภาษาไทยได้หลายแบบ
+
+### 8.3 Strict JSON Parsing สำหรับ Evaluator (TASK-004-R2)
+
+`parse_dataset_json()` ใช้ `parse_constant` ปฏิเสธ `NaN`, `Infinity` และ `-Infinity` และใช้ `object_pairs_hook` ตรวจชื่อสมาชิกซ้ำในทุก Object ก่อนแปลงเป็น Dictionary รวมถึงชื่อที่ตรงกันหลังถอด JSON escape เช่น `id` กับ `\u0069d` การปฏิเสธชื่อซ้ำเป็นนโยบายของโครงการเพื่อป้องกันค่าที่ถูกทับก่อนตรวจ Schema
+
+นโยบายของ Evaluator ใช้ `parse_float` ตรวจว่าค่าที่อ่านได้เป็น `float` แบบ finite ตัวเลขเช่น `1e400` มีรูปแบบ JSON Number ที่ถูกต้อง แต่เกินช่วง finite ของ `float` จึงถูกปฏิเสธพร้อมข้อความระบุสาเหตุ ตัวเลข finite ที่อยู่ในช่วง เช่น `1e308` ยังอ่านได้
+
+หากอ่าน JSON ไม่สำเร็จ CLI ใช้ Error Handler เดิมเพื่อแจ้งสาเหตุใน stderr และคืน Exit `1` ก่อนคำนวณ Metrics หรือเปิดไฟล์รายงาน Regression Tests ครอบคลุมตัวอ่าน JSON และการรัน CLI จริงทั้งกรณีที่ไฟล์รายงานยังไม่มีและมีอยู่แล้ว
 
 ## 9. ความปลอดภัยและความเป็นส่วนตัว
 
@@ -490,6 +520,21 @@ python3 -m tests.evaluate
 | D-010 | 2026-11-27 | Repository `thai-anti-scam-ai` | เจ้าของโครงการเลือกชื่อและส่งภาพ VS Code/Terminal ที่แสดง `main` และ README.md |
 | D-011 | 2026-11-27 | เพิ่ม GitHub Actions CI ก่อน Baseline V0.1 | เจ้าของโครงการเสนอใน TASK-003 ให้แทรก `ci/github-actions` ตาม Adaptive Roadmap เพื่อให้ตรวจ Syntax และรันชุดทดสอบซ้ำได้บน Push และ PR ก่อนเริ่ม AI Engine โดยใช้ Test Runner เดียวกับ Local |
 | D-012 | 2026-11-27 | บังคับอัปเดต DESIGN.md ก่อน Commit และ Push ในทุก Branch | เจ้าของโครงการกำหนดใน TASK-003-R1 เพื่อบันทึกเหตุผล แผน และผลทดสอบก่อนส่งงาน พร้อมแยกความพร้อมในเครื่องออกจากผล Remote CI และหลักฐานการ Merge |
+| D-013 | 2026-11-27 | กำหนด Intent Taxonomy V0.1 แปดประเภท | ใช้ชุด Intent ที่เจ้าของโครงการกำหนดใน TASK-004 แทนข้อเสนอเบื้องต้นในข้อ 5.1 โดยแยก HELP ออกจาก BOT_CAPABILITIES และแยก EMPTY_INPUT ออกจาก UNKNOWN เพื่อกำหนดพฤติกรรมที่ทดสอบได้ก่อนเขียนกฎ |
+| D-014 | 2026-11-27 | เสนอ Input/Output Contract สำหรับ V0.1 | รับ Python `str` และคืน `intent`, `response` ภาษาไทย และ `rule_id` หรือ `null` ตามกรณี วิธีจัดการ Non-string ที่เสนอคือ `TypeError` รอยืนยันก่อน Implementation |
+| D-015 | 2026-11-27 | เริ่มด้วย Development Dataset ขนาดเล็ก | ใช้ข้อความสมมติภาษาไทย 32 ตัวอย่าง แบ่งแต่ละ Intent เท่ากันเพื่อทบทวน Label, Expected Behavior และกรณีขอบเขตได้ง่าย |
+| D-016 | 2026-11-27 | ใช้ Always-UNKNOWN และแยก Predictor ออกจาก AI Runtime | ใช้ตัวจำแนกค่าคงที่ใน Evaluation Script เป็นจุดเทียบก่อนเขียนกฎ และเปิดให้ใช้สูตร Evaluator เดิมกับ Predictor อื่นได้ |
+| D-017 | 2026-11-27 | ใช้ Development Accuracy สำหรับเทียบระหว่างพัฒนา | รายงานความแม่นยำสุดท้ายของงานวิจัยด้วย Independent Evaluation ที่ไม่ถูกใช้ปรับกฎ |
+| D-018 | 2026-11-27 | เก็บ Held-out Dataset นอก Public Repository | เก็บแยกจาก Workspace ที่ Agent เข้าถึงได้และ CI ปกติ เจ้าของโครงการเป็นผู้ควบคุมการประเมินอิสระ |
+| D-019 | 2026-11-27 | ให้คุณภาพและความเสถียรมาก่อนความเร็ว | เจ้าของโครงการกำหนดให้ยึดความถูกต้อง ความน่าเชื่อถือ และมาตรฐานการใช้งานจริงเป็นเกณฑ์พัฒนา |
+| D-020 | 2026-11-27 | เลือกเทคโนโลยีตามหลักฐานและความเหมาะสม | ประเมินข้อจำกัด คุณภาพ และความเหมาะสมก่อนเลือก เครื่องมือภายนอกต้องมีผลการศึกษา เหตุผล License และการอนุมัติ |
+| D-021 | 2026-11-27 | ใช้ Quality Gate ก่อนปิด Branch | จัดระดับข้อค้นพบ ตรวจหลักฐานและ Acceptance Criteria ก่อน Commit/Push และแยกการยืนยัน Remote CI กับ Merge |
+| D-022 | 2026-11-27 | ปรับกฎหลายรอบใน Version เดิมได้ | ทำซ้ำตามผลทดสอบและการวิเคราะห์ข้อผิดพลาด แทรกงานหรือ Branch ตาม Adaptive Roadmap เมื่อได้รับอนุมัติ เพิ่ม Version เมื่อความสามารถและผลทดสอบรองรับ |
+| D-023 | 2026-11-27 | ใช้ Strict JSON Parsing สำหรับ Dataset ของ Evaluator | ปฏิเสธค่าพิเศษนอกมาตรฐาน ตัวเลขที่แปลงเป็น float อนันต์ และชื่อสมาชิกซ้ำทุกระดับก่อน Schema Validation ใช้ Regression Tests ตรวจการ Parse และสถานะ CLI โดยรักษา Metrics, Hash และรายงาน Baseline เดิมสำหรับ Dataset ที่ถูกต้อง |
+| D-024 | 2026-11-27 | ใช้ README.md เป็น Project Homepage พร้อมแผนภาพ Mermaid | อ้างความสามารถและผลตรวจจากโค้ด การตั้งค่า รายงาน หรือหลักฐานที่ยืนยันแล้ว แยก Current Implementation ออกจาก Planned Capabilities และใช้ Mermaid แบบ inline ที่แก้ไขได้เพื่อให้ GitHub อ่านแผนภาพจาก Markdown ได้ Badge ระบุสถานะของ `main` เท่านั้น |
+| D-025 | 2026-11-27 | ใช้ PyBot เป็น Architecture Reference และปรับใช้เฉพาะหลักการที่เหมาะสม | อ้าง Public Snapshot แบบเจาะจง แยกสิ่งที่อ่านพบออกจากการตัดสินใจของโครงการ เลือก Separation of Responsibilities และการทดสอบย้อนกลับตามขอบเขต งานนี้ไม่นำ Source Code, Rules หรือ Response Pools ของ PyBot มาใช้ |
+| D-026 | 2026-11-27 | แยก Current Implementation ออกจาก Proposed Architecture และออกแบบโดยคำนึงถึงภาษาไทย | ระบุสิ่งที่ยังไม่มี Runtime อย่างชัดเจน และทดลอง Normalization กับภาษาไทยโดยรักษา Raw Text, คำปฏิเสธ และขอบเขตของหลักฐานก่อนเลือกวิธี |
+| D-027 | 2026-11-27 | แยกการประเมิน Anti-Scam ออกจากการประเมินบทสนทนา | วัด Risk ตาม Label ภาษาไทยด้วย Precision, Recall และ Error Rates เมื่อมีระบบให้ประเมิน SmolTalkBench Win Rate และ Always-UNKNOWN Development Baseline วัดคนละขอบเขตกับผล Anti-Scam |
 
 ## 11. Development History (บันทึกเพิ่มตามงานจริง)
 
@@ -594,6 +639,81 @@ python3 -m tests.evaluate
 - หลักฐาน Git สำหรับ Branch นี้: Commit, Push, PR และ Merge ยังไม่ได้รับการยืนยันจากเจ้าของโครงการ
 - งานถัดไป: เจ้าของโครงการ Commit และ Push แล้วตรวจผล GitHub Actions เพื่อยืนยันการทำงานบน Runner จริง จากนั้นพิจารณา TASK-004 Test Design & Baseline บน `test/v0.1-baseline` เพื่อกำหนดพฤติกรรมและชุดทดสอบก่อนเขียนกฎ
 
+### H-010 — `ci/github-actions` / ปิด TASK-003 และ TASK-003-R1
+
+- วันที่บันทึก: 2026-11-27 | สถานะ: `MERGED`
+- เจ้าของโครงการยืนยันว่า PR #2 ของ `ci/github-actions` Merge เข้า `main` ด้วย Merge Commit `30e52b1`
+- Remote CI ผ่านตามคำยืนยันของเจ้าของโครงการและภาพหน้า GitHub ที่แสดง Merge Commit พร้อมเครื่องหมายตรวจสอบสีเขียว รายละเอียด Workflow Run ID, Remote Test Log, Remote Test Count, ระยะเวลารัน และ Full Commit SHA ยังไม่มีหลักฐานยืนยัน
+- ผล Local รอบสุดท้ายก่อนปิด Branch อยู่ใน H-009 และข้อ 6.3.1
+
+### H-011 — `test/v0.1-baseline` / TASK-004
+
+- วันที่: 2026-11-27 | สถานะ: `IN_PROGRESS` · รอเจ้าของโครงการ Review
+- เป้าหมายและเหตุผล: กำหนดพฤติกรรม V0.1 ล่วงหน้าและวัด Reference Baseline บน Dataset ที่มี Version และ SHA-256 เพื่อให้ตรวจและเปรียบเทียบผลการพัฒนาในภายหลัง
+- ไฟล์ที่สร้าง: `docs/v0.1-behavior.md`, `datasets/development/v0.1.json`, `scripts/evaluate_baseline.py`, `tests/test_dataset.py`, `tests/test_baseline.py` และ `reports/baseline-v0.1.json`
+- ไฟล์ที่แก้ไข: `README.md` และ `DESIGN.md`
+- สภาพแวดล้อม: Python 3.14.8 / Darwin arm64
+- ผลก่อนและหลัง: `python3 -B -m scripts.run_tests` ก่อนแก้ไขได้ 9 Tests (Pass 9, Failure 0, Error 0, Skip 0) และหลังแก้ไขได้ 22 Tests (Pass 22, Failure 0, Error 0, Skip 0) ทั้งสองรอบ Exit Status `0` ตรวจ Syntax ตาม CI ด้วย `compile()` ผ่าน 9 ไฟล์ (Exit Status `0`)
+- ผล Baseline: `python3 -B -m scripts.evaluate_baseline` และ `python3 -B -m scripts.evaluate_baseline --output reports/baseline-v0.1.json` ได้ Exit Status `0` ทำนายถูก 4 ผิด 28 จาก 32 ตัวอย่าง (Intent Accuracy 12.5%) แถว `UNKNOWN` ถูก 4/4 ส่วนอีกเจ็ด Intent ถูก 0/4 ทุกรายการถูกทำนายว่า `UNKNOWN`
+- Dataset Version `v0.1` · SHA-256 `dde615e2e63116f0f410027833f4f76dcc7928e44814f6e33fc5864078cbcaed`
+- การทำซ้ำ: รันคำสั่งประเมินซ้ำแล้ว Output ตรงกับไฟล์รายงานทุกไบต์ รวมถึง Metrics และ Confusion Matrix
+- ปัญหาและข้อจำกัด: ไม่พบข้อผิดพลาดในชุดทดสอบและคำสั่งประเมินที่รัน ผลมาจากข้อความสมมติที่ใช้พัฒนาและวัดเฉพาะ Intent ของตัวจำแนกอ้างอิง ยังไม่มี AI Engine, Behavioral Regression Tests, ผลประเมินแบบอิสระ หรือหลักฐาน Remote CI สำหรับ TASK-004
+- งานถัดไปที่เสนอ: หลัง Review ให้พิจารณา TASK-005 AI Prototype V0.1 เพื่อยืนยันวิธีจัดการ Non-string และนำ Test Specification ไปสร้าง Behavioral Regression Tests ก่อนเขียนกฎ
+
+### H-012 — `test/v0.1-baseline` / TASK-004-R1
+
+- วันที่: 2026-11-27 | Final Quality Gate: `NEEDS_REVISION` | Remote CI: `PENDING_REMOTE_VERIFICATION`
+- เป้าหมาย: ตรวจคุณภาพข้อกำหนด Dataset เครื่องมือประเมิน และ Assertions ก่อนเจ้าของโครงการ Commit หรือ Push พร้อมบันทึก Engineering Principles ตาม D-019 ถึง D-022
+- Dataset Audit: ตรวจครบ 32/32 รายการ เจตนาและพฤติกรรมที่คาดหวังสอดคล้องกับ V0.1 ในบริบทที่กำหนด ไม่มี ID หรือ Input ซ้ำตรงตัว ระบุกรณีกำกวมและความหลากหลายที่จำกัดไว้ในข้อ 8.2 พร้อมเหตุผลที่คง EMPTY_INPUT ทั้งสี่รูปแบบ
+- Source และ Test Review: ตรวจการแยก Predictor จาก Evaluator สูตรและแนวแกน Confusion Matrix การคำนวณ Hash และ Assertions ที่กำหนดค่าคาดหวังล่วงหน้า กรณีในหน่วยความจำยืนยันการปฏิเสธ Schema ผิด การส่งต่อ Predictor Exception และผล All Correct, All Incorrect, Mixed และ Zero Support พบ HIGH ด้านการอ่าน JSON ตามข้อ 8.2
+- ผลจริงรอบ R1: `python3 -B -m scripts.run_tests` บน Python 3.14.8 / Darwin arm64 จบด้วย Exit Status `0` พบและรัน 22 Tests (Pass 22, Failure 0, Error 0, Skip 0) ตรวจ Syntax ด้วยวิธี CI ผ่าน 9 ไฟล์ (Exit Status `0`) การตรวจจำลองผ่าน stdin จบด้วย Exit Status `0` และยืนยันว่า CLI คืน Exit `1` เมื่อ JSON ผิดไวยากรณ์ทั่วไป แต่คืน `0` สำหรับสองกรณี HIGH
+- Baseline รอบ R1: `python3 -B -m scripts.evaluate_baseline` จบด้วย Exit Status `0` ได้ 32 ตัวอย่าง ถูก 4 ผิด 28 และ Intent Accuracy 12.5% ตรวจแยกจากโค้ด Evaluator แล้วว่าทุกแถวมี 4 รายการที่คอลัมน์ `UNKNOWN` เซลล์อื่นเป็น 0 รันซ้ำและเทียบผลตรงกับรายงานเดิมทุกไบต์ โดยใช้รายงานแบบอ่านอย่างเดียว
+- Dataset Version `v0.1` · SHA-256 `dde615e2e63116f0f410027833f4f76dcc7928e44814f6e33fc5864078cbcaed` ตรงกับรายงานเดิมและผล TASK-004 ใน H-011
+- ข้อจำกัด: ผลยืนยันเฉพาะชุดพัฒนาและ Predictor อ้างอิง ยังไม่มีผลพฤติกรรม AI หรือการประเมินอิสระ Commit, Push, PR และ Merge ของ Branch นี้ยังไม่มีหลักฐานยืนยัน
+- ไฟล์ที่แก้ไข: `DESIGN.md` และ `AGENTS.md`
+- งานถัดไปที่เสนอ: TASK-004-R2 เพื่อแก้ JSON ingestion และเพิ่ม Regression Tests ตามข้อ 8.2 ก่อนผ่าน Quality Gate แล้วจึงพิจารณา TASK-005 ตามการอนุมัติของเจ้าของโครงการ
+
+### H-013 — `test/v0.1-baseline` / TASK-004-R2
+
+- วันที่: 2026-11-27 | Local Quality Gate: `READY_FOR_COMMIT` | Remote CI: `PENDING_REMOTE_VERIFICATION`
+- ข้อค้นพบจาก R1 และ Root Cause: `json.loads()` ใช้ค่าปริยายที่ยอมรับ non-standard constants และเก็บเฉพาะค่าท้ายสุดของชื่อสมาชิกซ้ำ ข้อมูลจึงผ่านถึง Schema Validation ได้ ก่อนแก้ไขยืนยันผ่าน CLI จริงด้วย Dataset จำลองว่า `NaN` และ `expected_intent` ซ้ำต่างคืน Exit `0` และสร้างรายงาน
+- วิธีแก้: ใช้นโยบาย D-023 และ Decoder Hooks ตามข้อ 8.3 ก่อนเรียก Evaluator เมื่อข้อมูลผิด CLI แจ้งสาเหตุและจบก่อนเขียนรายงาน
+- ไฟล์ที่เปลี่ยน: แก้ `scripts/evaluate_baseline.py` และ `DESIGN.md` เพิ่ม `tests/test_baseline_json.py` จำนวน 8 Tests แบ่งเป็น Parsing 5 และ CLI Integration 3
+- ผล Test-first: `python3 -B -m unittest -v tests.test_baseline_json.BaselineCliTests` ก่อนแก้โค้ดรัน 3 Tests และมี 4 subtest failures (Exit `1`) เพราะกรณี `NaN` และคีย์ซ้ำยังคืน Exit `0` ทั้งเมื่อมีและยังไม่มีรายงาน
+- ผล Local: `python3 -B -m scripts.run_tests` ก่อนเพิ่ม Tests ผ่าน 22/22 หลังแก้ผ่าน 30/30 (Pass 30, Failure 0, Error 0, Skip 0, Exit `0`) ตรวจ Syntax ตาม CI ผ่าน 10 ไฟล์ (Exit `0`) บน Python 3.14.8 / Darwin arm64
+- Baseline ก่อนและหลัง: Always-UNKNOWN คงที่ 32 ตัวอย่าง ถูก 4 ผิด 28 และ Accuracy 12.5% โดย `UNKNOWN` ถูก 4/4 และอีกเจ็ด Intent ถูก 0/4 Confusion Matrix เหมือนเดิม
+- การทำซ้ำ: `python3 -B -m scripts.evaluate_baseline` ได้ Exit `0` การเปรียบเทียบสองรอบด้วยและไม่มี `--output` ไปยังไดเรกทอรีชั่วคราวใน Repository ได้ Exit `0` ทั้งสองรอบ stdout และไฟล์ชั่วคราวตรงกับรายงานที่เก็บไว้ทุกไบต์
+- Dataset `v0.1` · SHA-256 `dde615e2e63116f0f410027833f4f76dcc7928e44814f6e33fc5864078cbcaed`
+- ข้อจำกัด: ขอบเขตตัวเลขตามข้อ 8.3 ใช้เฉพาะตัวอ่าน JSON ของ Evaluator ผล Baseline เป็นผลบน Development Dataset และยังไม่มีหลักฐาน Remote CI, Commit, Push, PR หรือ Merge สำหรับ Branch นี้
+- งานถัดไปที่เสนอ: TASK-004-R3 README & Visual Documentation เพื่ออธิบายสถานะปัจจุบันและแผน AI ด้วยเอกสารและภาพที่แก้ไขได้ ก่อนพิจารณางาน Prototype ตาม Adaptive Roadmap
+
+### H-014 — `test/v0.1-baseline` / TASK-004-R3
+
+- วันที่: 2026-11-27 | Final Review: `READY_FOR_COMMIT` | Remote CI: `PENDING_REMOTE_VERIFICATION`
+- เป้าหมาย: ทำให้ README เป็นหน้าหลักสำหรับผู้เยี่ยมชม Repository และใช้หลักฐานแยกสิ่งที่ทำงานอยู่จากแผน AI ตาม D-024
+- ส่วนที่จัดทำ: Project Header และสารบัญ, Project Overview, Current Capabilities, Architecture, Development Workflow, Getting Started, Testing and Evaluation, Repository Structure, Documentation Index และ Adaptive Roadmap
+- แผนภาพ Mermaid inline 4 รายการ: Current Evaluation Architecture, Planned AI Architecture, Development and CI Workflow และ Iterative Rule Refinement ใช้เส้นประกับแผนภาพ AI ที่ยังไม่ได้ Implement และแสดงป้ายผู้รับผิดชอบเพื่อแยก GitHub Actions ออกจาก Code Review และ Merge ของทีม
+- หลักฐาน GitHub แบบอ่านอย่างเดียว: ตรวจชื่อ Public Repository, Clone URL, Default Branch `main` และ Workflow `CI` ที่ `.github/workflows/ci.yml` ยืนยันว่า Badge ที่ระบุ `branch=main` และลิงก์ไปหน้า Workflow ตอบ HTTP 200 ใช้ URL จริงใน Getting Started และระบุว่า Evaluator ใช้ได้ใน Checkout ที่มีไฟล์ดังกล่าว สถานะของ Badge ใช้เฉพาะ `main`
+- ผลตรวจเอกสาร: ใช้ Python Standard Library ตรวจลิงก์ภายใน 31 จุด รวม Relative Links และ Anchors ตรวจ Directory Tree ตรงกับไฟล์โครงการจริง 18 ไฟล์ ตรวจ Markdown fences 7 คู่ และตรวจ Mermaid ทั้ง 4 แผนภาพแบบ Static โดยเทียบ Flowchart Syntax และเส้นทางกับ Source Code และข้อกำหนด
+- ผลตรวจคำสั่ง: `python3 -B --version` ได้ Python 3.14.8, Local Test Runner ผ่าน 30/30 (Pass 30, Failure 0, Error 0, Skip 0, Exit `0`) และ Python Syntax ผ่าน 10 ไฟล์ตามวิธี CI (Exit `0`)
+- Baseline: ยืนยันผลจาก H-013 โดยรัน `python3 -B -m scripts.evaluate_baseline` และรันแบบระบุ `--output` ไปยังไฟล์ชั่วคราว ทั้งสองได้ Exit `0` และตรงกับรายงานเดิมทุกไบต์ (Always-UNKNOWN ถูก 4/32, Accuracy 12.5% บน Development Dataset) Dataset และรายงานที่บันทึกไว้มี SHA-256 ตรงกับก่อนเริ่มงาน
+- ไฟล์ที่แก้ไข: `README.md` และ `DESIGN.md` ใช้แผนภาพ inline จึงไม่ต้องสร้าง Assets
+- ข้อจำกัด: เครื่องนี้ไม่มี Mermaid Renderer หรือ Markdown Linter การตรวจแผนภาพรอบนี้เป็น Static Verification ส่วนการแสดงผลจริงบน GitHub และ Remote CI ของ Branch นี้ยังรอตรวจหลังเจ้าของโครงการ Push คำสั่ง Clone ใน README ตรวจสอบจาก URL และข้อมูล GitHub โดยไม่ได้รันคำสั่ง Git
+- งานถัดไปที่เสนอ: เจ้าของโครงการตรวจทาน README ก่อน Commit และ Push จากนั้นตรวจการแสดงผลแผนภาพกับ Remote CI ก่อนพิจารณา TASK-005 เมื่ออนุมัติ
+
+### H-015 — `test/v0.1-baseline` / TASK-004-R4
+
+- วันที่: 2026-11-27 | Local Quality Gate: `READY_FOR_COMMIT` | Remote CI: `PENDING_REMOTE_VERIFICATION`
+- เป้าหมาย: อธิบาย PyBot เป็นกรณีศึกษาทางสถาปัตยกรรม เก็บเหตุผลที่เลือกหรือไม่เลือกแนวทาง และเตรียมเอกสารสำหรับการนำเสนอโครงการ
+- ฐานวิจัย: ใช้สรุป TASK-001 ในข้อ 4 ร่วมกับ Static Source Analysis ผ่าน HTTPS จาก Public Snapshot `7d63c7fbebb44c7e466e5c8b5c1f341ab767929e` ไฟล์รายงาน TASK-001 ฉบับเต็มยังไม่พบใน Repository นี้ และ `SOURCE_COMMIT` ที่ CLI ระบุยังยืนยันไม่ได้จาก Public API
+- ผลศึกษา: บันทึกโครงสร้างและ Runtime Lifecycle, Priority และ Arbiter, Understanding, Session Memory, Knowledge, Composition และ Fallback แยก 12 Methods ใน `tests/test_cli.py` ที่นับจาก Snapshot ออกจากรายงาน Agent Swarm และ SmolTalkBench ของผู้เผยแพร่
+- ผล Mapping: ครอบคลุม 18 แนวคิด ระบุสถานะการส่งมอบและ Test ที่ใช้ยืนยัน เลือกหลักการแยกความรับผิดชอบและปรับแนวคิดเรื่องการตีความ ลำดับกฎ และ Fallback ให้เหมาะกับภาษาไทย ตัดการคัดลอก Source Code, Dynamic Discovery จำนวนมาก และ Silent Exception Skipping ออกจากขอบเขตต้นแบบ
+- ผลส่งมอบ: แยก Evaluation Tooling ที่รันได้จริงจากข้อเสนอ Conversational และ Anti-Scam Architecture ระบุกรณีตัวอย่างภาษาไทย แผนประเมินแยกโดเมน และ Academic Q&A ภาษาไทย 16 ข้อ
+- ไฟล์ที่เปลี่ยน: เพิ่ม `docs/pybot-reference-and-design-rationale.md` และแก้ `README.md` กับ `DESIGN.md`
+- Verification: ตรวจ UTF-8, โครงสร้าง Markdown, Relative Links, ชื่อสถานะ และเลข Revision ผ่าน ตรวจเส้นทาง Reference ใน Source Tree และอ่านไฟล์อ้างอิง 21 ไฟล์ตาม Snapshot รวม Line Anchors 5 ช่วง Local Tests ผ่าน 30/30 และตรวจ Python Syntax ผ่าน 10 ไฟล์ Dataset, Report, Source Code, Tests และ CI Workflow ตรงกับก่อนเริ่มงาน
+- ข้อจำกัด: ไม่ได้รัน PyBot หรือทำซ้ำ Benchmark ของผู้เผยแพร่ ข้อเสนอ AI Architecture ยังต้องตกลงและทดสอบในงานต่อไป และยังไม่มีหลักฐาน Remote CI ของ Branch นี้
+- งานถัดไปที่เสนอ: ให้เจ้าของโครงการตรวจทานเอกสารและยืนยัน Remote CI ตามขั้นตอน ก่อนพิจารณา TASK-005 เพื่อกำหนดขอบเขต Prototype V0.1 จาก Behavior Contract และกรณี Regression ที่ตกลงกัน
+
 ### แบบบันทึกผล Branch (คัดลอกเมื่อเริ่มงาน ไม่ใช่ผลจริง)
 
 ```markdown
@@ -639,19 +759,24 @@ python3 -m tests.evaluate
 - [x] เลือกชื่อ Repository `thai-anti-scam-ai` และยืนยัน Adaptive Roadmap
 - [x] เห็น Local Repository และ `main` จากภาพที่เจ้าของโครงการส่ง
 - [x] บันทึก Initial Commit, Initial Design Commit และสถานะ `main` กับ `origin/main` ตามหลักฐานจากเจ้าของโครงการ
-- [ ] ยืนยันขอบเขต V0.1 และเกณฑ์ทดสอบก่อนเริ่ม Branch ชุดทดสอบ
+- [x] จัดทำข้อกำหนดพฤติกรรม V0.1 และเกณฑ์ทดสอบใน TASK-004
 - [x] ดำเนินงาน Project Foundation บน `chore/project-foundation` ตามชื่อ Branch ที่เจ้าของโครงการแจ้ง
 - [x] เจ้าของโครงการตรวจทานไฟล์และยืนยันผล Acceptance Criteria ด้านโครงสร้างและเอกสาร
 - [x] เจ้าของโครงการยืนยัน Commit และ Merge งาน Project Foundation ผ่าน Pull Request #1
 - [x] ตั้งค่า CI และตรวจ Local Tests สำหรับ TASK-003
 - [x] ตรวจ Local Verification ซ้ำและอัปเดตเอกสารก่อน Commit และ Push ใน TASK-003-R1
-- [ ] ยืนยันผล Remote CI ด้วยหลักฐาน GitHub Actions หลังเจ้าของโครงการ Push
-- [ ] กำหนด Dataset และ Baseline ก่อนเขียนกฎ
+- [x] เจ้าของโครงการยืนยันผล Remote CI และ Merge ของ CI Branch ผ่าน PR #2
+- [x] จัดทำ Development Dataset และบันทึก Reference Baseline ที่รันซ้ำได้
+- [x] ทบทวนคุณภาพ Baseline และรันซ้ำใน TASK-004-R1
+- [x] แก้ข้อค้นพบ HIGH ด้าน Validation ใน TASK-004-R2 และตรวจ Local Quality Gate ซ้ำ
+- [x] จัดทำ README Project Homepage และตรวจเอกสารใน TASK-004-R3
+- [x] จัดทำ PyBot Reference Mapping และเหตุผลด้านสถาปัตยกรรมใน TASK-004-R4
+- [ ] เจ้าของโครงการยืนยันการแสดงผล Mermaid และ Remote CI ของ `test/v0.1-baseline` บน GitHub
 - [ ] พัฒนาและวัดผล AI ทีละ Milestone
 
-**Current Branch:** `ci/github-actions` ตามที่เจ้าของโครงการแจ้ง  
-**Current Task:** TASK-003-R1 — CI Review and Documentation Finalization  
-**Status:** `READY_FOR_COMMIT` หลัง Local Verification ผ่าน ส่วน Remote CI อยู่ในสถานะ `PENDING_REMOTE_VERIFICATION`  
-**Next Step:** เจ้าของโครงการ Commit และ Push เพื่อตรวจผล GitHub Actions แล้วพิจารณา TASK-004 Test Design & Baseline บน `test/v0.1-baseline`  
-**Reason:** ยืนยันว่า Workflow ทำงานบน GitHub Actions ก่อนกำหนดพฤติกรรมและชุดทดสอบ AI V0.1  
-**Git Status:** เจ้าของโครงการยืนยันว่า TASK-002 Merge แล้ว ส่วน Commit, Push, PR และ Merge ของ `ci/github-actions` ยังไม่ได้รับการยืนยัน
+**Current Branch:** `test/v0.1-baseline` ตามที่เจ้าของโครงการแจ้ง  
+**Current Task:** TASK-004-R4 — PyBot Reference Mapping & Architecture Design Rationale  
+**Status:** `READY_FOR_COMMIT` · Local Tests ผ่าน 30/30 · Remote CI: `PENDING_REMOTE_VERIFICATION`  
+**Next Step:** เจ้าของโครงการตรวจทานเอกสารก่อน Commit และ Push แล้วตรวจการแสดงผล Mermaid และ Remote CI บน GitHub  
+**Reason:** ยืนยันว่าฐานอ้างอิงและขอบเขตที่จะแปลงเป็น Behavior Tests ชัดเจนก่อนพิจารณา TASK-005 AI Prototype V0.1  
+**Git Status:** เจ้าของโครงการยืนยันว่า CI Branch Merge ผ่าน PR #2 แล้ว ส่วน Commit, Push, PR และ Merge ของ TASK-004 ยังไม่มีข้อมูลยืนยัน

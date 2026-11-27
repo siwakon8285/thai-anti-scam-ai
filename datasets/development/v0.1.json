@@ -1,0 +1,198 @@
+{
+  "version": "v0.1",
+  "purpose": "ชุดข้อมูลพัฒนาจากข้อความสมมติภาษาไทยสำหรับกำหนดพฤติกรรม V0.1 และวัดค่าอ้างอิง Always-UNKNOWN",
+  "samples": [
+    {
+      "id": "DEV-V01-001",
+      "input": "สวัสดีครับ",
+      "expected_intent": "GREETING",
+      "expected_behavior": "ตอบกลับด้วยคำทักทายภาษาไทยที่เหมาะสม"
+    },
+    {
+      "id": "DEV-V01-002",
+      "input": "สวัสดีตอนเช้าค่ะ",
+      "expected_intent": "GREETING",
+      "expected_behavior": "ตอบกลับด้วยคำทักทายภาษาไทยที่เหมาะสม"
+    },
+    {
+      "id": "DEV-V01-003",
+      "input": "หวัดดี",
+      "expected_intent": "GREETING",
+      "expected_behavior": "ตอบกลับด้วยคำทักทายภาษาไทยที่เหมาะสม"
+    },
+    {
+      "id": "DEV-V01-004",
+      "input": "ทักทายครับ",
+      "expected_intent": "GREETING",
+      "expected_behavior": "ตอบกลับด้วยคำทักทายภาษาไทยที่เหมาะสม"
+    },
+    {
+      "id": "DEV-V01-005",
+      "input": "คุณคือใคร",
+      "expected_intent": "BOT_IDENTITY",
+      "expected_behavior": "แนะนำตัวว่าเป็นต้นแบบบอตภาษาไทยแบบใช้กฎของโครงการ"
+    },
+    {
+      "id": "DEV-V01-006",
+      "input": "คุณชื่ออะไร",
+      "expected_intent": "BOT_IDENTITY",
+      "expected_behavior": "แนะนำตัวว่าเป็นต้นแบบบอตภาษาไทยแบบใช้กฎของโครงการ"
+    },
+    {
+      "id": "DEV-V01-007",
+      "input": "นี่คือบอตอะไร",
+      "expected_intent": "BOT_IDENTITY",
+      "expected_behavior": "แนะนำตัวว่าเป็นต้นแบบบอตภาษาไทยแบบใช้กฎของโครงการ"
+    },
+    {
+      "id": "DEV-V01-008",
+      "input": "คุณเป็นบอตใช่ไหม",
+      "expected_intent": "BOT_IDENTITY",
+      "expected_behavior": "แนะนำตัวว่าเป็นต้นแบบบอตภาษาไทยแบบใช้กฎของโครงการ"
+    },
+    {
+      "id": "DEV-V01-009",
+      "input": "คุณทำอะไรได้บ้าง",
+      "expected_intent": "BOT_CAPABILITIES",
+      "expected_behavior": "อธิบายขอบเขตการสนทนาที่รองรับจริงและระบุข้อจำกัดด้านการตรวจจับการหลอกลวง"
+    },
+    {
+      "id": "DEV-V01-010",
+      "input": "ระบบนี้รองรับการสนทนาเรื่องอะไร",
+      "expected_intent": "BOT_CAPABILITIES",
+      "expected_behavior": "อธิบายขอบเขตการสนทนาที่รองรับจริงและระบุข้อจำกัดด้านการตรวจจับการหลอกลวง"
+    },
+    {
+      "id": "DEV-V01-011",
+      "input": "ขอบเขตความสามารถของคุณคืออะไร",
+      "expected_intent": "BOT_CAPABILITIES",
+      "expected_behavior": "อธิบายขอบเขตการสนทนาที่รองรับจริงและระบุข้อจำกัดด้านการตรวจจับการหลอกลวง"
+    },
+    {
+      "id": "DEV-V01-012",
+      "input": "คุณช่วยเรื่องอะไรได้บ้าง",
+      "expected_intent": "BOT_CAPABILITIES",
+      "expected_behavior": "อธิบายขอบเขตการสนทนาที่รองรับจริงและระบุข้อจำกัดด้านการตรวจจับการหลอกลวง"
+    },
+    {
+      "id": "DEV-V01-013",
+      "input": "ขอบคุณครับ",
+      "expected_intent": "THANKS",
+      "expected_behavior": "ตอบรับคำขอบคุณอย่างสุภาพ"
+    },
+    {
+      "id": "DEV-V01-014",
+      "input": "ขอบใจนะ",
+      "expected_intent": "THANKS",
+      "expected_behavior": "ตอบรับคำขอบคุณอย่างสุภาพ"
+    },
+    {
+      "id": "DEV-V01-015",
+      "input": "ขอบคุณมากค่ะ",
+      "expected_intent": "THANKS",
+      "expected_behavior": "ตอบรับคำขอบคุณอย่างสุภาพ"
+    },
+    {
+      "id": "DEV-V01-016",
+      "input": "ขอบคุณสำหรับความช่วยเหลือ",
+      "expected_intent": "THANKS",
+      "expected_behavior": "ตอบรับคำขอบคุณอย่างสุภาพ"
+    },
+    {
+      "id": "DEV-V01-017",
+      "input": "ลาก่อน",
+      "expected_intent": "FAREWELL",
+      "expected_behavior": "กล่าวลาอย่างสุภาพ"
+    },
+    {
+      "id": "DEV-V01-018",
+      "input": "แล้วพบกันใหม่ครับ",
+      "expected_intent": "FAREWELL",
+      "expected_behavior": "กล่าวลาอย่างสุภาพ"
+    },
+    {
+      "id": "DEV-V01-019",
+      "input": "ขอตัวก่อนนะ",
+      "expected_intent": "FAREWELL",
+      "expected_behavior": "กล่าวลาอย่างสุภาพ"
+    },
+    {
+      "id": "DEV-V01-020",
+      "input": "ไปก่อนนะคะ",
+      "expected_intent": "FAREWELL",
+      "expected_behavior": "กล่าวลาอย่างสุภาพ"
+    },
+    {
+      "id": "DEV-V01-021",
+      "input": "ช่วยด้วยครับ",
+      "expected_intent": "HELP",
+      "expected_behavior": "เสนอวิธีเริ่มต้นหรือขอรายละเอียดโดยยกตัวอย่างสิ่งที่ระบบรองรับจริง"
+    },
+    {
+      "id": "DEV-V01-022",
+      "input": "ขอความช่วยเหลือหน่อยค่ะ",
+      "expected_intent": "HELP",
+      "expected_behavior": "เสนอวิธีเริ่มต้นหรือขอรายละเอียดโดยยกตัวอย่างสิ่งที่ระบบรองรับจริง"
+    },
+    {
+      "id": "DEV-V01-023",
+      "input": "ช่วยฉันหน่อย",
+      "expected_intent": "HELP",
+      "expected_behavior": "เสนอวิธีเริ่มต้นหรือขอรายละเอียดโดยยกตัวอย่างสิ่งที่ระบบรองรับจริง"
+    },
+    {
+      "id": "DEV-V01-024",
+      "input": "ช่วยแนะนำวิธีเริ่มต้นหน่อย",
+      "expected_intent": "HELP",
+      "expected_behavior": "เสนอวิธีเริ่มต้นหรือขอรายละเอียดโดยยกตัวอย่างสิ่งที่ระบบรองรับจริง"
+    },
+    {
+      "id": "DEV-V01-025",
+      "input": "วันนี้ฝนจะตกไหม",
+      "expected_intent": "UNKNOWN",
+      "expected_behavior": "แจ้งข้อจำกัดหรือขอให้ระบุคำขอที่ระบบรองรับโดยไม่แต่งข้อมูล"
+    },
+    {
+      "id": "DEV-V01-026",
+      "input": "ช่วยบอกสูตรทำขนมครกหน่อย",
+      "expected_intent": "UNKNOWN",
+      "expected_behavior": "แจ้งข้อจำกัดหรือขอให้ระบุคำขอที่ระบบรองรับโดยไม่แต่งข้อมูล"
+    },
+    {
+      "id": "DEV-V01-027",
+      "input": "กรุงเทพฯ มีประชากรกี่คน",
+      "expected_intent": "UNKNOWN",
+      "expected_behavior": "แจ้งข้อจำกัดหรือขอให้ระบุคำขอที่ระบบรองรับโดยไม่แต่งข้อมูล"
+    },
+    {
+      "id": "DEV-V01-028",
+      "input": "เล่านิทานเรื่องกระต่ายให้ฟังหน่อย",
+      "expected_intent": "UNKNOWN",
+      "expected_behavior": "แจ้งข้อจำกัดหรือขอให้ระบุคำขอที่ระบบรองรับโดยไม่แต่งข้อมูล"
+    },
+    {
+      "id": "DEV-V01-029",
+      "input": "",
+      "expected_intent": "EMPTY_INPUT",
+      "expected_behavior": "แจ้งให้ผู้ใช้ป้อนข้อความ"
+    },
+    {
+      "id": "DEV-V01-030",
+      "input": " ",
+      "expected_intent": "EMPTY_INPUT",
+      "expected_behavior": "แจ้งให้ผู้ใช้ป้อนข้อความ"
+    },
+    {
+      "id": "DEV-V01-031",
+      "input": "\t",
+      "expected_intent": "EMPTY_INPUT",
+      "expected_behavior": "แจ้งให้ผู้ใช้ป้อนข้อความ"
+    },
+    {
+      "id": "DEV-V01-032",
+      "input": "\n \t",
+      "expected_intent": "EMPTY_INPUT",
+      "expected_behavior": "แจ้งให้ผู้ใช้ป้อนข้อความ"
+    }
+  ]
+}
