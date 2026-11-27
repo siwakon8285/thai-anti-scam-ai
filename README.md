@@ -11,7 +11,7 @@ AI Engine เป็นส่วนหลักที่วางแผนให�
 ## Technology Stack
 
 - Python 3.14.8 บน macOS ARM64 เป็นสภาพแวดล้อมอ้างอิงสำหรับการพัฒนา
-- Python Standard Library สำหรับ Runtime และ `unittest` สำหรับชุดทดสอบที่วางแผนไว้
+- Python Standard Library สำหรับ Runtime และ `unittest` สำหรับชุดทดสอบ
 - Terminal เป็นช่องทางสำหรับ CLI ในต้นแบบตามแผน ใช้ Codex เป็นเครื่องมือช่วยพัฒนา โดย Runtime ไม่ใช้ LLM
 
 ## กรณีศึกษา PyBot
@@ -20,9 +20,21 @@ AI Engine เป็นส่วนหลักที่วางแผนให�
 
 ## สถานะการพัฒนา
 
-AI Engine ยังอยู่ในช่วงเตรียมโครงการ **ปัจจุบันยังไม่มีความสามารถในการตรวจจับ Scam** โครงสร้าง `thai_ai/` และ `tests/` มีเฉพาะไฟล์เริ่มต้นของ Package ส่วน AI Engine, CLI, Functional Tests และ Benchmark ยังไม่ได้สร้าง
+AI Engine ยังไม่ได้เริ่ม Implementation และ **ปัจจุบันยังไม่มีความสามารถในการตรวจจับ Scam** มี Package ขั้นต่ำ ชุด Foundation Smoke Tests และ Test Runner แล้ว ส่วน CLI, Functional Tests ของ AI และ Benchmark ยังไม่ได้สร้าง
 
 โครงการพัฒนาทีละ Branch ตามขอบเขตที่เจ้าของโครงการอนุมัติ Adaptive Roadmap เปิดให้เสนอปรับลำดับงานตามผลการทดลอง โดยต้องได้รับอนุมัติและบันทึกเหตุผลไว้ใน Development History อ่านสถาปัตยกรรม แผน และประวัติโครงการได้ที่ [DESIGN.md](DESIGN.md)
+
+## Continuous Integration และการทดสอบในเครื่อง
+
+GitHub Actions Workflow `CI` ตรวจทุก Push ไปยัง Branch และ Pull Request ที่มีเป้าหมายเป็น `main` และรองรับการสั่งรันด้วยตนเองเมื่อ Workflow อยู่บน Default Branch งาน `Python Tests` แสดงเวอร์ชัน Python 3.14.8 ตรวจ Syntax ใน `thai_ai/`, `tests/` และ `scripts/` แล้วรัน Test Runner เดียวกับที่ใช้ในเครื่อง ผล Remote CI ยังรอหลักฐานจาก GitHub Actions
+
+รันคำสั่งนี้จาก Repository Root ด้วย Python 3.14.8
+
+```sh
+python3 -B -m scripts.run_tests
+```
+
+Foundation Smoke Tests ตรวจว่า Package โหลดจากไฟล์ใน Repository และเอกสารหลักอ่านได้เป็น UTF-8 ชุดทดสอบของ Test Runner ตรวจการคืน Exit Code รวมถึงกรณีพบ 0 Tests หรือ Skip ทั้งหมด ผล CI บอกความพร้อมของโค้ดและชุดทดสอบที่รัน ส่วน AI Benchmark ใช้วัดพฤติกรรมหรือประสิทธิภาพของ AI ตามชุดข้อมูลและเกณฑ์ที่กำหนดเมื่อมี Engine
 
 ## ข้อจำกัดและหลักจริยธรรม
 
