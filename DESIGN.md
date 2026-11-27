@@ -242,12 +242,12 @@ flowchart TD
 
 แผนด้านล่างเป็นทิศทางเบื้องต้น ไม่ใช่รายการงานที่ล็อกไว้; ทบทวนก่อนเริ่มแต่ละ Branch ตามผลการศึกษาและการทดสอบ
 
-สถานะที่ใช้: `PLANNED`, `IN_PROGRESS`, `BLOCKED`, `FAILED`, `VERIFIED` (ผ่านเกณฑ์แต่ยังไม่ Merge), `MERGED` (ยืนยัน Merge จริง) ส่วนงานก่อนมี Git ใช้ `PRE-REPO` ไม่สร้างประวัติย้อนหลังว่าเป็น Commit ที่เกิดขึ้นจริง
+สถานะที่ใช้: `PLANNED`, `IN_PROGRESS`, `BLOCKED`, `FAILED`, `VERIFIED` (ผ่านเกณฑ์แต่ยังไม่ Merge), `READY_FOR_COMMIT` (ผ่านเกณฑ์และเจ้าของโครงการตรวจทานแล้ว พร้อมให้เจ้าของโครงการ Commit), `MERGED` (ยืนยัน Merge จริง) ส่วนงานก่อนมี Git ใช้ `PRE-REPO` ไม่สร้างประวัติย้อนหลังว่าเป็น Commit ที่เกิดขึ้นจริง
 
 | ลำดับ | Branch | Milestone | สถานะ |
 | --- | --- | --- | --- |
 | 00 | `main` — เอกสารตั้งต้น | เริ่ม Repository | IN_PROGRESS |
-| 01 | `chore/project-foundation` | โครงสร้างและข้อกำหนด | PLANNED |
+| 01 | `chore/project-foundation` | โครงสร้างและข้อกำหนด | READY_FOR_COMMIT |
 | 02 | `test/v0.1-baseline` | ชุดทดสอบก่อนพัฒนา | PLANNED |
 | 03 | `feat/v0.1-basic-chatbot` | V0.1 | PLANNED |
 | 04 | `feat/v0.2-intent-variants` | V0.2 | PLANNED |
@@ -482,6 +482,33 @@ python3 -m tests.evaluate
 - Git: `main` ตามภาพ; Commit/Push/Merge/Tag ยังไม่ยืนยัน
 - งานถัดไป: เจ้าของโครงการนำ DESIGN.md เข้า Repository ตรวจสถานะ Git และบันทึกเอกสารตั้งต้น จากนั้นสร้าง `chore/project-foundation` เพื่อให้ Codex ทำ TASK-002
 
+### H-005 — `chore/project-foundation` / TASK-002
+
+- วันที่: 2026-11-27 | สถานะ: IN_PROGRESS (รอเจ้าของโครงการตรวจทาน)
+- Branch มาจากข้อมูลที่เจ้าของโครงการแจ้ง ส่วนสถานะ `main` ใน H-004 และข้อ 13 เป็นข้อมูล ณ ช่วง Repository Initialization
+- งาน: วางโครงสร้างเอกสารและ Package ขั้นต่ำสำหรับการพัฒนา Rule-based AI ภาษาไทยตามเกณฑ์ของ TASK-002
+- ไฟล์ที่สร้าง: `AGENTS.md`, `.gitignore`, `thai_ai/__init__.py`, `tests/__init__.py`
+- ไฟล์ที่แก้ไข: `README.md`, `DESIGN.md`
+- ผลตรวจสภาพแวดล้อม: `python3 -B --version` ได้ `Python 3.14.8` และ `uname -sm` ได้ `Darwin arm64` ทั้งสองคำสั่งมี Exit Status 0
+- ผลตรวจ Import: `python3 -B -S -c 'from pathlib import Path; import thai_ai; import tests; assert Path(thai_ai.__file__).resolve() == Path("thai_ai/__init__.py").resolve(); assert Path(tests.__file__).resolve() == Path("tests/__init__.py").resolve(); print("Package import: OK")'` มี Exit Status 0 และแสดง `Package import: OK`
+- ผลตรวจโครงสร้างก่อนเพิ่มรายการนี้: สคริปต์ Python Standard Library ผ่านด้วย Exit Status 0 ตรวจว่าเอกสารอ่านได้เป็น UTF-8 ลิงก์จาก README ชี้ไปที่ DESIGN.md ไฟล์ Package ทั้งสองมีเฉพาะ Docstring ไม่มี Runtime Import และ SHA-256 ของ DESIGN.md ตรงกับต้นฉบับ ณ เวลาที่ตรวจ
+- ผลตรวจหลังเพิ่มรายการ: สคริปต์ Python Standard Library มี Exit Status 0 และแสดง `TASK-002 history entry: OK` กับ `Original DESIGN.md bytes: preserved` โดยคำนวณ SHA-256 หลังตัดรายการ H-005 ออกจากข้อมูลในหน่วยความจำ
+- กรณีศึกษา PyBot: ใช้สรุปในข้อ 4 ไฟล์ต้นทางของรายงาน TASK-001 ฉบับเต็มยังไม่ได้ถูกนำเข้า Repository และไม่มีการตรวจ Source Code ของ PyBot เพิ่มเติมในงานนี้
+- ข้อจำกัด: ยังไม่มี AI Engine, CLI, Scam Detection, Intent Rules, Response Rules, Session Memory, Evaluation Dataset หรือ Functional Tests จึงไม่มีผลทดสอบพฤติกรรม AI หรือ Benchmark ไม่ได้เข้าถึง Held-out Dataset ไม่ได้ติดตั้ง Dependency หรือสร้าง Virtual Environment และไม่ได้ดำเนินการ Git
+- งานถัดไป: ให้เจ้าของโครงการตรวจทานรายการไฟล์และผลตรวจ TASK-002 ก่อนพิจารณางานถัดไปตาม Roadmap
+
+### H-006 — `chore/project-foundation` / TASK-002-R1
+
+- วันที่: 2026-11-27 | สถานะ: `READY_FOR_COMMIT`
+- ผลการ Review: เจ้าของโครงการยืนยันว่าได้ตรวจทานไฟล์ก่อน Commit แล้ว และ Project Foundation ผ่าน Acceptance Criteria ด้านโครงสร้างและเอกสารของ TASK-002
+- ผลตรวจ Package ตามรายงาน TASK-002: Import `thai_ai` และ `tests` จากไฟล์ใน Repository สำเร็จบน Python 3.14.8 / Darwin arm64 ด้วย Exit Status `0` และ Output `Package import: OK` คำสั่งที่รันจริงอยู่ใน H-005
+- ผลตรวจโครงสร้างตามรายงาน TASK-002: สคริปต์ Python Standard Library จบด้วย Exit Status `0` ตรวจว่ารายการไฟล์ตรงตามขอบเขต เอกสารอ่านได้เป็น UTF-8 ลิงก์ใน README ชี้ไปที่ DESIGN.md และไฟล์ Package ทั้งสองมีเฉพาะ Docstring โดยไม่มี Runtime Import การตรวจ SHA-256 ยืนยันว่าเนื้อหาเดิมของ DESIGN.md ตรงกับต้นฉบับของ TASK-002 หลังแยก H-005 ออกในหน่วยความจำ
+- ข้อจำกัด: Functional Tests, AI Algorithm และ Benchmark ยังไม่ได้สร้าง ผล Import ครอบคลุมเฉพาะการโหลด Package
+- ไฟล์ที่แก้ไขใน TASK-002-R1: `DESIGN.md`
+- สถานะ Git: เจ้าของโครงการยังไม่ได้ Commit, Push หรือ Merge สำหรับ Project Foundation
+- งานถัดไปที่เสนอ: `test/v0.1-baseline` เพื่อกำหนดพฤติกรรมที่คาดหวังและชุดทดสอบ AI V0.1 ก่อนเขียนกฎ
+- Adaptive Roadmap: ชื่อ ลำดับ และขอบเขตของ Branch และ Milestone ในอนาคตยังปรับได้ตามผลการทดลอง เมื่อเจ้าของโครงการอนุมัติและบันทึกเหตุผลไว้
+
 ### แบบบันทึกผล Branch (คัดลอกเมื่อเริ่มงาน ไม่ใช่ผลจริง)
 
 ```markdown
@@ -528,12 +555,15 @@ python3 -m tests.evaluate
 - [x] เห็น Local Repository และ `main` จากภาพที่เจ้าของโครงการส่ง
 - [ ] ตรวจสถานะ Initial Commit, Remote และ Push ของเอกสารตั้งต้น
 - [ ] ยืนยันขอบเขต V0.1 และเกณฑ์ทดสอบก่อนเริ่ม Branch ชุดทดสอบ
-- [ ] สร้าง Branch `chore/project-foundation` และส่ง Prompt ถัดไปให้ Codex
+- [x] ดำเนินงาน Project Foundation บน `chore/project-foundation` ตามชื่อ Branch ที่เจ้าของโครงการแจ้ง
+- [x] เจ้าของโครงการตรวจทานไฟล์และยืนยันผล Acceptance Criteria ด้านโครงสร้างและเอกสาร
+- [ ] เจ้าของโครงการ Commit งาน Project Foundation
 - [ ] กำหนด Dataset และ Baseline ก่อนเขียนกฎ
 - [ ] พัฒนาและวัดผล AI ทีละ Milestone
 
-**Current Branch:** `main` ตามภาพที่เจ้าของโครงการส่ง  
-**Current Task:** Repository Initialization / เตรียม TASK-002  
-**Next Step:** ตรวจ Git และบันทึก DESIGN.md ฉบับ 0.2 บน `main` แล้วเปิด `chore/project-foundation`  
-**Reason:** สร้างจุดตั้งต้นที่ตรวจสอบได้ก่อนให้ Codex สร้างโครงสร้าง  
-**Git Status:** ยังไม่ได้ตรวจสถานะ Git/Remote/Push จริง; ChatGPT และ Codex ไม่ดำเนินการ Git แทนเจ้าของโครงการ
+**Current Branch:** `chore/project-foundation` ตามที่เจ้าของโครงการแจ้ง  
+**Current Task:** TASK-002-R1 — สรุปผล Review ของ Project Foundation  
+**Status:** `READY_FOR_COMMIT` หลังเจ้าของโครงการตรวจทานไฟล์และยืนยันผลผ่านเกณฑ์ด้านโครงสร้างและเอกสาร  
+**Next Step:** เจ้าของโครงการ Commit งาน Project Foundation งานถัดไปที่เสนอคือ `test/v0.1-baseline`  
+**Reason:** กำหนดพฤติกรรมที่คาดหวังและชุดทดสอบ AI V0.1 ก่อนเขียนกฎ  
+**Git Status:** เจ้าของโครงการยังไม่ได้ Commit, Push หรือ Merge สำหรับ Project Foundation

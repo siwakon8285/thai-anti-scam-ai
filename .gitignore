@@ -1,0 +1,45 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+.virtualenv/
+virtualenv/
+
+# Test, coverage, and development tool caches
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Build artifacts at the repository root
+/build/
+/dist/
+*.egg-info/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+.envrc
+.secrets/
+/secrets/
+*.pem
+*.key
+
+# macOS metadata and temporary files
+.DS_Store
+._*
+.AppleDouble/
+.Spotlight-V100/
+.Trashes/
+.TemporaryItems/
