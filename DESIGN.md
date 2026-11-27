@@ -301,7 +301,7 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 | 00 | `main` — เอกสารตั้งต้น | เริ่ม Repository | เจ้าของโครงการยืนยันแล้ว |
 | 01 | `chore/project-foundation` | โครงสร้างและข้อกำหนด (TASK-002) | MERGED |
 | 02 | `ci/github-actions` | GitHub Actions CI (TASK-003) | MERGED · Remote CI ผ่านตามที่เจ้าของโครงการยืนยัน |
-| 03 | `test/v0.1-baseline` | AI Behavior Specification & Baseline Evaluation (TASK-004) | READY_FOR_COMMIT หลัง R4 · Remote CI: PENDING_REMOTE_VERIFICATION |
+| 03 | `test/v0.1-baseline` | AI Behavior Specification & Baseline Evaluation (TASK-004) | READY_FOR_COMMIT หลัง R6-FINAL · Remote CI: PENDING_REMOTE_VERIFICATION |
 | 04 | `feat/v0.1-basic-chatbot` | AI Prototype V0.1 (เสนอเป็น TASK-005) | PLANNED |
 | 05 | `feat/v0.2-intent-variants` | V0.2 | PLANNED |
 | 06 | `feat/v0.3-informal-thai` | V0.3 | PLANNED |
@@ -535,6 +535,10 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 | D-025 | 2026-11-27 | ใช้ PyBot เป็น Architecture Reference และปรับใช้เฉพาะหลักการที่เหมาะสม | อ้าง Public Snapshot แบบเจาะจง แยกสิ่งที่อ่านพบออกจากการตัดสินใจของโครงการ เลือก Separation of Responsibilities และการทดสอบย้อนกลับตามขอบเขต งานนี้ไม่นำ Source Code, Rules หรือ Response Pools ของ PyBot มาใช้ |
 | D-026 | 2026-11-27 | แยก Current Implementation ออกจาก Proposed Architecture และออกแบบโดยคำนึงถึงภาษาไทย | ระบุสิ่งที่ยังไม่มี Runtime อย่างชัดเจน และทดลอง Normalization กับภาษาไทยโดยรักษา Raw Text, คำปฏิเสธ และขอบเขตของหลักฐานก่อนเลือกวิธี |
 | D-027 | 2026-11-27 | แยกการประเมิน Anti-Scam ออกจากการประเมินบทสนทนา | วัด Risk ตาม Label ภาษาไทยด้วย Precision, Recall และ Error Rates เมื่อมีระบบให้ประเมิน SmolTalkBench Win Rate และ Always-UNKNOWN Development Baseline วัดคนละขอบเขตกับผล Anti-Scam |
+| D-028 | 2026-11-27 | ใช้ README เป็น Product-focused Project Homepage | หลังเจ้าของโครงการตรวจหน้า GitHub จริง ให้เน้นความสามารถ สถาปัตยกรรม วิธีใช้งาน และผลประเมินสำหรับผู้อ่านภายนอก รายละเอียดการทำงานภายในและประวัติอยู่ใน DESIGN.md และ AGENTS.md |
+| D-029 | 2026-11-27 | ใช้ Project Banner แบบ SVG ต้นฉบับสำหรับ Visual Identity | ให้หน้าหลักสื่อถึงงานวิจัยภาษาไทยแบบใช้กฎด้วยตัวอักษรไทยและโล่เชิงสัญลักษณ์ บนพื้น Navy–Teal ใช้ SVG เพื่อรักษาความคมชัดและแก้ไข Source ได้ แยกภาพประจำโครงการจากแผนภาพ Runtime ใช้สถานะ Research in Progress โดยไม่กล่าวอ้างผลหรือความพร้อมใช้งาน และไม่ใช้ Assets ของ PyBot |
+| D-030 | 2026-11-27 | ใช้ ban.png เป็น Banner บน README | เจ้าของโครงการเลือกภาพนี้สำหรับหน้าหลัก เก็บ SVG ต้นฉบับไว้ตามเดิม และกำกับภาพว่าแสดงแนวคิดงานวิจัยที่ยังไม่ได้ Implement |
+| D-031 | 2026-11-27 | ยืนยัน ban.png เป็น Banner ที่ใช้งานจริงก่อนส่งงาน | ทำตามการเลือกของเจ้าของโครงการใน D-030 และแก้ Directory Tree ให้ตรงกับไฟล์จริงที่พบในรอบ R6-FINAL ประวัติการสร้าง SVG ยังคงอยู่ใน D-029 และ H-017 |
 
 ## 11. Development History (บันทึกเพิ่มตามงานจริง)
 
@@ -714,6 +718,44 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 - ข้อจำกัด: ไม่ได้รัน PyBot หรือทำซ้ำ Benchmark ของผู้เผยแพร่ ข้อเสนอ AI Architecture ยังต้องตกลงและทดสอบในงานต่อไป และยังไม่มีหลักฐาน Remote CI ของ Branch นี้
 - งานถัดไปที่เสนอ: ให้เจ้าของโครงการตรวจทานเอกสารและยืนยัน Remote CI ตามขั้นตอน ก่อนพิจารณา TASK-005 เพื่อกำหนดขอบเขต Prototype V0.1 จาก Behavior Contract และกรณี Regression ที่ตกลงกัน
 
+### H-016 — `test/v0.1-baseline` / TASK-004-R5
+
+- วันที่: 2026-11-27 | สถานะก่อน Commit และ Push: `READY_FOR_COMMIT` | Remote CI: `PENDING_REMOTE_VERIFICATION`
+- ปัญหาและเหตุผล: เจ้าของโครงการตรวจหน้า GitHub แล้วพบว่ารายละเอียดหน้าที่ทีมและลำดับงาน Git เบียดเนื้อหาเกี่ยวกับผลงาน จึงปรับ README ให้ผู้อ่านภายนอกเข้าใจสิ่งที่รันได้ วิธีลองใช้ และข้อจำกัดได้เร็วขึ้นตาม D-028
+- เนื้อหาที่นำออกจาก README: แผนภาพและคำอธิบาย Development Workflow การแบ่งหน้าที่ทีม ขั้นตอน Commit, Push, Pull Request และ Merge รวมถึงหมายเลข TASK และสถานะชั่วคราว ลดแผนภาพ Iterative Rule Refinement ออกจากหน้าหลัก ส่วนหลักการและประวัติเดิมยังอยู่ใน DESIGN.md และ AGENTS.md
+- เนื้อหาที่รักษา: ภาพรวม แนวทางใช้งานและทดสอบ ผล Always-UNKNOWN 12.5% บน Development Dataset, Badge ที่ระบุ `main`, ลิงก์ PyBot Reference Study และแผนเพิ่มความสามารถ เพิ่มข้อจำกัดและจริยธรรมให้เห็นชัดขึ้น
+- แผนภาพ: คง Current Evaluation Architecture และ Planned AI Architecture เป็น Mermaid แนวนอนสองภาพ ลดข้อความและจำนวน Node โดยใช้เส้นทึบกับการประเมินที่รันได้ และเส้นประพร้อมป้ายสถานะกับสถาปัตยกรรม AI ในแผน
+- ผลตรวจ: ตรวจ README แบบ Static ผ่าน 10 หัวข้อ ลิงก์ภายใน 18 จุด รายการใน Directory Tree 11 จุด และ Mermaid 2 ภาพ ยืนยัน Clone URL, ไฟล์ Test Runner และ Evaluator บน Default Branch รวมถึง URL ของ Badge `main` ผ่าน HTTPS แบบอ่านอย่างเดียว
+- ผล Local: `python3 -B -m scripts.run_tests` ได้ 30 Tests (Pass 30, Failure 0, Error 0, Skip 0, Exit `0`) `python3 -B -m scripts.evaluate_baseline` ได้ Exit `0` และตรงกับรายงานเดิมทุกไบต์ Dataset v0.1 และรายงาน Baseline ที่เก็บไว้มี SHA-256 ตรงกับก่อนเริ่มงาน
+- ไฟล์ที่แก้ไข: `README.md` และ `DESIGN.md` เท่านั้น ไม่เพิ่ม Asset
+- ข้อจำกัดและงานถัดไป: ตรวจ Mermaid แบบ Static เนื่องจากไม่มี Renderer ในเครื่อง รอเจ้าของโครงการตรวจการแสดงผลหน้า README และ Remote CI บน GitHub ก่อนพิจารณาต้นแบบ V0.1
+
+### H-017 — `test/v0.1-baseline` / TASK-004-R6
+
+- วันที่: 2026-11-27 | Local Quality Gate: `READY_FOR_COMMIT` | Remote CI: `PENDING_REMOTE_VERIFICATION`
+- เป้าหมาย: สร้างเอกลักษณ์ภาพสำหรับ README ให้สื่อถึงการวิจัยเกี่ยวกับภาษาไทย กฎ และหลักฐาน ตาม D-029
+- งานที่ทำ: เพิ่ม `docs/assets/project-banner.svg` ขนาด ViewBox 1600 × 500 เป็น Static SVG ที่แก้ไข Source ได้ ใช้ตัวอักษร “ก” และโล่เป็นเครื่องหมายประจำภาพ เพิ่มภาพและ Alternative Text ก่อน H1 ใน README ตลอดจนเพิ่มไฟล์ Banner ใน Directory Tree โดยรักษาเนื้อหา Product-focused จาก R5
+- ผลตรวจภาพ: Render ด้วย `sips` ที่ 1600 × 500 พิกเซล และตรวจฉบับย่อกว้าง 420 พิกเซลบนพื้นสว่างและมืด ข้อความทั้งสามและกราฟิกปรากฏครบในกรอบ ลบไฟล์ Preview ชั่วคราวหลังตรวจ
+- ผลตรวจเอกสาร: ตรวจ XML, ViewBox, ข้อความ, Static Elements และการอ้างอิงใน SVG ยืนยันว่าไม่มี Script, Animation หรือทรัพยากรภายนอก ตรวจตำแหน่ง Banner, Alternative Text, H1, CI Badge และลิงก์ภายใน README ครบ 19 จุด
+- ผล Local: `python3 -B -m scripts.run_tests` ได้ 30 Tests (Pass 30, Failure 0, Error 0, Skip 0, Exit `0`) ตรวจ SHA-256 ยืนยันว่า Dataset และ Baseline Report ตรงกับก่อนเริ่มงาน ผล `python3 -B -m scripts.evaluate_baseline` ตรงกับรายงานเดิมทุกไบต์ (Exit `0`)
+- ไฟล์ที่เปลี่ยน: เพิ่ม `docs/assets/project-banner.svg` และแก้ `README.md` กับ `DESIGN.md`
+- ข้อจำกัดและงานถัดไป: การตรวจภาพเป็นผล Render ในเครื่อง เจ้าของโครงการยังต้องตรวจการแสดง Banner และ Remote CI บน GitHub หลัง Push ก่อนพิจารณา TASK-005
+
+### H-018 — `test/v0.1-baseline` / TASK-004-R6 ติดตามการเลือก Banner
+
+- วันที่: 2026-11-27 | Local Quality Gate: `READY_FOR_COMMIT` | Remote CI: `PENDING_REMOTE_VERIFICATION`
+- เปลี่ยน Banner ใน README ให้ใช้ `docs/assets/ban.png` ที่เจ้าของโครงการเลือกตาม D-030 เพิ่มคำกำกับสถานะ AI และอัปเดตรายการไฟล์ใน Directory Tree เก็บรูป PNG และ SVG เดิมไว้
+- ตรวจไฟล์ PNG ขนาด 2244 × 701 พิกเซลและ Relative Link ใน README รัน `python3 -B -m scripts.run_tests` ผ่าน 30/30 (Exit `0`) การแสดงผลบน GitHub รอตรวจหลัง Push
+
+### H-019 — `test/v0.1-baseline` / TASK-004-R6-FINAL
+
+- วันที่: 2026-11-27 | Local Quality Gate: `READY_FOR_COMMIT` | Remote CI: `PENDING_REMOTE_VERIFICATION`
+- Banner ปัจจุบันคือ `docs/assets/ban.png` ขนาด 2244 × 701 พิกเซล และ 1,730,078 ไบต์ ตรวจ PNG signature, CRC ครบ 4 chunks และถอดข้อมูลภาพได้ครบ 701 แถว
+- README อ้าง PNG ในบรรทัดแรก มี Alternative Text และคำกำกับว่าเป็นแนวคิดงานวิจัย โดย AI Engine และ Scam Detection ยังไม่ได้ Implement ตรวจ Relative Links ครบ 19 จุดและ Directory Tree ตรงกับไฟล์ที่แสดง
+- `docs/assets/project-banner.svg` ไม่พบตั้งแต่เริ่มตรวจรอบนี้ จึงนำเฉพาะรายการ SVG ที่ค้างใน Directory Tree ของ README ออก งานนี้ไม่ได้ลบหรือกู้คืนไฟล์ SVG และคงบันทึก D-029, H-017 และ H-018 ไว้ตามเดิม
+- `python3 -B -m scripts.run_tests` ได้ Pass 30/30, Failure 0, Error 0, Skip 0 (Exit `0`) และ `python3 -B -m scripts.evaluate_baseline` ได้ 4/32 หรือ 12.5% (Exit `0`) โดย Output ตรงกับรายงานเดิมทุกไบต์ ตรวจ SHA-256 ยืนยันว่า Dataset และ Baseline Report ตรงกับค่าที่บันทึกไว้ก่อนเริ่มงาน
+- แก้เฉพาะ `README.md` และ `DESIGN.md` การแสดง Banner บน GitHub และ Remote CI ยังรอตรวจหลังเจ้าของโครงการ Push
+
 ### แบบบันทึกผล Branch (คัดลอกเมื่อเริ่มงาน ไม่ใช่ผลจริง)
 
 ```markdown
@@ -771,12 +813,14 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 - [x] แก้ข้อค้นพบ HIGH ด้าน Validation ใน TASK-004-R2 และตรวจ Local Quality Gate ซ้ำ
 - [x] จัดทำ README Project Homepage และตรวจเอกสารใน TASK-004-R3
 - [x] จัดทำ PyBot Reference Mapping และเหตุผลด้านสถาปัตยกรรมใน TASK-004-R4
+- [x] ปรับ README ให้เน้นผลงาน วิธีใช้งาน และผลประเมินใน TASK-004-R5
+- [x] เพิ่ม Project Banner แบบ SVG และตรวจการแสดงผลในเครื่องใน TASK-004-R6
 - [ ] เจ้าของโครงการยืนยันการแสดงผล Mermaid และ Remote CI ของ `test/v0.1-baseline` บน GitHub
 - [ ] พัฒนาและวัดผล AI ทีละ Milestone
 
 **Current Branch:** `test/v0.1-baseline` ตามที่เจ้าของโครงการแจ้ง  
-**Current Task:** TASK-004-R4 — PyBot Reference Mapping & Architecture Design Rationale  
+**Current Task:** TASK-004-R6-FINAL — Banner Verification and Documentation Finalization  
 **Status:** `READY_FOR_COMMIT` · Local Tests ผ่าน 30/30 · Remote CI: `PENDING_REMOTE_VERIFICATION`  
-**Next Step:** เจ้าของโครงการตรวจทานเอกสารก่อน Commit และ Push แล้วตรวจการแสดงผล Mermaid และ Remote CI บน GitHub  
-**Reason:** ยืนยันว่าฐานอ้างอิงและขอบเขตที่จะแปลงเป็น Behavior Tests ชัดเจนก่อนพิจารณา TASK-005 AI Prototype V0.1  
+**Next Step:** เจ้าของโครงการตรวจทานหน้า README ก่อน Commit และ Push แล้วตรวจการแสดงผล Banner, Mermaid และ Remote CI บน GitHub  
+**Reason:** ยืนยันว่าภาพและเอกสารแสดงได้ตามที่ตรวจในเครื่อง และตรวจผลบน Runner ก่อนพิจารณา TASK-005 AI Prototype V0.1  
 **Git Status:** เจ้าของโครงการยืนยันว่า CI Branch Merge ผ่าน PR #2 แล้ว ส่วน Commit, Push, PR และ Merge ของ TASK-004 ยังไม่มีข้อมูลยืนยัน

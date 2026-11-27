@@ -1,197 +1,116 @@
+![Thai Rule-based Anti-Scam AI — Research Project](docs/assets/ban.png)
+
+*ภาพแสดงแนวคิดงานวิจัย ปัจจุบัน AI Engine และ Scam Detection ยังไม่ได้ Implement*
+
 # Thai Rule-based Anti-Scam AI
 
-โครงการจบที่ศึกษาการพัฒนา AI ภาษาไทยแบบใช้กฎ เพื่อให้ตรวจสอบได้ว่าระบบจำแนกเจตนาอย่างไร และวางพื้นฐานสำหรับการประเมินสัญญาณการหลอกลวงในอนาคต
+โครงการจบที่ศึกษาการพัฒนา AI ภาษาไทยแบบใช้กฎ เพื่อจำแนกเจตนาอย่างอธิบายได้ และวางพื้นฐานสำหรับการประเมินความเสี่ยงจากการหลอกลวง
 
 [![CI on main](https://github.com/siwakon8285/thai-anti-scam-ai/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/siwakon8285/thai-anti-scam-ai/actions/workflows/ci.yml?query=branch%3Amain)
 
-**Python อ้างอิง** 3.14.8 · **Runtime** Python Standard Library · **สถานะโครงการ** เตรียมต้นแบบ V0.1
+**สถานะ** เตรียมต้นแบบ V0.1 · **Python อ้างอิง** 3.14.8 · **Runtime** Python Standard Library
 
-Badge แสดงผลของ `main` เท่านั้น ส่วน Remote CI ของ TASK-004-R3 อยู่ในสถานะ `PENDING_REMOTE_VERIFICATION`
-
-[ภาพรวม](#project-overview) · [ความสามารถ](#current-capabilities) · [สถาปัตยกรรม](#architecture) · [กระบวนการพัฒนา](#development-workflow) · [เริ่มต้นใช้งาน](#getting-started) · [การทดสอบ](#testing-and-evaluation) · [โครงสร้าง](#repository-structure) · [เอกสาร](#documentation-index) · [แผนพัฒนา](#adaptive-roadmap)
+[ความสามารถปัจจุบัน](#current-capabilities) · [สถาปัตยกรรม](#system-architecture) · [เริ่มต้นใช้งาน](#getting-started) · [ผลประเมิน](#testing-and-evaluation) · [เอกสาร](#documentation) · [แผนพัฒนา](#capability-roadmap)
 
 ## Project Overview
 
-แนวทางของโครงการคือกำหนดพฤติกรรมและเขียนกรณีทดสอบก่อนพัฒนากฎ จากนั้นวัดผล วิเคราะห์ข้อผิดพลาด และปรับกฎเป็นรอบ เพื่อให้ตรวจย้อนกลับได้ว่าผลลัพธ์เกิดจากกฎใด ขอบเขต V0.1 ที่วางแผนไว้คือการจำแนกเจตนาเบื้องต้นและการตอบข้อความภาษาไทยตาม [ข้อกำหนดพฤติกรรม V0.1](docs/v0.1-behavior.md)
-
-สิ่งที่ใช้งานได้ใน Repository ปัจจุบันคือชุดทดสอบและตัวประเมิน Reference Baseline ส่วน AI Engine และ Scam Detection ยังไม่ได้ Implement จึงยังไม่มี Application หรือคำสั่งสำหรับเริ่มสนทนากับ AI
+โครงการศึกษาว่ากฎที่อธิบายและทดสอบได้ช่วยตีความข้อความภาษาไทยได้อย่างไร ขอบเขตต้นแบบ V0.1 คือการจำแนกเจตนาเบื้องต้นและตอบข้อความตาม [Behavior Specification](docs/v0.1-behavior.md) ปัจจุบันรันชุดทดสอบและประเมินตัวจำแนกอ้างอิงได้ ส่วน AI สนทนาและ Scam Detection ยังไม่ได้ Implement
 
 ## Current Capabilities
 
-### ใช้งานได้ใน Repository
-
-| ส่วนประกอบ | สิ่งที่ทำได้ |
+| ส่วนที่ใช้งานได้ | สิ่งที่ตรวจสอบได้ |
 | --- | --- |
-| Project Foundation | มีโครงสร้าง Package และข้อกำหนดโครงการ [Package](thai_ai/__init__.py) · [AGENTS.md](AGENTS.md) |
-| Test Runner | ค้นหาและรัน `unittest` พร้อมคืนสถานะให้ CI และปฏิเสธกรณีพบ 0 Tests หรือ Skip ทั้งหมด [Test Runner](scripts/run_tests.py) |
-| Automated Tests | ตรวจ Foundation, Test Runner, Dataset, Metrics, Strict JSON และ CLI [ชุดทดสอบ](tests/) |
-| Development Dataset | ข้อความภาษาไทยสมมติและข้อความว่างรวม 32 ตัวอย่าง จาก 8 Intent [Dataset v0.1](datasets/development/v0.1.json) |
-| Baseline Evaluator | คำนวณ Intent Accuracy, Per-intent Metrics และ Confusion Matrix [Evaluator](scripts/evaluate_baseline.py) |
-| Strict JSON Parsing | ปฏิเสธคีย์ซ้ำทุกระดับ ค่าพิเศษ JSON และค่าที่แปลงเป็น `float` อนันต์ [Regression Tests](tests/test_baseline_json.py) |
-| GitHub Actions CI | มี Workflow `CI` และ Job `Python Tests` สำหรับตรวจ Python Syntax และรัน Test Runner [Workflow](.github/workflows/ci.yml) |
+| [Development Dataset v0.1](datasets/development/v0.1.json) | ข้อความสมมติภาษาไทยและกรณีข้อความว่าง รวม 32 ตัวอย่าง ครบ 8 Intent |
+| [Baseline Evaluator](scripts/evaluate_baseline.py) | ตรวจ JSON และ Schema แล้ววัด Intent Accuracy และ Confusion Matrix ของตัวจำแนก Always-UNKNOWN |
+| [Automated Tests](tests/) | ตรวจชุดข้อมูล สูตรคำนวณ Strict JSON Parsing และพฤติกรรม CLI ของ Evaluator |
 
-### ยังไม่ได้ Implement หรือประเมิน
+## System Architecture
 
-| ส่วนประกอบ | ขอบเขตที่วางแผนไว้ |
-| --- | --- |
-| Conversational AI Engine | ต้นแบบ V0.1 ตาม Behavior Specification |
-| Intent Recognition Runtime | จำแนกข้อความตาม Intent Taxonomy ของ V0.1 |
-| Response Generation Engine | เลือกคำตอบภาษาไทยตามกฎและพฤติกรรมที่คาดหวัง |
-| Session Memory | หัวข้อสำหรับระยะถัดไปนอกขอบเขต V0.1 |
-| Scam Detection Engine | หัวข้อสำหรับ Milestone ด้านความเสี่ยงในอนาคต |
-| Independent Evaluation | ยังไม่มีผลจากชุดประเมินอิสระ |
-
-## Architecture
-
-### Current Evaluation Architecture
-
-Evaluator อ่าน Dataset JSON แบบ UTF-8 ตรวจ JSON และ Schema ก่อนเรียกตัวจำแนกอ้างอิง แล้วคำนวณ Metrics เพื่อพิมพ์รายงาน JSON หรือบันทึกด้วย `--output` [โค้ด Evaluator](scripts/evaluate_baseline.py)
+**Planned AI Architecture — ยังไม่ได้ Implement** แผนของต้นแบบ V0.1 คืออ่านข้อความภาษาไทยและคืน Intent, คำตอบภาษาไทย และ Rule ID เมื่อมีกฎที่ทำงานจริง ตาม [Behavior Specification](docs/v0.1-behavior.md)
 
 ```mermaid
 flowchart LR
-    dataset["Development Dataset"] --> parser["Strict JSON Parser"]
-    parser --> validation["Dataset Validation"]
+    input["ข้อความภาษาไทย"] -.-> text["ตรวจและปรับข้อความ"]
+    text -.-> rules["จำแนกเจตนาและเลือกกฎ"]
+    rules -.-> output["Intent · Response · Rule ID"]
+```
+
+## Evaluation Architecture
+
+**Current Implementation** Evaluator อ่าน Dataset แบบ UTF-8 ปฏิเสธคีย์ JSON ซ้ำและค่าตัวเลขที่แปลงเป็นอนันต์ แล้วตรวจ Schema ก่อนส่งแต่ละข้อความให้ตัวจำแนกอ้างอิง [โค้ด Evaluator](scripts/evaluate_baseline.py)
+
+```mermaid
+flowchart LR
+    dataset["Dataset JSON"] --> validation["ตรวจ JSON และ Schema"]
     validation --> predictor["Always-UNKNOWN"]
-    predictor --> metrics["Evaluation Metrics"]
-    metrics --> report["JSON Report"]
-```
-
-### Planned Architecture — Not Yet Implemented
-
-แผนภาพนี้สรุปเส้นทางของ AI V0.1 ตามข้อกำหนด เส้นประแสดงองค์ประกอบที่ยังอยู่ในแผน [Behavior Specification](docs/v0.1-behavior.md) · [Design](DESIGN.md)
-
-```mermaid
-flowchart LR
-    input["Input Validation"] -.-> text["Text Processing"]
-    text -.-> recognition["Intent Recognition"]
-    recognition -.-> rules["Rule Selection"]
-    rules -.-> response["Response Generation"]
-    response -.-> output["intent · response · rule_id"]
-```
-
-## Development Workflow
-
-เจ้าของโครงการดูแล Git ส่วน GitHub Actions ทำงานอัตโนมัติเฉพาะการตรวจที่กำหนด Workflow รันเมื่อ Push ไปยังทุก Branch หรือเมื่อมี Pull Request ที่มีเป้าหมายเป็น `main` และรองรับ `workflow_dispatch` เมื่อไฟล์อยู่บน Default Branch งาน `Python Tests` ใช้ `ubuntu-latest` และ Python 3.14.8 [Workflow](.github/workflows/ci.yml)
-
-```mermaid
-flowchart TD
-    research["ทีม · ศึกษาและออกแบบ"] --> branch["ทีม · พัฒนาบน Branch"]
-    branch --> local["ทีม · รัน Local Tests"]
-    local --> design["ทีม · อัปเดต DESIGN.md"]
-    design --> push["เจ้าของ · Commit และ Push"]
-    push --> pr["เจ้าของ · เปิด Pull Request"]
-    push --> ci["อัตโนมัติ · GitHub Actions CI"]
-    pr --> ci
-    ci --> review["ทีม · Code Review และตรวจผล CI"]
-    review --> merge["เจ้าของ · Merge"]
-    merge --> history["ทีม · บันทึกหลักฐานใน Development History"]
-```
-
-### Iterative Rule Refinement
-
-กระบวนการด้านล่างเป็นวิธีทำงานของทีมเมื่อเริ่มพัฒนากฎ แต่ละรอบใช้ผลทดสอบและการวิเคราะห์ข้อผิดพลาดประกอบการปรับกฎ ระบบ Auto-training ยังไม่ได้ Implement [Engineering Principles](AGENTS.md#engineering-principles)
-
-```mermaid
-flowchart LR
-    design["Test Design"] --> implementation["Implementation"]
-    implementation --> evaluation["Evaluation"]
-    evaluation --> errors["Error Analysis"]
-    errors --> refinement["Rule Refinement"]
-    refinement --> regression["Regression Testing"]
-    regression --> design
+    predictor --> metrics["คำนวณ Metrics"]
+    metrics --> report["รายงาน JSON"]
 ```
 
 ## Getting Started
 
-ใช้ Python 3.14.8 เป็นเวอร์ชันอ้างอิง คำสั่งด้านล่างไม่ต้องติดตั้ง Python Package เพิ่มเติม
+ใช้ Python 3.14.8 เป็นเวอร์ชันอ้างอิงและรันจาก Repository Root
 
 ```bash
 git clone https://github.com/siwakon8285/thai-anti-scam-ai.git
 cd thai-anti-scam-ai
 python3 -B --version
 python3 -B -m scripts.run_tests
-```
-
-สำหรับ Checkout ที่มี [Evaluator](scripts/evaluate_baseline.py) ให้รันจาก Repository Root ใช้คำสั่งแรกเพื่อดูผลใน Terminal หรือคำสั่งที่สองเพื่อบันทึกผลรอบใหม่เป็นไฟล์แยก
-
-```bash
 python3 -B -m scripts.evaluate_baseline
-python3 -B -m scripts.evaluate_baseline --output reports/baseline-local.json
 ```
 
-ใน `main` ขณะตรวจเอกสารมี Test Runner แล้ว ส่วน Evaluator ยังอยู่ใน Checkout ของ Baseline Branch
+Evaluator แสดง JSON ทาง Terminal หากต้องการเก็บผลแยก ให้ใช้ `python3 -B -m scripts.evaluate_baseline --output reports/baseline-local.json`
 
 ## Testing and Evaluation
 
-- **Automated tests** ใช้ `python3 -B -m scripts.run_tests` ผล Local ของ TASK-004-R2 คือ **30/30 Tests** ไม่มี Failure, Error หรือ Skip [Development History](DESIGN.md)
-- **Dataset validation** ตรวจ Schema, ID และ Input ซ้ำ, Intent Taxonomy และความสัมพันธ์ระหว่างข้อความว่างกับ `EMPTY_INPUT` [Dataset Tests](tests/test_dataset.py)
-- **Evaluation** รายงาน Intent Accuracy, Support และผลถูกแยกตาม Intent พร้อม Confusion Matrix ที่ใช้แถวเป็น Expected Intent และคอลัมน์เป็น Predicted Intent [รายงาน Baseline](reports/baseline-v0.1.json)
+Test Runner ใช้ `unittest` ส่วน [GitHub Actions](.github/workflows/ci.yml) ตรวจ Python Syntax และรันชุดทดสอบเดียวกัน Badge ด้านบนแสดงสถานะ CI ของ `main`
 
-| Baseline v0.1 | ผลที่บันทึกไว้ |
+| ผล Reference Baseline v0.1 | ค่า |
 | --- | --- |
-| Dataset | 32 ตัวอย่าง · 8 Intent · ประเภทละ 4 ตัวอย่าง |
-| Predictor | Always-UNKNOWN สำหรับทุกข้อความ |
+| Development Dataset | 32 ตัวอย่าง · 8 Intent |
+| ตัวจำแนกอ้างอิง | Always-UNKNOWN |
 | ผลทำนาย | ถูก 4 · ผิด 28 |
 | Development Intent Accuracy | **12.5%** |
 
-**Dataset SHA-256** `dde615e2e63116f0f410027833f4f76dcc7928e44814f6e33fc5864078cbcaed`
-
-12.5% เป็นคะแนนตัวจำแนกอ้างอิงบน Development Dataset ใช้เป็นจุดเทียบระหว่างพัฒนา ความแม่นยำของ AI Engine ต้องวัดจาก Engine ที่ Implement แล้ว ตามนโยบาย ชุด Held-out สำหรับการประเมินอิสระในอนาคตต้องแยกจากการปรับกฎ และเก็บนอก Public Repository กับ CI ปกติ
+**12.5% เป็นผลของตัวจำแนกอ้างอิงบน Development Dataset** ใช้เป็นจุดเทียบในการพัฒนากฎ ความแม่นยำของ AI Engine และ Independent Evaluation ยังไม่มีผลให้รายงาน [รายงาน Baseline และ Confusion Matrix](reports/baseline-v0.1.json)
 
 ## Repository Structure
 
-แสดงไฟล์โครงการใน Checkout นี้
-
 ```text
 thai-anti-scam-ai/
-├── .github/
-│   └── workflows/
-│       └── ci.yml
-├── .gitignore
-├── AGENTS.md
-├── DESIGN.md
-├── README.md
-├── datasets/
-│   └── development/
-│       └── v0.1.json
+├── datasets/development/v0.1.json
 ├── docs/
-│   ├── pybot-reference-and-design-rationale.md
-│   └── v0.1-behavior.md
-├── reports/
-│   └── baseline-v0.1.json
+│   ├── assets/
+│   │   └── ban.png
+│   ├── v0.1-behavior.md
+│   └── pybot-reference-and-design-rationale.md
+├── reports/baseline-v0.1.json
 ├── scripts/
-│   ├── __init__.py
 │   ├── evaluate_baseline.py
 │   └── run_tests.py
 ├── tests/
-│   ├── __init__.py
-│   ├── test_baseline.py
-│   ├── test_baseline_json.py
-│   ├── test_dataset.py
-│   ├── test_foundation.py
-│   └── test_run_tests.py
-└── thai_ai/
-    └── __init__.py
+├── thai_ai/
+└── DESIGN.md
 ```
 
-`scripts/` เป็นจุดเรียก Test Runner และ Evaluator, `tests/` เก็บ Automated Tests, `datasets/development/` เก็บข้อมูลสมมติ, `reports/` เก็บผลที่ตรวจซ้ำได้ และ `thai_ai/` มี Package ขั้นต้นสำหรับ AI Engine ที่ยังไม่ได้ Implement
+## Documentation
 
-## Documentation Index
+- [Behavior Specification V0.1](docs/v0.1-behavior.md) — Intent ที่รองรับตามแผน พฤติกรรมที่คาดหวัง และ Proposed Contract
+- [PyBot Reference Study](docs/pybot-reference-and-design-rationale.md) — กรณีศึกษา PyBot และเหตุผลที่เลือกปรับแนวคิดให้เหมาะกับภาษาไทย
+- [DESIGN.md](DESIGN.md) — สถาปัตยกรรม แนวทางประเมิน และเหตุผลด้านการออกแบบ
 
-| เอกสาร | ใช้ดู |
+## Capability Roadmap
+
+| ขอบเขต | ความสามารถ |
 | --- | --- |
-| [DESIGN.md](DESIGN.md) | สถาปัตยกรรม การตัดสินใจ และ Development History |
-| [AGENTS.md](AGENTS.md) | ข้อกำหนดการทำงานและ Engineering Principles |
-| [Behavior Specification V0.1](docs/v0.1-behavior.md) | Intent Taxonomy, Proposed Contract และพฤติกรรมที่คาดหวัง |
-| [PyBot Reference Mapping](docs/pybot-reference-and-design-rationale.md) | สถาปัตยกรรม PyBot ที่ตรวจจาก Snapshot เหตุผลการออกแบบภาษาไทย แผนประเมิน และคำถามสำหรับนำเสนอ |
+| ปัจจุบัน | ชุดทดสอบและการประเมิน Reference Baseline |
+| แผนต้นแบบ V0.1 | จำแนกเจตนาและตอบข้อความภาษาไทยตามข้อกำหนด |
+| ระยะถัดไปตามผลทดลอง | เพิ่มความครอบคลุมของภาษาไทย ศึกษาบริบทและ Session Memory แล้วพัฒนาการประเมินความเสี่ยงและการทดสอบอิสระ |
 
-## Adaptive Roadmap
+ลำดับการเพิ่มความสามารถปรับได้ตามผลการทดลองใน [Adaptive Roadmap](DESIGN.md)
 
-| สถานะ | งาน |
-| --- | --- |
-| Completed | Project Foundation และ GitHub Actions CI Merge แล้วตามหลักฐานที่เจ้าของโครงการยืนยัน |
-| Current | `test/v0.1-baseline` มีข้อกำหนด V0.1, Dataset, Baseline, Strict JSON Validation และ Project Homepage ผล Remote CI ยังรอการยืนยัน |
-| Proposed | TASK-005 AI Prototype V0.1 รออนุมัติให้เริ่ม |
-| Planned | ปรับความครอบคลุมของภาษาไทย พิจารณา Session Memory, Scam Detection และ Independent Evaluation ตาม Milestone ใน DESIGN.md |
+## Limitations and Ethical Considerations
 
-เจ้าของโครงการปรับลำดับหรือแทรกงานได้ตามผลทดลองและหลักฐานด้านคุณภาพ [Adaptive Roadmap ใน DESIGN.md](DESIGN.md)
+- AI สนทนาและ Scam Detection ยังไม่ได้ Implement ผล Baseline จึงใช้ตัดสินความปลอดภัยของข้อความจริงไม่ได้
+- ใช้ข้อมูลสมมติหรือข้อมูลที่ได้รับอนุญาตและตัดข้อมูลระบุตัวตน ชุด Held-out สำหรับการประเมินอิสระในอนาคตต้องแยกจากข้อมูลที่ใช้ปรับกฎ
+- หากพัฒนาการประเมินความเสี่ยงในอนาคต ผลต้องอธิบายหลักฐานและข้อจำกัด หลีกเลี่ยงการกล่าวหาบุคคลหรือรับรองความปลอดภัยจากการไม่พบสัญญาณ
