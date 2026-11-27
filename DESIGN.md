@@ -235,31 +235,80 @@ flowchart TD
 3. Codex รายงานผลรันจริง พร้อมคำสั่ง Exit Status/จำนวน Pass/Fail/Skip และข้อจำกัด; ไม่เปลี่ยน Expected Result เพียงเพื่อให้ผ่าน
 4. รัน Regression Tests ทั้งหมดที่เกี่ยวข้อง เก็บ Baseline และผลเปรียบเทียบเมื่อมีความหมาย
 5. ChatGPT และเจ้าของโครงการตรวจ Diff รายงาน และการเปลี่ยน Scope
-6. อัปเดต DESIGN.md ใน Branch เดียวกันก่อน Merge พร้อมหลักฐานและข้อจำกัด; เก็บรายงานใหญ่ไว้ใน `reports/` แล้วลิงก์จาก DESIGN.md
+6. ทุก Branch ต้องอัปเดต DESIGN.md ก่อนเจ้าของโครงการ Commit และ Push ตาม D-012 โดยบันทึกงาน เหตุผล การเปลี่ยนแผน ผลทดสอบจริง และข้อจำกัด เก็บรายงานขนาดใหญ่ไว้ใน `reports/` แล้วลิงก์จาก DESIGN.md
 7. เจ้าของโครงการ Commit, Push, Merge และ Tag ตามความเหมาะสม ตรวจผลบน `main` หลัง Merge; หากยังไม่ผ่านให้คงสถานะ Blocked/Failed ไม่เริ่ม Milestone ถัดไปโดยพลการ
+
+### 6.3 Continuous Integration (เพิ่มใน TASK-003)
+
+`.github/workflows/ci.yml` กำหนด Workflow `CI` ให้รันเมื่อ Push ทุก Branch หรือเปิดและอัปเดต Pull Request ที่มีเป้าหมายเป็น `main` และรองรับ `workflow_dispatch` เมื่อไฟล์ Workflow อยู่บน Default Branch งาน `Python Tests` ใช้ GitHub-hosted Runner `ubuntu-latest` โดยจำกัดเวลา 10 นาที [GitHub Actions Workflow Syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax)
+
+ลำดับงานคือ Checkout Source → ตั้งค่า Python 3.14.8 → แสดงเวอร์ชัน → Compile ไฟล์ `.py` ใน `thai_ai/`, `tests/` และ `scripts/` ในหน่วยความจำ → รัน Local Test Runner ด้วย `python3 -B -m scripts.run_tests` หากขั้นใดล้มเหลว งาน CI จะล้มเหลว ใช้ Official Actions ที่ล็อก Full-length Commit SHA ได้แก่ `actions/checkout` v7.0.1 (`3d3c42e5aac5ba805825da76410c181273ba90b1`) และ `actions/setup-python` v7.1.0 (`6d4fd22b20465ccc0f7354476588e8df7c9ca0e0`) [Checkout Release](https://github.com/actions/checkout/releases/tag/v7.0.1) [Setup Python Release](https://github.com/actions/setup-python/releases/tag/v7.1.0)
+
+กำหนด `GITHUB_TOKEN` เป็น `contents: read` และ `persist-credentials: false` สำหรับ Checkout ขั้นตอนนี้เป็นข้อยกเว้นที่เจ้าของโครงการอนุญาตเฉพาะการโหลด Source Code ภายใน GitHub-hosted Runner Workflow ไม่มีการติดตั้ง Python Package เพิ่มเติม ไม่ส่ง Secrets ให้ขั้นตอนทดสอบ และไม่ใช้ Held-out Dataset [GitHub Actions Secure Use](https://docs.github.com/en/actions/reference/security/secure-use)
+
+Test Runner ใช้ `unittest` ค้นหา `test_*.py` ใน `tests/` แล้วแสดงผลราย Test คืน Exit Code `1` เมื่อพบ Failure, Error, Unexpected Success, 0 Tests หรือไม่มี Test ที่จบโดยไม่ถูก Skip เพื่อป้องกันสถานะผ่านที่เกิดจากการไม่ได้ทดสอบอะไร คืน `0` เมื่อ Suite สำเร็จตาม `unittest` และมีอย่างน้อยหนึ่ง Test จบโดยไม่ถูก Skip รวมถึง Expected Failure ที่ถูกเรียกจริง Foundation Smoke Tests ตรวจ Package Import และเอกสาร ผล CI จึงใช้ตรวจความพร้อมของโค้ดตามชุดทดสอบที่รัน ส่วน AI Benchmark ต้องมี Engine, Dataset และเกณฑ์ประเมินที่กำหนดไว้
+
+Test Runner Regression Tests ตรวจการคืน Exit Code ในกรณีผ่าน ล้มเหลว เกิด Error ชุดว่าง Skip ทั้งหมด และมีทั้งผ่านกับ Skip จึงครอบคลุมกรณีที่ Smoke Tests เพียงชุดเดียวไม่สามารถยืนยันได้
+
+Local Verification ยืนยันว่าโค้ดและชุดทดสอบทำงานในเครื่อง และตรวจไวยากรณ์กับค่ากำหนดของ Workflow ได้ก่อน Commit ส่วน Remote Verification ต้องใช้หลักฐานจาก GitHub Actions เพื่อยืนยันการเรียก Workflow ตามเหตุการณ์ การตั้งค่า Runner และ Python ตลอดจนผลของ Job จริง
+
+#### 6.3.1 ผลตรวจ Local แยกตามรอบ
+
+| รายการ | TASK-003 (H-008 และรายงาน TASK-003) | TASK-003-R1 (H-009) |
+| --- | --- | --- |
+| Local Test Suite | 9 Tests · Pass 9 · Failure 0 · Error 0 · Skip 0 · Exit 0 | 9 Tests · Pass 9 · Failure 0 · Error 0 · Skip 0 · Exit 0 |
+| Foundation Smoke Tests | ผ่าน 3/3 | ผ่าน 3/3 |
+| Test Runner Regression Tests | ผ่าน 6/6 | ผ่าน 6/6 |
+| Python Syntax | ผ่าน 6 ไฟล์ · Exit 0 | ผ่าน 6 ไฟล์ · Exit 0 |
+| Workflow YAML Syntax | ผ่าน · Exit 0 | ผ่าน · Exit 0 |
+| Workflow Configuration | ผ่าน · Exit 0 | ผ่าน · Exit 0 |
+
+จำนวน Smoke Tests และ Regression Tests ยืนยันจาก Test Methods ใน `tests/test_foundation.py` และ `tests/test_run_tests.py` ตามลำดับ การตรวจเอกสารสามไฟล์ใช้ Subtests ภายใน Smoke Test หนึ่งรายการ
+
+| Suite จำลอง | Exit Code ใน TASK-003 | Exit Code ที่รันซ้ำใน TASK-003-R1 |
+| --- | ---: | ---: |
+| All Passed | 0 | 0 |
+| Failure | 1 | 1 |
+| Error | 1 | 1 |
+| Empty Suite | 1 | 1 |
+| All-skipped Suite | 1 | 1 |
+| Passed and Skipped | 0 | 0 |
+
+#### 6.3.2 ข้อพิจารณาสำหรับ CI ในอนาคต
+
+- เมื่อมี AI Behavior Tests ให้กำหนดวิธีตรวจว่าชุดทดสอบที่จำเป็นได้รันจริง เพราะ Runner ปัจจุบันอนุญาตให้บาง Test ถูก Skip หาก Suite ที่เหลือผ่าน
+- พิจารณา Branch Protection หลังมีหลักฐานว่า Remote CI ทำงานสำเร็จจริง
+- ใช้ CI Passing Rate ติดตามงาน CI และวัด AI Accuracy ด้วย Benchmark และชุดข้อมูลที่กำหนด
+- เก็บ Held-out Evaluation Dataset แยกจาก CI ปกติ
+- พิจารณาลด Workflow ที่รันซ้ำจาก Push และ Pull Request หากเกิดความซ้ำซ้อนที่มีผลต่อโครงการ
+
+รายการข้างต้นเป็นข้อพิจารณาสำหรับงานในอนาคต การตรวจรอบนี้แก้เฉพาะเอกสาร
 
 ## 7. Roadmap ตาม Branch (Adaptive Roadmap)
 
 แผนด้านล่างเป็นทิศทางเบื้องต้น ไม่ใช่รายการงานที่ล็อกไว้; ทบทวนก่อนเริ่มแต่ละ Branch ตามผลการศึกษาและการทดสอบ
 
-สถานะที่ใช้: `PLANNED`, `IN_PROGRESS`, `BLOCKED`, `FAILED`, `VERIFIED` (ผ่านเกณฑ์แต่ยังไม่ Merge), `READY_FOR_COMMIT` (ผ่านเกณฑ์และเจ้าของโครงการตรวจทานแล้ว พร้อมให้เจ้าของโครงการ Commit), `MERGED` (ยืนยัน Merge จริง) ส่วนงานก่อนมี Git ใช้ `PRE-REPO` ไม่สร้างประวัติย้อนหลังว่าเป็น Commit ที่เกิดขึ้นจริง
+เดิมหลัง Project Foundation มีแผนเข้าสู่ `test/v0.1-baseline` ตาม H-006 ต่อมาเจ้าของโครงการเสนอเพิ่ม GitHub Actions CI เพื่อลดความผิดพลาดจากการตรวจด้วยมือ จึงแทรก `ci/github-actions` ก่อน Baseline ตาม D-011 ชื่อและลำดับของ Branch และ Task ในอนาคตยังปรับได้เมื่อเจ้าของโครงการอนุมัติและบันทึกเหตุผลไว้
+
+สถานะที่ใช้: `PLANNED`, `IN_PROGRESS`, `BLOCKED`, `FAILED`, `VERIFIED` (ผ่านเกณฑ์แต่ยังไม่ Merge), `READY_FOR_COMMIT` (ผ่านเกณฑ์สำหรับขั้นก่อน Commit และเอกสารพร้อมให้เจ้าของโครงการดำเนินการ), `MERGED` (ยืนยัน Merge จริง) ส่วนงานก่อนมี Git ใช้ `PRE-REPO` ไม่สร้างประวัติย้อนหลังว่าเป็น Commit ที่เกิดขึ้นจริง
 
 | ลำดับ | Branch | Milestone | สถานะ |
 | --- | --- | --- | --- |
-| 00 | `main` — เอกสารตั้งต้น | เริ่ม Repository | IN_PROGRESS |
-| 01 | `chore/project-foundation` | โครงสร้างและข้อกำหนด | READY_FOR_COMMIT |
-| 02 | `test/v0.1-baseline` | ชุดทดสอบก่อนพัฒนา | PLANNED |
-| 03 | `feat/v0.1-basic-chatbot` | V0.1 | PLANNED |
-| 04 | `feat/v0.2-intent-variants` | V0.2 | PLANNED |
-| 05 | `feat/v0.3-informal-thai` | V0.3 | PLANNED |
-| 06 | `feat/v0.4-negation-ambiguity` | V0.4 | PLANNED |
-| 07 | `feat/v0.5-session-memory` | V0.5 | PLANNED |
-| 08 | `feat/v0.6-multi-intent` | V0.6 | PLANNED |
-| 09 | `feat/v0.7-knowledge-base` | V0.7 | PLANNED |
-| 10 | `feat/v0.8-scam-risk-detection` | V0.8 | PLANNED |
-| 11 | `feat/v0.9-explanation-advice` | V0.9 | PLANNED |
-| 12 | `eval/v1.0-release-readiness` | V1.0 | PLANNED |
-| 13 | ยังไม่กำหนด | Application | รอเลือกขอบเขต |
+| 00 | `main` — เอกสารตั้งต้น | เริ่ม Repository | เจ้าของโครงการยืนยันแล้ว |
+| 01 | `chore/project-foundation` | โครงสร้างและข้อกำหนด (TASK-002) | MERGED |
+| 02 | `ci/github-actions` | GitHub Actions CI (TASK-003) | READY_FOR_COMMIT · Remote CI: PENDING_REMOTE_VERIFICATION |
+| 03 | `test/v0.1-baseline` | Test Design & Baseline (เสนอเป็น TASK-004) | PLANNED |
+| 04 | `feat/v0.1-basic-chatbot` | AI Prototype V0.1 (เสนอเป็น TASK-005) | PLANNED |
+| 05 | `feat/v0.2-intent-variants` | V0.2 | PLANNED |
+| 06 | `feat/v0.3-informal-thai` | V0.3 | PLANNED |
+| 07 | `feat/v0.4-negation-ambiguity` | V0.4 | PLANNED |
+| 08 | `feat/v0.5-session-memory` | V0.5 | PLANNED |
+| 09 | `feat/v0.6-multi-intent` | V0.6 | PLANNED |
+| 10 | `feat/v0.7-knowledge-base` | V0.7 | PLANNED |
+| 11 | `feat/v0.8-scam-risk-detection` | V0.8 | PLANNED |
+| 12 | `feat/v0.9-explanation-advice` | V0.9 | PLANNED |
+| 13 | `eval/v1.0-release-readiness` | V1.0 | PLANNED |
+| 14 | ยังไม่กำหนด | Application | รอเลือกขอบเขต |
 
 ### 00 — `main` / เอกสารตั้งต้น
 
@@ -281,7 +330,13 @@ flowchart TD
 
 **เกณฑ์ผ่าน:** เอกสารตรงข้อตกลง ไม่มีโค้ด Scam Detection หรือ Dependency เกิน Scope ไม่มีไฟล์ส่วนตัว และผู้ใช้ตรวจรายการไฟล์ก่อน Commit
 
-### 02 — `test/v0.1-baseline`
+### 02 — `ci/github-actions` / TASK-003 GitHub Actions CI
+
+**เป้าหมาย:** เพิ่มการตรวจ Syntax และชุดทดสอบอัตโนมัติก่อนเริ่มพัฒนา AI Engine ตามข้อเสนอของเจ้าของโครงการ
+
+**เกณฑ์ผ่าน:** Workflow ใช้ Official Actions แบบ Pin Full SHA และสิทธิ์อ่านเท่านั้น ชุดทดสอบ Local ผ่าน และเจ้าของโครงการยืนยันการรันบน GitHub Actions หลัง Push รายละเอียดอยู่ในข้อ 6.3 และ H-008
+
+### 03 — `test/v0.1-baseline` / เสนอเป็น TASK-004 Test Design & Baseline
 
 **เป้าหมาย:** กำหนดสัญญาพฤติกรรมก่อนเขียนกฎเพื่อป้องกันการปรับข้อสอบตามคำตอบ
 
@@ -290,9 +345,9 @@ flowchart TD
 - สร้าง Test Harness และ Engine Interface ขั้นต่ำที่ยังไม่อ้างว่ามีความสามารถ; บันทึก Baseline ก่อนปรับกฎโดยระบุว่าเป็น Stub หากใช้ Stub
 - หากยังไม่มี Engine ที่รันได้ ให้รายงาน Baseline ว่า N/A พร้อมเหตุผล ไม่ใส่ 0% สมมติ; หาก Test ยัง Fail โดยตั้งใจ ให้ใช้สถานะเฉพาะสำหรับ Test-first Baseline
 
-**เกณฑ์ผ่าน:** Test Harness รันได้และผลตรงสถานะเริ่มต้นที่กำหนด มี Expected Result ชัดเจน ไม่ซ่อน Fail; อนุญาต Merge Branch นี้เฉพาะเมื่อเจ้าของโครงการยอมรับสภาพ Test-first ที่บันทึกไว้ โดยระบุชัดว่า `main` ยังไม่ใช่ Release; หากไม่ต้องการ Test Fail บน `main` ให้รวมงานนี้กับ Branch 03 ก่อน Merge
+**เกณฑ์ผ่าน:** Test Harness รันได้และผลตรงสถานะเริ่มต้นที่กำหนด มี Expected Result ชัดเจน ไม่ซ่อน Fail; อนุญาต Merge Branch นี้เฉพาะเมื่อเจ้าของโครงการยอมรับสภาพ Test-first ที่บันทึกไว้ โดยระบุชัดว่า `main` ยังไม่ใช่ Release; หากไม่ต้องการ Test Fail บน `main` ให้รวมงานนี้กับ `feat/v0.1-basic-chatbot` ก่อน Merge
 
-### 03 — `feat/v0.1-basic-chatbot`
+### 04 — `feat/v0.1-basic-chatbot` / เสนอเป็น TASK-005 AI Prototype V0.1
 
 **เป้าหมาย:** สร้าง Rule-based Chatbot ภาษาไทยตัวแรกที่รันจริง
 
@@ -302,7 +357,7 @@ flowchart TD
 
 **เกณฑ์ผ่าน:** ผ่านชุด Functional Tests ที่ตกลงไว้ทั้งหมด มีผล Test/Benchmark จริง CLI และ Engine แยกกัน ไม่มี Runtime LLM หรือ Dependency ภายนอก; เสนอ Tag `v0.1.0` หลัง Merge และยืนยันผล
 
-### 04 — `feat/v0.2-intent-variants`
+### 05 — `feat/v0.2-intent-variants`
 
 **เป้าหมาย:** รองรับประโยคที่มีเจตนาเดิมแต่ใช้รูปคำต่างกัน
 
@@ -312,7 +367,7 @@ flowchart TD
 
 **เกณฑ์ผ่าน:** ผ่าน Acceptance Cases ใหม่และ Regression V0.1; รายงาน Intent Accuracy และ Error Analysis บนชุดที่ระบุชัดเจน; เสนอ Tag `v0.2.0`
 
-### 05 — `feat/v0.3-informal-thai`
+### 06 — `feat/v0.3-informal-thai`
 
 **เป้าหมาย:** รองรับภาษาไทยไม่เป็นทางการในขอบเขตที่กำหนด
 
@@ -321,7 +376,7 @@ flowchart TD
 
 **เกณฑ์ผ่าน:** ผ่านชุดกรณีภาษาไม่เป็นทางการที่ตกลงไว้และ Regression เดิม รายงานกรณีที่ยังไม่รองรับ; เสนอ Tag `v0.3.0`
 
-### 06 — `feat/v0.4-negation-ambiguity`
+### 07 — `feat/v0.4-negation-ambiguity`
 
 **เป้าหมาย:** แยกการยืนยัน การปฏิเสธ และข้อความกำกวม
 
@@ -330,7 +385,7 @@ flowchart TD
 
 **เกณฑ์ผ่าน:** ผ่านชุด Negation/Ambiguity ที่กำหนดและ Regression เดิม ไม่ตัดสินเกินข้อมูล; เสนอ Tag `v0.4.0`
 
-### 07 — `feat/v0.5-session-memory`
+### 08 — `feat/v0.5-session-memory`
 
 **เป้าหมาย:** ทำให้ AI ใช้ข้อมูลบทสนทนาต่อเนื่องได้ภายใน Session
 
@@ -340,7 +395,7 @@ flowchart TD
 
 **เกณฑ์ผ่าน:** ผ่าน Multi-turn Tests ทั้ง Intent, Slot, State และ Reset; Regression เดิมผ่าน; เสนอ Tag `v0.5.0`
 
-### 08 — `feat/v0.6-multi-intent`
+### 09 — `feat/v0.6-multi-intent`
 
 **เป้าหมาย:** รองรับหลายเจตนาในข้อความเดียวภายในขอบเขตที่ระบุ
 
@@ -349,7 +404,7 @@ flowchart TD
 
 **เกณฑ์ผ่าน:** ผ่านชุดหลายเจตนาและกรณีที่ไม่ควรแยกข้อความพร้อม Regression; เสนอ Tag `v0.6.0`
 
-### 09 — `feat/v0.7-knowledge-base`
+### 10 — `feat/v0.7-knowledge-base`
 
 **เป้าหมาย:** เพิ่มฐานความรู้ด้านการป้องกันภัยที่ตรวจสอบที่มาได้
 
@@ -361,7 +416,7 @@ flowchart TD
 
 แหล่งตั้งต้นที่ต้องตรวจใหม่ก่อนอ้างเป็นข้อเท็จจริง: [ธปท.](https://www.bot.or.th/), [ETDA](https://www.etda.or.th/), [ศูนย์ต่อต้านข่าวปลอม](https://www.antifakenewscenter.com/), [NIST Phish Scale](https://csrc.nist.gov/pubs/tn/2276/final)
 
-### 10 — `feat/v0.8-scam-risk-detection`
+### 11 — `feat/v0.8-scam-risk-detection`
 
 **เป้าหมาย:** ตรวจจับสัญญาณเสี่ยงจากข้อความโดยไม่กล่าวหาบุคคล
 
@@ -371,7 +426,7 @@ flowchart TD
 
 **เกณฑ์ผ่าน:** ผ่าน Functional/Safety Tests ที่กำหนดและ Regression; รายงาน Precision, Recall, F1, False Positive/Negative และ Abstention ตามชุดที่ระบุ ไม่อ้างคะแนนเป็นความน่าจะเป็น; เสนอ Tag `v0.8.0`
 
-### 11 — `feat/v0.9-explanation-advice`
+### 12 — `feat/v0.9-explanation-advice`
 
 **เป้าหมาย:** อธิบายผลและแนะนำวิธีป้องกันที่ปลอดภัย
 
@@ -381,7 +436,7 @@ flowchart TD
 
 **เกณฑ์ผ่าน:** คำอธิบายตรวจย้อนกลับได้ทุกกรณีที่ทดสอบ ไม่มีการยืนยันความผิดโดยไม่มีหลักฐาน และผ่าน Regression/Safety Tests; เสนอ Tag `v0.9.0`
 
-### 12 — `eval/v1.0-release-readiness`
+### 13 — `eval/v1.0-release-readiness`
 
 **เป้าหมาย:** ประเมิน AI อย่างเป็นอิสระก่อนพิจารณานำไปใช้งานจริง
 
@@ -392,7 +447,7 @@ flowchart TD
 
 **เกณฑ์ผ่าน:** ผ่านเกณฑ์ที่ตกลงไว้จริง มีหลักฐานทำซ้ำได้และตรวจ Safety/Privacy แล้ว จึงเสนอ Tag `v1.0.0`; หากไม่ผ่านคงสถานะยังไม่พร้อม
 
-### 13 — Application (ยังไม่เลือก Branch)
+### 14 — Application (ยังไม่เลือก Branch)
 
 หลังผ่านเกณฑ์ AI Engine จึงหารืออาจารย์ว่าจะเลือก Text Detection, OCR จากภาพ, Speech-to-Text จากเสียงที่ได้รับอนุญาต, AI Assistant หรือรูปแบบอื่น การตรวจเสียงระหว่างโทรจริงมีข้อจำกัดสิทธิ์ของระบบปฏิบัติการ ไม่ถือว่าเป็น Requirement ที่อนุมัติแล้ว ต้องพิจารณาเครื่องมือแปลงข้อมูล ความเป็นส่วนตัว และการทดลองกับมนุษย์ก่อนเลือกแพลตฟอร์มและ Branch เพิ่มเติม
 
@@ -433,6 +488,8 @@ python3 -m tests.evaluate
 | D-008 | 2026-11-27 | Test-first และแยก Held-out นอก Workspace | หลักแยกชุดข้อมูลตามแผนเดิม; วิธีจัดเก็บเป็นข้อเสนอเชิงปฏิบัติ |
 | D-009 | 2026-11-27 | Adaptive Roadmap | เจ้าของโครงการยืนยันว่าเพิ่ม แทรก แยก รวม เปลี่ยนชื่อ หรือปรับลำดับ Branch และ Milestone ได้ตามผลการทดลอง โดยบันทึกเหตุผลและรักษาประวัติเดิม |
 | D-010 | 2026-11-27 | Repository `thai-anti-scam-ai` | เจ้าของโครงการเลือกชื่อและส่งภาพ VS Code/Terminal ที่แสดง `main` และ README.md |
+| D-011 | 2026-11-27 | เพิ่ม GitHub Actions CI ก่อน Baseline V0.1 | เจ้าของโครงการเสนอใน TASK-003 ให้แทรก `ci/github-actions` ตาม Adaptive Roadmap เพื่อให้ตรวจ Syntax และรันชุดทดสอบซ้ำได้บน Push และ PR ก่อนเริ่ม AI Engine โดยใช้ Test Runner เดียวกับ Local |
+| D-012 | 2026-11-27 | บังคับอัปเดต DESIGN.md ก่อน Commit และ Push ในทุก Branch | เจ้าของโครงการกำหนดใน TASK-003-R1 เพื่อบันทึกเหตุผล แผน และผลทดสอบก่อนส่งงาน พร้อมแยกความพร้อมในเครื่องออกจากผล Remote CI และหลักฐานการ Merge |
 
 ## 11. Development History (บันทึกเพิ่มตามงานจริง)
 
@@ -509,6 +566,34 @@ python3 -m tests.evaluate
 - งานถัดไปที่เสนอ: `test/v0.1-baseline` เพื่อกำหนดพฤติกรรมที่คาดหวังและชุดทดสอบ AI V0.1 ก่อนเขียนกฎ
 - Adaptive Roadmap: ชื่อ ลำดับ และขอบเขตของ Branch และ Milestone ในอนาคตยังปรับได้ตามผลการทดลอง เมื่อเจ้าของโครงการอนุมัติและบันทึกเหตุผลไว้
 
+### H-007 — `chore/project-foundation` / ปิด TASK-002
+
+- วันที่บันทึก: 2026-11-27 | สถานะ: `MERGED`
+- หลักฐานจากเจ้าของโครงการใน TASK-003: Initial Commit `36281b8`, Initial Design Commit `7139bbc`, Project Foundation Commit `8022db1` และ Merge Commit `8bda4e8` โดย Pull Request #1 ถูก Merge เข้า `main` แล้ว
+- เจ้าของโครงการยืนยันว่า `main` ตรงกับ `origin/main` และ Working Tree ไม่มีการเปลี่ยนแปลงค้างก่อนสร้าง Branch ใหม่ ใช้หลักฐานจากเจ้าของโครงการโดยตรง
+
+### H-008 — `ci/github-actions` / TASK-003 CI Setup
+
+- วันที่: 2026-11-27 | Local Verification: ผ่าน | Remote CI: `PENDING_REMOTE_VERIFICATION`
+- งาน: เพิ่ม CI ตามข้อเสนอของเจ้าของโครงการก่อน Baseline V0.1 ตาม D-011 และข้อ 6.3
+- ไฟล์ที่สร้าง: `.github/workflows/ci.yml`, `scripts/__init__.py`, `scripts/run_tests.py`, `tests/test_foundation.py`, `tests/test_run_tests.py`
+- ไฟล์ที่แก้ไข: `AGENTS.md`, `README.md`, `DESIGN.md`
+- Local Tests: `python3 -B -m scripts.run_tests` บน Python 3.14.8 / Darwin arm64 ได้ Exit Status `0` และ `OK` รวม 9 Tests (Pass 9, Fail 0, Error 0, Skip 0) แบ่งเป็น Foundation Smoke Tests 3 และ Test Runner Regression Tests 6
+- Syntax: รันขั้นตอน `Check Python syntax` ด้วย Python Standard Library ในเครื่อง Compile สำเร็จ 6 ไฟล์ (Exit Status `0`) ตรวจไวยากรณ์ YAML ของ Workflow ด้วย Ruby Psych ได้ `Workflow YAML syntax: OK` (Exit Status `0`) ไม่เกิด Bytecode Cache ในสามไดเรกทอรีที่ตรวจ
+- การตรวจ Exit Code ด้วย Suite จำลองและ `unittest.mock`: ผ่านทั้งหมดและชุดที่มีทั้งผ่านกับ Skip คืน `0` กรณี Failure, Error, 0 Tests และ Skip ทั้งหมดคืน `1` ตามที่กำหนด
+- ข้อจำกัด: ยังไม่มีหลักฐานการรันบน GitHub-hosted Runner และยังไม่ได้สร้าง AI Algorithm, AI Behavior Tests หรือ Benchmark ไม่ได้ติดตั้ง Dependency และไม่ได้เข้าถึง Held-out Evaluation
+- งานถัดไปที่เสนอ: หลังเจ้าของโครงการยืนยันผล Remote CI ให้พิจารณา TASK-004 บน `test/v0.1-baseline` เพื่อกำหนดพฤติกรรมที่คาดหวังและชุดทดสอบ AI V0.1 ก่อนเขียนกฎ
+
+### H-009 — `ci/github-actions` / TASK-003-R1
+
+- วันที่: 2026-11-27 | สถานะก่อน Commit: `READY_FOR_COMMIT` | Remote CI: `PENDING_REMOTE_VERIFICATION`
+- เป้าหมายและเหตุผล: ตรวจ Local Verification ครั้งสุดท้ายก่อนเจ้าของโครงการดำเนินการ Git และบันทึกข้อกำหนดการอัปเดต DESIGN.md สำหรับทุก Branch ตาม D-012
+- ผล Review จาก ChatGPT ที่เจ้าของโครงการแจ้ง: รายงาน TASK-003 และ Configuration ของ `ci.yml` ผ่านตามขอบเขตที่กำหนด การ Review ดังกล่าวยังไม่ครอบคลุมการตรวจ Source Code ทุกไฟล์โดยอิสระ
+- ผลตรวจ Local ของ Codex: รัน `python3 -B -m scripts.run_tests` จาก Repository Root บน Python 3.14.8 / Darwin arm64 ได้ `Ran 9 tests`, `OK` และ Exit Status `0` (Pass 9, Failure 0, Error 0, Skip 0) ตรวจ Python Syntax ผ่าน 6 ไฟล์ และตรวจ Workflow YAML Syntax กับ Configuration ด้วย Ruby Psych ผ่าน ทั้งสามการตรวจได้ Exit Status `0` ผล Suite จำลองทั้งหกกรณีตรงกับ TASK-003 ตามตารางข้อ 6.3.1
+- ไฟล์ที่แก้ไข: `DESIGN.md` และ `AGENTS.md`
+- หลักฐาน Git สำหรับ Branch นี้: Commit, Push, PR และ Merge ยังไม่ได้รับการยืนยันจากเจ้าของโครงการ
+- งานถัดไป: เจ้าของโครงการ Commit และ Push แล้วตรวจผล GitHub Actions เพื่อยืนยันการทำงานบน Runner จริง จากนั้นพิจารณา TASK-004 Test Design & Baseline บน `test/v0.1-baseline` เพื่อกำหนดพฤติกรรมและชุดทดสอบก่อนเขียนกฎ
+
 ### แบบบันทึกผล Branch (คัดลอกเมื่อเริ่มงาน ไม่ใช่ผลจริง)
 
 ```markdown
@@ -553,17 +638,20 @@ python3 -m tests.evaluate
 - [x] จัดทำร่าง DESIGN.md และเสนอ Branch Roadmap
 - [x] เลือกชื่อ Repository `thai-anti-scam-ai` และยืนยัน Adaptive Roadmap
 - [x] เห็น Local Repository และ `main` จากภาพที่เจ้าของโครงการส่ง
-- [ ] ตรวจสถานะ Initial Commit, Remote และ Push ของเอกสารตั้งต้น
+- [x] บันทึก Initial Commit, Initial Design Commit และสถานะ `main` กับ `origin/main` ตามหลักฐานจากเจ้าของโครงการ
 - [ ] ยืนยันขอบเขต V0.1 และเกณฑ์ทดสอบก่อนเริ่ม Branch ชุดทดสอบ
 - [x] ดำเนินงาน Project Foundation บน `chore/project-foundation` ตามชื่อ Branch ที่เจ้าของโครงการแจ้ง
 - [x] เจ้าของโครงการตรวจทานไฟล์และยืนยันผล Acceptance Criteria ด้านโครงสร้างและเอกสาร
-- [ ] เจ้าของโครงการ Commit งาน Project Foundation
+- [x] เจ้าของโครงการยืนยัน Commit และ Merge งาน Project Foundation ผ่าน Pull Request #1
+- [x] ตั้งค่า CI และตรวจ Local Tests สำหรับ TASK-003
+- [x] ตรวจ Local Verification ซ้ำและอัปเดตเอกสารก่อน Commit และ Push ใน TASK-003-R1
+- [ ] ยืนยันผล Remote CI ด้วยหลักฐาน GitHub Actions หลังเจ้าของโครงการ Push
 - [ ] กำหนด Dataset และ Baseline ก่อนเขียนกฎ
 - [ ] พัฒนาและวัดผล AI ทีละ Milestone
 
-**Current Branch:** `chore/project-foundation` ตามที่เจ้าของโครงการแจ้ง  
-**Current Task:** TASK-002-R1 — สรุปผล Review ของ Project Foundation  
-**Status:** `READY_FOR_COMMIT` หลังเจ้าของโครงการตรวจทานไฟล์และยืนยันผลผ่านเกณฑ์ด้านโครงสร้างและเอกสาร  
-**Next Step:** เจ้าของโครงการ Commit งาน Project Foundation งานถัดไปที่เสนอคือ `test/v0.1-baseline`  
-**Reason:** กำหนดพฤติกรรมที่คาดหวังและชุดทดสอบ AI V0.1 ก่อนเขียนกฎ  
-**Git Status:** เจ้าของโครงการยังไม่ได้ Commit, Push หรือ Merge สำหรับ Project Foundation
+**Current Branch:** `ci/github-actions` ตามที่เจ้าของโครงการแจ้ง  
+**Current Task:** TASK-003-R1 — CI Review and Documentation Finalization  
+**Status:** `READY_FOR_COMMIT` หลัง Local Verification ผ่าน ส่วน Remote CI อยู่ในสถานะ `PENDING_REMOTE_VERIFICATION`  
+**Next Step:** เจ้าของโครงการ Commit และ Push เพื่อตรวจผล GitHub Actions แล้วพิจารณา TASK-004 Test Design & Baseline บน `test/v0.1-baseline`  
+**Reason:** ยืนยันว่า Workflow ทำงานบน GitHub Actions ก่อนกำหนดพฤติกรรมและชุดทดสอบ AI V0.1  
+**Git Status:** เจ้าของโครงการยืนยันว่า TASK-002 Merge แล้ว ส่วน Commit, Push, PR และ Merge ของ `ci/github-actions` ยังไม่ได้รับการยืนยัน
