@@ -1,6 +1,6 @@
 ![Thai Rule-based Anti-Scam AI — Research Project](docs/assets/ban.png)
 
-*ภาพแสดงแนวคิดงานวิจัย ปัจจุบัน AI Engine และ Scam Detection ยังไม่ได้ Implement*
+*ภาพแสดงแนวคิดงานวิจัย*
 
 # Thai Rule-based Anti-Scam AI
 
@@ -8,31 +8,33 @@
 
 [![CI on main](https://github.com/siwakon8285/thai-anti-scam-ai/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/siwakon8285/thai-anti-scam-ai/actions/workflows/ci.yml?query=branch%3Amain)
 
-**สถานะ** เตรียมต้นแบบ V0.1 · **Python อ้างอิง** 3.14.8 · **Runtime** Python Standard Library
+**สถานะ** Runtime Foundation V0.1 · **Python อ้างอิง** 3.14.8 · **Runtime** Python Standard Library
 
 [ความสามารถปัจจุบัน](#current-capabilities) · [สถาปัตยกรรม](#system-architecture) · [เริ่มต้นใช้งาน](#getting-started) · [ผลประเมิน](#testing-and-evaluation) · [เอกสาร](#documentation) · [แผนพัฒนา](#capability-roadmap)
 
 ## Project Overview
 
-โครงการศึกษาว่ากฎที่อธิบายและทดสอบได้ช่วยตีความข้อความภาษาไทยได้อย่างไร ขอบเขตต้นแบบ V0.1 คือการจำแนกเจตนาเบื้องต้นและตอบข้อความตาม [Behavior Specification](docs/v0.1-behavior.md) ปัจจุบันรันชุดทดสอบและประเมินตัวจำแนกอ้างอิงได้ ส่วน AI สนทนาและ Scam Detection ยังไม่ได้ Implement
+โครงการศึกษาว่ากฎที่อธิบายและทดสอบได้ช่วยตีความข้อความภาษาไทยได้อย่างไร ต้นแบบบทสนทนา V0.1 มีเป้าหมายจำแนกเจตนาเบื้องต้นและตอบข้อความตาม [Behavior Specification](docs/v0.1-behavior.md)
 
 ## Current Capabilities
 
 | ส่วนที่ใช้งานได้ | สิ่งที่ตรวจสอบได้ |
 | --- | --- |
+| Runtime Foundation | ตรวจชนิดและอักขระดิบ สร้าง Matching Text ด้วย `strip()` และ NFC และตรวจโครงสร้างผลลัพธ์สามฟิลด์ |
 | [Development Dataset v0.1](datasets/development/v0.1.json) | ข้อความสมมติภาษาไทยและกรณีข้อความว่าง รวม 32 ตัวอย่าง ครบ 8 Intent |
 | [Baseline Evaluator](scripts/evaluate_baseline.py) | ตรวจ JSON และ Schema แล้ววัด Intent Accuracy และ Confusion Matrix ของตัวจำแนก Always-UNKNOWN |
-| [Automated Tests](tests/) | ตรวจชุดข้อมูล สูตรคำนวณ Strict JSON Parsing และพฤติกรรม CLI ของ Evaluator |
+| [Automated Tests](tests/) | ตรวจ Runtime Foundation, Regression Specification, ชุดข้อมูล และ Evaluator |
 
 ## System Architecture
 
-**Planned AI Architecture — ยังไม่ได้ Implement** แผนของต้นแบบ V0.1 คืออ่านข้อความภาษาไทยและคืน Intent, คำตอบภาษาไทย และ Rule ID เมื่อมีกฎที่ทำงานจริง ตาม [Behavior Specification](docs/v0.1-behavior.md)
+เส้นทึบแสดงการเตรียมข้อความที่ใช้งานได้แล้ว เส้นประแสดงการจำแนกและเลือกคำตอบที่อยู่ในแผน ปัจจุบันสร้างและตรวจ Result ได้ด้วยข้อมูลที่ผู้เรียกระบุ
 
 ```mermaid
 flowchart LR
-    input["ข้อความภาษาไทย"] -.-> text["ตรวจและปรับข้อความ"]
+    input["ข้อความภาษาไทย"] --> text["ตรวจและปรับข้อความ"]
     text -.-> rules["จำแนกเจตนาและเลือกกฎ"]
-    rules -.-> output["Intent · Response · Rule ID"]
+    rules -.-> response["เลือกคำตอบ"]
+    response -.-> output["ตรวจ Result"]
 ```
 
 ## Evaluation Architecture
@@ -61,9 +63,20 @@ python3 -B -m scripts.evaluate_baseline
 
 Evaluator แสดง JSON ทาง Terminal หากต้องการเก็บผลแยก ให้ใช้ `python3 -B -m scripts.evaluate_baseline --output reports/baseline-local.json`
 
+เรียก Runtime Foundation จาก Python ได้โดยตรง
+
+```python
+from thai_ai.normalization import normalize_text
+
+text = normalize_text("  สวัสดีครับ  ")
+assert text.raw_text == "  สวัสดีครับ  "
+assert text.matching_text == "สวัสดีครับ"
+assert text.kind == "content"
+```
+
 ## Testing and Evaluation
 
-Test Runner ใช้ `unittest` ส่วน [GitHub Actions](.github/workflows/ci.yml) ตรวจ Python Syntax และรันชุดทดสอบเดียวกัน Badge ด้านบนแสดงสถานะ CI ของ `main`
+Test Runner ใช้ `unittest` ส่วน [GitHub Actions](.github/workflows/ci.yml) ตรวจ Python Syntax และรันชุดทดสอบเดียวกัน Badge ด้านบนแสดงสถานะ CI ของ `main` ดูผล Behavioral Tests และกรณีที่รอ Engine ใน [DESIGN.md](DESIGN.md#h-031--featv01-runtime-foundation--task-006)
 
 | ผล Reference Baseline v0.1 | ค่า |
 | --- | --- |
@@ -99,6 +112,9 @@ thai-anti-scam-ai/
 │   └── run_tests.py
 ├── tests/
 ├── thai_ai/
+│   ├── normalization.py
+│   ├── result.py
+│   └── validation.py
 └── DESIGN.md
 ```
 
@@ -116,7 +132,7 @@ thai-anti-scam-ai/
 
 | ขอบเขต | ความสามารถ |
 | --- | --- |
-| ปัจจุบัน | ชุดทดสอบและการประเมิน Reference Baseline |
+| ปัจจุบัน | Runtime Foundation, ชุดทดสอบ และการประเมิน Reference Baseline |
 | แผนต้นแบบ V0.1 | จำแนกเจตนาและตอบข้อความภาษาไทยตามข้อกำหนด |
 | ระยะถัดไปตามผลทดลอง | เพิ่มความครอบคลุมของภาษาไทย ศึกษาบริบทและ Session Memory แล้วพัฒนาการประเมินความเสี่ยงและการทดสอบอิสระ |
 
@@ -124,6 +140,6 @@ thai-anti-scam-ai/
 
 ## Limitations and Ethical Considerations
 
-- AI สนทนาและ Scam Detection ยังไม่ได้ Implement ผล Baseline จึงใช้ตัดสินความปลอดภัยของข้อความจริงไม่ได้
+- การจำแนกเจตนา การเลือกคำตอบ และ Scam Detection ยังอยู่ในแผน ผล Reference Baseline ใช้เทียบระหว่างพัฒนา
 - ใช้ข้อมูลสมมติหรือข้อมูลที่ได้รับอนุญาตและตัดข้อมูลระบุตัวตน ชุด Held-out สำหรับการประเมินอิสระในอนาคตต้องแยกจากข้อมูลที่ใช้ปรับกฎ
 - หากพัฒนาการประเมินความเสี่ยงในอนาคต ผลต้องอธิบายหลักฐานและข้อจำกัด หลีกเลี่ยงการกล่าวหาบุคคลหรือรับรองความปลอดภัยจากการไม่พบสัญญาณ

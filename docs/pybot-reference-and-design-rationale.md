@@ -36,11 +36,11 @@ Runtime เรียก `observe()` เพื่ออ่านและอั�
 
 ตารางนี้แยกแนวทางที่เลือกแล้วออกจากข้อเสนอในอนาคต การมีข้อกำหนดหรือแผนยังไม่เท่ากับมี Runtime ที่ใช้งานได้จริง
 
-| แนวคิดจากการศึกษา PyBot | การปรับใช้กับโครงการเรา | สถานะ ณ TASK-005 |
+| แนวคิดจากการศึกษา PyBot | การปรับใช้กับโครงการเรา | สถานะ ณ TASK-006 |
 | --- | --- | --- |
-| Standard Library | ใช้ Python Standard Library กับเครื่องมือประเมินและชุดทดสอบ เป็นแนวทางที่สอดคล้องกับ PyBot | ใช้แล้วใน Tooling |
-| Modular Architecture | แยก Engine, CLI, การประมวลผลภาษา และการประเมิน เพื่อควบคุมผลกระทบของการแก้ไข | แยก Tooling แล้ว; Engine ยังเป็นแผน |
-| Understanding / Text Representations | PyBot มี Raw, Clean, Plain และ Normalized Text ส่วน V0.1 เสนอให้ตรวจ Input ก่อนสร้าง Matching View และเก็บ Raw Text ชั่วคราวระหว่างประมวลผล | Proposed · ยังไม่มี Runtime |
+| Standard Library | ใช้ Python Standard Library กับเครื่องมือประเมิน ชุดทดสอบ และ Runtime Foundation | Implemented |
+| Modular Architecture | แยก Engine, CLI, การประมวลผลภาษา และการประเมิน เพื่อควบคุมผลกระทบของการแก้ไข | แยก Runtime Foundation และ Tooling แล้ว |
+| Understanding / Text Representations | PyBot มี Raw, Clean, Plain และ Normalized Text ส่วน V0.1 ตรวจ Input ก่อนสร้าง Matching View และเก็บ Raw Text ชั่วคราวระหว่างประมวลผล | Implemented ใน Validation และ Normalization |
 | Intent Recognition | กำหนดเจตนาภาษาไทย 8 ประเภทก่อนเขียนกฎ | มี Specification และ Dataset; ยังไม่มีตัวจำแนก |
 | Pattern Matching | ทดสอบคู่ข้อความที่มีคำร่วมแต่เจตนาต่างกัน เช่น ทักโดยตรงกับยกคำทักมาพูด และคำขอทั่วไปกับคำขอเฉพาะนอกขอบเขต | Proposed |
 | Priority / Candidate Selection / Arbiter | ทดลอง precedence ที่ประกาศชัด แยกกฎเสมอกันใน Intent เดียวจากความกำกวมข้าม Intent และตรวจว่าการสลับลำดับกฎให้ผลตามนโยบาย | Proposed · การเลือกใช้หลักฐานจากข้อความเดียว |
@@ -48,16 +48,16 @@ Runtime เรียก `observe()` เพื่ออ่านและอั�
 | Information Extraction / Context | สกัด Slot และแก้คำอ้างอิงเฉพาะเมื่อมีหลักฐานและจำเป็นต่อขอบเขต | งานในอนาคต นอก V0.1 |
 | Session Memory / Multi-turn | พิจารณา State แยกต่อ Session, Recall และ Reset โดยไม่เก็บข้อมูลเกินจำเป็น | งานในอนาคต นอก V0.1 |
 | Structured Knowledge | พิจารณาฐานความรู้ที่มีแหล่งอ้างอิง เงื่อนไขและขอบเขตชัดเจน | งานในอนาคต |
-| Explainability / Safety | เสนอ `rule_id` และเหตุผลจากหลักฐาน แยก Intent ออกจากระดับความเสี่ยง | ข้อเสนอ; ยังไม่มี Scam Engine |
-| Regression Testing / Evaluation | ใช้ `unittest`, Test-first และผลประเมินที่ทำซ้ำได้ แนวทางทดสอบสอดคล้องกับ PyBot แต่ใช้ Metrics ของเราเอง | ใช้แล้วใน Tooling; Behavior Tests รอ Engine |
+| Explainability / Safety | เสนอ `rule_id` และเหตุผลจากหลักฐาน แยก Intent ออกจากระดับความเสี่ยง | Result ตรวจรูปแบบ `rule_id` ได้ การตรวจผู้ชนะรอ Resolver |
+| Regression Testing / Evaluation | ใช้ `unittest`, Test-first และผลประเมินที่ทำซ้ำได้ แนวทางทดสอบสอดคล้องกับ PyBot แต่ใช้ Metrics ของเราเอง | Implemented ใน Tooling และ Behavioral Tests ของ Runtime Foundation |
 
-การทดลอง TASK-005 บน Python 3.14.8 / UCD 16.0.0 พบ whitespace 29 code points ขณะที่ `strip()` คง BOM และ zero-width ที่ตรวจไว้ และ NFKC เปลี่ยนรูปสระอำในตัวอย่างที่ NFC คงไว้ การเลือก Normalization ยังต้องเทียบผลด้านความหมายและการจับคู่ Input Validation, Response Rubric และ Requirement Coverage เป็นแนวทางวิศวกรรมของโครงการ [ผลทดลองและ Decision Matrix](v0.1-behavioral-contract-analysis.md)
+การทดลอง TASK-005 บน Python 3.14.8 / UCD 16.0.0 พบ whitespace 29 code points ขณะที่ `strip()` คง BOM และ zero-width ที่ตรวจไว้ และ NFKC เปลี่ยนรูปสระอำในตัวอย่างที่ NFC คงไว้ V0.1 ใช้ `strip()` และ NFC หลัง Input Validation ตาม Contract [ผลทดลองและ Decision Matrix](v0.1-behavioral-contract-analysis.md)
 
 ## 3. สถาปัตยกรรมของเรา
 
 TASK-005-R2 อ้าง **Observed** Pattern Matching, Candidate Collection และ Arbiter ของ PyBot ส่วน **Adopted** คือหลักการแยก Engine จาก CLI และ Tooling สำหรับ V0.1 ข้อเสนอ **Proposed** คือกรอง guard ก่อนจัด Priority และ Specificity ภายใน Intent แล้วเลือก Template เฉพาะผลชนะหรือใช้ Fallback ตามสาเหตุ โดยอาศัยหลักฐานจากข้อความเดียว สถานะ **Implemented** อยู่ในรายการด้านล่าง [Rule Architecture V0.1](v0.1-rule-architecture.md)
 
-**Implemented ณ TASK-005** Project Foundation, Test Runner, Automated Tests, Behavior Specification, Development Dataset, Strict JSON Parser, Baseline Evaluator และ GitHub Actions Configuration [Evaluation Architecture](../README.md#evaluation-architecture)
+**Implemented ณ TASK-006** Runtime Foundation พร้อมชุดทดสอบแต่ละส่วน และ Evaluation Tooling [System Architecture](../README.md#system-architecture) · [Evaluation Architecture](../README.md#evaluation-architecture)
 
 ```mermaid
 flowchart LR
@@ -68,14 +68,14 @@ flowchart LR
     E --> F[JSON Report]
 ```
 
-**สถาปัตยกรรมที่เสนอสำหรับ AI ในอนาคต — ยังไม่ได้ Implement:**
+**สถาปัตยกรรมบทสนทนา V0.1** เส้นทึบแสดงขั้นเตรียมข้อความที่ใช้งานได้ เส้นประแสดงขั้นที่อยู่ในแผน
 
 ```mermaid
 flowchart LR
     A[Input] --> B[Validation / Normalization]
-    B --> C[Intent Recognition]
-    C --> D[Rule Selection]
-    D --> E[Response]
+    B -.-> C[Intent Recognition]
+    C -.-> D[Rule Selection]
+    D -.-> E[Response]
 ```
 
 V0.1 มุ่งที่การสนทนาภาษาไทยแบบ Single-turn และผลลัพธ์ `intent`, `response`, `rule_id` ตาม [Behavior Specification](v0.1-behavior.md) ส่วน Slot Extraction, Session Memory และ Multi-turn จะพิจารณาภายหลัง
@@ -90,13 +90,13 @@ V0.1 มุ่งที่การสนทนาภาษาไทยแบบ
 - General-purpose Knowledge: โครงการเน้นภาษาไทยและงาน Anti-Scam ไม่ใช่การตอบความรู้ทั่วไปทุกด้าน
 - SmolTalkBench และ LLM Judge เป็นตัวชี้วัดหลัก: วัดคุณภาพบทสนทนาภาษาอังกฤษคนละโจทย์กับการจำแนกเจตนาและประเมินความเสี่ยงภาษาไทย
 
-การประมวลผลภาษาไทยต้องศึกษา Unicode, Word Segmentation, ภาษาพูด, คำปฏิเสธ, ข้อความผสมภาษา, URL และตัวเลข โดยรักษาข้อความต้นฉบับไว้ระหว่างประมวลผล และเลือกวิธี Normalization หลังเปรียบเทียบผลการทดลอง
+การประมวลผลภาษาไทยต้องศึกษา Unicode, Word Segmentation, ภาษาพูด, คำปฏิเสธ, ข้อความผสมภาษา, URL และตัวเลข โดยรักษาข้อความต้นฉบับไว้ระหว่างประมวลผล
 
 ## 5. การทดสอบและประเมินผล
 
 | ประเด็น | PyBot | โครงการเรา |
 | --- | --- | --- |
-| Automated Tests | พบ 12 CLI Test Methods ใน Snapshot ที่ศึกษา รวม Multi-turn และ Reset (นับจากซอร์ส ไม่ได้รัน) | ใช้ `unittest` และ GitHub Actions ตรวจ Tooling; จะเพิ่ม Behavioral Regression เมื่อมี Engine |
+| Automated Tests | พบ 12 CLI Test Methods ใน Snapshot ที่ศึกษา รวม Multi-turn และ Reset (นับจากซอร์ส ไม่ได้รัน) | ใช้ `unittest` ตรวจ Tooling และพฤติกรรม Runtime Foundation |
 | Evaluation | ผู้เผยแพร่รายงาน SmolTalkBench Win Rate ประมาณ 26% โดยใช้ LLM Judge | ใช้ Intent Accuracy, Per-intent Metrics และ Confusion Matrix จาก Label ที่กำหนดไว้ |
 | Anti-Scam | ไม่ใช้ผล SmolTalkBench เป็นหลักฐานความสามารถด้านนี้ | เสนอ Precision, Recall, F1, False Positive Rate, False Negative Rate และผลรายหมวด |
 
@@ -108,7 +108,7 @@ Development Dataset v0.1 มี 32 ตัวอย่าง ผล Always-UNKNOW
 
 การศึกษานี้อ้างอิง Public Snapshot `7d63c7fbebb44c7e466e5c8b5c1f341ab767929e` ร่วมกับผล TASK-001 ใน [DESIGN.md](../DESIGN.md) ซึ่งยังไม่มีรายงาน TASK-001 ฉบับเต็มใน Repository ค่า `SOURCE_COMMIT` ที่ CLI ระบุ (`24cbc0439e07fd015c0747ab3be6e782a42b5c5b`) ยังตรวจยืนยันจาก Public Repository ไม่ได้
 
-หลักฐานฝั่ง PyBot มาจาก Static Source Analysis งานศึกษายังไม่มีผลการรัน PyBot, CLI Tests หรือการทำซ้ำ Benchmark ของผู้เผยแพร่ สถานะของโครงการอ้างอิง ณ TASK-005 [README.md](../README.md)
+หลักฐานฝั่ง PyBot มาจาก Static Source Analysis งานศึกษายังไม่มีผลการรัน PyBot, CLI Tests หรือการทำซ้ำ Benchmark ของผู้เผยแพร่ สถานะของโครงการอ้างอิง ณ TASK-006 [README.md](../README.md)
 
 PyBot ใช้ Apache License 2.0 ตาม Snapshot ที่ศึกษา การอ้างแนวคิดไม่ใช่การนำ Source Code มาใช้ หากจะนำโค้ดมาใช้ภายหลัง ต้องตรวจ License, Attribution, Copyright Notices และ NOTICE ที่เกี่ยวข้องก่อน โดย License ของ PyBot ไม่ได้กำหนด License ของโครงการนี้โดยอัตโนมัติ
 

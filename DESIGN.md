@@ -2,7 +2,7 @@
 
 > เอกสารกลางสำหรับการออกแบบ แผนพัฒนา และประวัติการทดลองของโครงการจบ  
 > ฉบับเอกสาร: 0.2 (ปรับสถานะ Repository และ Adaptive Roadmap) | วันที่: 27 พฤศจิกายน 2569 (2026-11-27)  
-> สถานะ AI: มีข้อกำหนด V0.1 และรายงาน Reference Baseline บน Development Dataset แล้ว ยังไม่มี AI Engine หรือผลประเมิน AI แบบอิสระ  
+> สถานะ AI: Runtime Foundation V0.1 ผ่าน Local Quality Review การจำแนกเจตนาและการประเมิน AI แบบอิสระยังอยู่ในแผน  
 > Repository: `thai-anti-scam-ai` (ชื่อที่เจ้าของโครงการเลือก); ชื่อทางการของงานวิจัยยังไม่สรุป
 
 ## 1. วัตถุประสงค์และขอบเขต
@@ -308,8 +308,9 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 | 03d | `design/v0.1-behavioral-contract` | Regression Engineering & Behavioral Contract Validation (TASK-005-R3) | REGRESSION_SPEC_COMPLETE_PENDING_REVIEW |
 | 03e | `design/v0.1-behavioral-contract` | Final Contract & Quality Review (TASK-005-R4) | NEEDS_REVISION |
 | 03f | `design/v0.1-behavioral-contract` | Regression Validator Reliability & Contract Finalization (TASK-005-R5) | REVIEW_COMPLETE_PENDING_OWNER_APPROVAL |
-| 03g | `design/v0.1-behavioral-contract` | Contract Approval & Finalization (TASK-005-R6) | READY_FOR_COMMIT |
-| 04 | `feat/v0.1-basic-chatbot` | AI Prototype V0.1 (แผน TASK-006) | PLANNED · รอคำสั่งเริ่มงาน |
+| 03g | `design/v0.1-behavioral-contract` | Contract Approval & Finalization (TASK-005-R6) | MERGED · PR #5 · หลักฐานใน H-030 |
+| 04a | `feat/v0.1-runtime-foundation` | AI Runtime Foundation (TASK-006 และ R1) | READY_FOR_COMMIT · ผลตรวจใน H-032 |
+| 04 | `feat/v0.1-basic-chatbot` | AI Prototype V0.1 ตามแผนเดิม | PLANNED · รออนุมัติขอบเขตงานต่อ |
 | 05 | `feat/v0.2-intent-variants` | V0.2 | PLANNED |
 | 06 | `feat/v0.3-informal-thai` | V0.3 | PLANNED |
 | 07 | `feat/v0.4-negation-ambiguity` | V0.4 | PLANNED |
@@ -371,7 +372,7 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 
 เดิมเสนอให้ใช้ TASK-005 สำหรับ Prototype ต่อมาแยกงานออกแบบและตรวจ Contract ไว้ใน TASK-005 ถึง R6 ก่อนวางแผน Prototype ใน TASK-006
 
-แผน TASK-006 ใช้ Regression Specification ที่ตรึงใน R6 เขียน Behavioral Tests และบันทึก RED ก่อนพัฒนา Input Validation, Normalization และ Result Contract จากนั้นเพิ่ม Matching, Guards, Resolver และ Response ตาม Dependency ทดสอบ Mandatory IDs ที่รันจริงและวัดผล Engine แยกจากผล Specification งานยังอยู่ในแผน [Test Integration Plan](docs/v0.1-regression-spec.md#test-integration-plan)
+เจ้าของโครงการกำหนด TASK-006 ให้ทำ Input Validation, Normalization และ Result Contract บน `feat/v0.1-runtime-foundation` ตาม D-041 ผลอยู่ใน H-031 งาน Prototype ที่เหลือใช้แผนทดสอบตามลำดับ Dependency [Test Integration Plan](docs/v0.1-regression-spec.md#test-integration-plan)
 
 **เป้าหมาย:** สร้าง Rule-based Chatbot ภาษาไทยตัวแรกที่รันจริง
 
@@ -563,6 +564,7 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 | D-038 | 2026-11-28 | เสนอแก้การตรวจ oracle ขัดกันข้ามหมวดก่อนตรึง Regression | Proposed · กำหนดความเท่ากันตามจุดเรียกและ Configuration เดียวกัน รอเจ้าของทบทวนโดยคง Expected Outcome เดิม |
 | D-039 | 2026-11-28 | ใช้จุดเรียกและ Raw Typed Fixture ตรวจความขัดแย้ง และตรวจผลคาดหวังเทียบ Contract | Implemented เฉพาะ validator · ตรวจผู้ชนะและ path จาก Fixture โดยคงผลคาดหวังเดิม ส่วน Pending, S15, Template และ Result Contract รอ Owner Approval |
 | D-040 | 2026-11-28 | เจ้าของอนุมัติผล Intent สี่กรณี, ZWSP เดี่ยว S15, Template และ Result Contract V0.1 | อนุมัติใน R6 · คง Raw ตาม Input Policy เดิม ใช้ frozen dataclass พร้อม Runtime Validation และอนุมัติขอบเขตการทดลองชั่วคราว 32,768 raw code points กับ 2 วินาทีต่อ child process |
+| D-041 | 2026-11-28 | เจ้าของโครงการกำหนด TASK-006 บน `feat/v0.1-runtime-foundation` | ใช้ Behavioral Contract R6 ทำสามส่วนพื้นฐานและพิสูจน์แต่ละส่วนก่อนเริ่มกฎ, Resolver, Response Selection หรือ CLI |
 
 ## 11. Development History (บันทึกเพิ่มตามงานจริง)
 
@@ -857,6 +859,46 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 - Negative probes จาก R4 ถูกปฏิเสธ 12/12 และ R5 เพิ่มเติม 8/8 Syntax ตาม CI ผ่าน 13 ไฟล์ และตรวจ UTF-8 กับ Relative Links 85 รายการผ่าน Baseline 4/32 (12.5%) ตรงรายงานเดิมทุกไบต์ Exit `0` SHA-256 ของ Development Dataset, Baseline Report และ R1 Report คงเดิม Validator ตรวจ Specification ส่วน Behavioral Tests รอ TASK-006
 - Remote CI `PENDING_REMOTE_VERIFICATION` งานถัดไปคือเจ้าของโครงการตรวจทานการปิด Design Branch และสั่งเริ่ม TASK-006 เพื่อบันทึก Behavioral RED จากชุดที่อนุมัติก่อนเขียน Engine
 
+### H-030 — `design/v0.1-behavioral-contract` / ปิด TASK-005
+
+- เจ้าของโครงการยืนยัน PR #5 Merge เข้า `main` ด้วย Merge Commit แบบย่อ `a8eb239` และแจ้งว่าภาพ GitHub แสดงเครื่องหมายตรวจสอบสีเขียว หลักฐาน Remote อยู่ที่ระดับเครื่องหมายสถานะ Full SHA, Workflow Run ID และจำนวน Remote Tests ยังไม่มีหลักฐาน ผล Local ก่อนปิด Branch อยู่ใน H-029
+
+### H-031 — `feat/v0.1-runtime-foundation` / TASK-006
+
+- สถานะในเครื่อง `IMPLEMENTATION_COMPLETE_PENDING_REVIEW` บน CPython 3.14.8 / macOS 27.2.1 / Apple M4 arm64 · Remote CI `PENDING_REMOTE_VERIFICATION` · Merge รอหลักฐานจากเจ้าของโครงการ
+- `validate_input(text)` ตรวจ built-in str และสแกน Raw ซ้ายไปขวา Error ระบุเหตุผลและ offset แบบเริ่มที่ 0 โดยไม่สะท้อนข้อความเต็ม `normalize_text(text)` เรียก Validation ก่อนคืน `raw_text`, `matching_text` และ `kind` (`empty`, `format_only`, `content`) ค่า Raw อยู่ในหน่วยความจำของผู้เรียกและซ่อนจาก repr อัตโนมัติ ใช้ UCD 16.0.0 สำหรับ Bidi_Control และ Variation_Selector ตามข้อมูลเดิม การแยก Raw/Matching และขั้นประมวลผลนำหลักการจากการศึกษา PyBot มาปรับใช้
+- `Result(intent, response, rule_id)` เป็น frozen dataclass ที่ตรวจ built-in str, Taxonomy, response หลัง trim, Unicode scalar values และรูปแบบ ASCII `[a-z0-9][a-z0-9.-]*` คืน `RuntimeError` เมื่อผลผิด Contract ค่า `None` เป็นข้อบังคับสำหรับ EMPTY_INPUT เป็นตัวเลือกสำหรับ UNKNOWN และ Intent อื่นต้องมีรหัส Adapter ใช้ `dataclasses.asdict()` กับ `json.dumps()` เพื่อคงทั้งสามฟิลด์และ JSON null การยืนยันกฎที่ชนะ เส้นทาง UNKNOWN และ Rubric ต้องมี Engine/Resolver/Response Selection
+
+| รอบ | คำสั่งเฉพาะส่วน `python3 -B -m unittest -v <module>` | RED (Exit 1, Error 0, Skip 0) | GREEN (Exit 0) | Local Suite หลังรอบ (Exit 0) |
+| --- | --- | --- | --- | --- |
+| Validation | `tests.test_validation` | 3 methods, 39 subtest failures เพราะไม่ปฏิเสธ Input ผิด Contract | 3/3 | 57/57 |
+| Normalization | `tests.test_normalization` | 6 methods, 51 failures รวม subtests เพราะคงข้อความดิบและจำแนกทุกข้อความเป็น content | 6/6 | 63/63 |
+| Result | `tests.test_result` | 5 methods, 39 failures รวม subtests เพราะรับผลผิด Contract และแก้ field ได้ | 5/5 | 68/68 |
+
+| สถานะ Regression v0.1 | จำนวน | Case IDs และสิ่งที่ตรวจ |
+| --- | ---: | --- |
+| Executed and Passed · ครบ | 56 | `IN-01`–`IN-35`, `IN-SUBCLASS-PRECEDENCE` ตรวจ type/reason/offset ตามที่ระบุ (BC-IN-01–03, BC-ERR-01) · `NORM-01`–`NORM-17` ตรวจค่า Raw และ idempotence (BC-IN-02–03) · `WIRE-EMPTY`, `WIRE-UNKNOWN-NO-MATCH`, `WIRE-UNKNOWN-EXPLICIT` ตรวจ field และ JSON round-trip (BC-OUT-01) |
+| Executed and Passed · บางส่วน | 19 | `DEV-029`–`DEV-032`, `INT-06`, `INT-07`, `INT-09`–`INT-11`, `INT-CR-ONLY`, `INT-ZWSP-ONLY` ตรวจเส้นทาง empty/format-only · `DEV-001` และ `INT-08` ตรวจ Matching Text เท่ากัน · `INT-12`, `INT-13`, `OPEN-BOM-PREFIX`, `OPEN-ZWSP-IN-WORD`, `OPEN-COMBINING-ONLY` ตรวจเส้นทาง content และคงข้อความ (BC-IN-02–03) · `ERR-OUTPUT` ตรวจ RuntimeError จาก Result โดยตรง (BC-OUT-01, BC-ERR-01) ทุกกรณียังรอผลระดับ Engine |
+| Executed and Failed · Final | 0 | ผล RED ของแต่ละรอบอยู่ในตารางด้านบน |
+| Not Yet Applicable — awaiting component | 71 | Intent 39 (`DEV-002`–`DEV-028`, `INT-01`–`INT-05`, `INT-14`–`INT-19`, `OPEN-MIXED-REQUEST`) รอ Matching/Guards/Response · Resolver 18 (`RES-01`–`RES-13`, `ERR-MATCHING`, `ERR-GUARD`, `ERR-SELECTION`, `ERR-RESPONSE`, `ERR-CONFIG`) รอ Resolver และ Engine Integration · Response Review 14 (`REVIEW-*`, `REJECT-*`) รอตรวจการเลือกและความหมายของคำตอบจาก Engine |
+| Pending Decision | 2 | `OPEN-LENGTH-LIMIT`, `OPEN-REGEX-BUDGET` |
+
+- `python3 -B -m scripts.run_tests` ก่อนงาน 54/54 หลังงาน 68/68 (Specification Tests 24/24, ใหม่ 14 methods, Failure 0, Error 0, Skip 0, Exit `0`) Baseline ก่อนและหลัง `python3 -B -m scripts.evaluate_baseline` Exit `0`, Always-UNKNOWN 4/32 (12.5%), stdout ตรงรายงานเดิมทุกไบต์ SHA-256 ของ Regression Spec ตรง H-029, Development และ Baseline Report ตรง H-021, R1 Report ตรงก่อนเริ่มงาน (`372f52e8753342e3fdb6a9d880ac4a8f1d184aa84cab5e40d0af02cc68ba39cd`) และ `python3 -B -m scripts.experiments.text_processing --behavior-only` Exit `0` โดย EXP-001–003 และ hash ของ script/fixture ตรงรายงาน ตรวจ Python Syntax ตาม CI ผ่าน 20 ไฟล์
+- ทดลองด้วย `python3 -B -` และ `subprocess.run(timeout=2)` ขนาด 128, 512, 2,048, 8,192 และ 32,768 raw code points แยก child จับเวลาด้วย `perf_counter` และวัด peak ด้วย `tracemalloc` หลังสร้าง Input ใช้ข้อความไทยซ้ำ, format-only (ZWSP/space/U+180F/U+FE0F), `Cafe\u0301` ซ้ำ และ U+0315 ครึ่งหนึ่งตามด้วย U+0300 ครึ่งหนึ่ง ตรวจ Raw, ประเภท, ส่วนท้ายหรือผลจัดลำดับตรงที่คาด Child ผ่าน 40/40, Exit `0` ที่ 32,768 ตัว วัดได้ 2.041–4.187 ms และ peak 535–196,706 bytes ตามรูปข้อความ เป็นผลตัวอย่างราย child ไม่ครอบคลุมทุก Unicode input และไม่ใช่ process RAM Validation และการจำแนกรูปข้อความสแกนตามความยาว ใช้หน่วยความจำเสริมนอกเหนือจากข้อความคงที่ ส่วนการตัดขอบและ NFC อาจจัดสรรข้อความใหม่ เพดาน Input และ Regex Budget สำหรับ Production ยัง Pending
+- ตรวจเอกสารแบบ Static ด้วย `python3 -B -` Exit `0` ผ่าน UTF-8, Markdown fences และ Relative Links 86 จุดใน 9 ไฟล์ รันตัวอย่าง Python จาก README ผ่าน และ SHA-256 ของช่วง D-001–D-040 กับ H-001–H-029 ตรงก่อนแก้ สคริปต์ชั่วคราวสำหรับแสดง Case IDs และสรุปตัวเลข Baseline เคยได้ `KeyError` จากชื่อฟิลด์ที่ใช้ในสคริปต์ ตรวจซ้ำด้วยชื่อใน Schema แล้วผ่านโดยใช้ไฟล์เดิม
+- เพิ่ม `thai_ai/{validation,normalization,result}.py`, `tests/runtime_fixtures.py`, `tests/test_{validation,normalization,result}.py` อัปเดต README, PyBot Reference และ DESIGN.md งานถัดไปให้เจ้าของโครงการตรวจ TASK-006 แล้วพิจารณา Rule Matching และ Context Guards แบบ Test-first เพื่อสร้าง Candidate ที่ตรวจย้อนกลับได้ก่อนเริ่ม Resolver
+
+### H-032 — `feat/v0.1-runtime-foundation` / TASK-006-R1
+
+- Local Quality Gate `READY_FOR_COMMIT` · Remote CI `PENDING_REMOTE_VERIFICATION` · Merge รอหลักฐานจากเจ้าของโครงการ
+- **MEDIUM · แก้แล้ว** เทสต์เดิมใช้ substring ตรวจเหตุผล จึงยอมรับข้อความที่ระบุเหตุผลหลักผิดแต่มีคำที่ถูกต้องอยู่ภายใน อีกจุดคือกรณีตรวจ Validation ก่อนประมวลผลไม่มี prefix ที่ NFC ทำให้ตำแหน่งเปลี่ยน เพิ่ม assertion ให้เหตุผลตรงที่ต้นข้อความใน `tests/test_validation.py` และตรวจ offset 6 ของ surrogate หลัง `Cafe\u0301` ซึ่งมี Bidi_Control ตามหลังใน `tests/test_normalization.py`
+- ทดสอบจำลองด้วย `python3 -B -` และ `unittest.mock.patch` บน 14 methods ชุดเดิมผ่านทั้งตัวจำลอง NFC ก่อน Validation และตัวจำลองที่รายงานเหตุผล Bidi ผิด หลังแก้เทสต์ ทั้งสองได้ RED ตามลำดับ 1 failure และ 13 subtest failures (Exit `1`, Error 0, Skip 0) ตัวจำลองรับ str subclass และข้าม Result Validation ถูกจับได้ตั้งแต่ชุดเดิม `python3 -B -m unittest -v tests.test_validation tests.test_normalization tests.test_result` ได้ GREEN 14/14 (Exit `0`) กับ Runtime จริง โค้ด Runtime ตรง Contract ในขอบเขตที่ตรวจ จึงแก้เฉพาะสองไฟล์ทดสอบและ DESIGN.md
+- Probes ผ่านด้วย `python3 -B -` ใน child `-B -S` ที่ deadline 2 วินาที (Exit `0`) ตรวจ Cc ครบ 65 ตัว (รับ 3), Bidi_Control 12 ตัว, surrogate 2,048 ตัว, ลำดับข้อผิดพลาด 6 คู่ และ RTL ปกติ ตรวจ UCD 16.0.0 สำหรับ Cf ที่อนุญาต 158 ตัวกับ Variation_Selector 260 ตัว และข้อความ 32,768 code points ทั้งกรณีคงข้อความครบและกรณีปฏิเสธอักขระผิดตัวสุดท้าย Result ผ่าน 9 โครงสร้างและ JSON round-trips ปฏิเสธ 8 โครงสร้างผิดและการแก้หรือลบฟิลด์ปกติ 6 ครั้ง
+- ตรวจ Type Hints, Public Interfaces และทิศทาง dependency แล้ว Runtime ใช้ Standard Library และ Validation ภายในแพ็กเกจ มีค่าคงที่แบบ immutable และไม่พบ I/O หรือการทำงานภายนอกระหว่าง import ชุด Behavioral Tests อ่าน Expected Outcomes โดยตรงจาก JSON ผ่านตัวอ่าน strict และสร้าง typed fixtures ตามชนิดจริง ไม่เรียก Regression Validator เป็น oracle
+- ยืนยัน Case IDs จาก subtests ที่ผ่าน **56 ครบ** (Validation 36 ตรวจ type/reason/offset ตามที่ระบุ, Normalization 17 ตรวจ matching/raw/idempotence, Wire 3 ตรวจทุกฟิลด์และ round-trip), **19 บางส่วน** (Input path หรือ Matching Text 18 และ `ERR-OUTPUT` 1), **71 รอ Component** (Intent 39, Resolver/Engine 18, Response Review 14) และ **2 Pending** ตรงตาราง H-031
+- `python3 -B -m scripts.run_tests` ก่อนและหลังผ่าน 68/68 (Exit `0`, Failure 0, Error 0, Skip 0) ตรวจ Syntax ตาม CI ผ่าน 20 ไฟล์และ Relative Links 86 จุด `python3 -B -m scripts.evaluate_baseline` Exit `0`, Always-UNKNOWN 4/32 (12.5%) และ stdout ตรงรายงานทุกไบต์ SHA-256 ของ Regression Spec, Development Dataset, Baseline Report และ R1 Report ตรง H-029/H-031 ผล EXP-001–003 และ hash ของ script/fixture ตรงรายงานเมื่อรัน `--behavior-only` (Exit `0`)
+- Result ตรวจโครงสร้างและรูปแบบรหัสได้ การยืนยันผู้ชนะ เส้นทาง UNKNOWN และความหมายของคำตอบยังต้องตรวจร่วมกับ Engine ส่วน `OPEN-LENGTH-LIMIT` และ `OPEN-REGEX-BUDGET` ยัง Pending งานถัดไปให้เจ้าของโครงการตรวจและดำเนินการ Commit/Push เพื่อเก็บหลักฐาน Remote CI แล้วจึงพิจารณา Rule Matching และ Context Guards เพื่อรองรับ Candidate ที่ตรวจย้อนกลับได้
+
 ### แบบบันทึกผล Branch (คัดลอกเมื่อเริ่มงาน ไม่ใช่ผลจริง)
 
 ```markdown
@@ -925,11 +967,14 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 - [x] ตรวจ Final Contract และบันทึกข้อค้นพบใน TASK-005-R4
 - [x] แก้ validator และตรวจหลักฐานตามขอบเขต TASK-005-R5
 - [x] บันทึก Contract และผลตรวจหลังเจ้าของโครงการอนุมัติใน TASK-005-R6
+- [x] เจ้าของโครงการยืนยัน PR #5 Merge เข้า `main`
+- [x] พัฒนา Runtime Foundation และรัน Behavioral Tests ใน TASK-006
+- [x] ตรวจ Local Quality Gate ของ Runtime Foundation ใน TASK-006-R1
 - [ ] พัฒนาและวัดผล AI ทีละ Milestone
 
-**Current Branch** `design/v0.1-behavioral-contract` ตามที่เจ้าของโครงการแจ้ง  
-**Current Task** TASK-005-R6 — Contract Approval & Finalization  
-**Status** `READY_FOR_COMMIT` · Local Tests ผ่าน 54/54 · Remote CI `PENDING_REMOTE_VERIFICATION`  
-**Next Step** เจ้าของโครงการตรวจทานการปิด Design Branch ก่อนสั่งเริ่ม TASK-006  
-**Reason** ใช้ Contract ที่ตรึงแล้วเก็บ Behavioral RED ก่อนพัฒนา Engine  
-**Git Status** เจ้าของโครงการยืนยัน PR #4 Merge เข้า `main` ด้วย `164e9a3` ส่วน Commit, Push, PR และ Merge ของ TASK-005 ยังไม่มีข้อมูลยืนยัน
+**Current Branch** `feat/v0.1-runtime-foundation` ตามที่เจ้าของโครงการแจ้ง  
+**Current Task** TASK-006-R1 — Runtime Foundation Quality Review  
+**Status** `READY_FOR_COMMIT` · Local Tests ผ่าน 68/68 · Remote CI `PENDING_REMOTE_VERIFICATION`  
+**Next Step** เจ้าของโครงการตรวจการแก้เทสต์และดำเนินการ Commit/Push  
+**Reason** เก็บหลักฐาน Remote CI ของ Branch ก่อนพิจารณาปิดงาน  
+**Git Status** PR #5 Merge เข้า `main` ด้วย `a8eb239` ตามหลักฐานของเจ้าของโครงการ ส่วน Commit, Push, PR และ Merge ของ TASK-006 รอหลักฐาน
