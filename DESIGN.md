@@ -1,8 +1,8 @@
 # DESIGN — Thai Rule-based Anti-Scam AI
 
 > เอกสารกลางสำหรับการออกแบบ แผนพัฒนา และประวัติการทดลองของโครงการจบ  
-> ฉบับเอกสาร: 0.2 (ปรับสถานะ Repository และ Adaptive Roadmap) | วันที่: 27 พฤศจิกายน 2569 (2026-11-27)  
-> สถานะ AI: Runtime Foundation และ Candidate Collection V0.1 ผ่าน Local Tests การตัดสินเจตนาและการประเมินแบบอิสระยังอยู่ในแผน  
+> ฉบับเอกสาร: 0.2 (ปรับสถานะ Repository และ Adaptive Roadmap) | วันที่: 28 พฤศจิกายน 2569 (2026-11-28)  
+> สถานะ AI: Runtime V0.1 ถึง Candidate Resolver ผ่าน Local Tests การเลือกคำตอบและการประเมินแบบอิสระยังอยู่ในแผน  
 > Repository: `thai-anti-scam-ai` (ชื่อที่เจ้าของโครงการเลือก); ชื่อทางการของงานวิจัยยังไม่สรุป
 
 ## 1. วัตถุประสงค์และขอบเขต
@@ -310,7 +310,10 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 | 03f | `design/v0.1-behavioral-contract` | Regression Validator Reliability & Contract Finalization (TASK-005-R5) | REVIEW_COMPLETE_PENDING_OWNER_APPROVAL |
 | 03g | `design/v0.1-behavioral-contract` | Contract Approval & Finalization (TASK-005-R6) | MERGED · PR #5 · หลักฐานใน H-030 |
 | 04a | `feat/v0.1-runtime-foundation` | AI Runtime Foundation (TASK-006 และ R1) | MERGED ตามที่เจ้าของโครงการแจ้ง · H-033 |
-| 04b | `feat/v0.1-rule-matching-guards` | Rule Matching & Context Guards (TASK-007) | READY_FOR_COMMIT · H-034 |
+| 04b | `feat/v0.1-rule-matching-guards` | Rule Matching & Context Guards (TASK-007) | MERGED · Remote CI ผ่านตามที่เจ้าของโครงการยืนยัน · H-035 |
+| 04c | `design/v0.1-candidate-resolver` | Candidate Resolver Design & Behavioral Analysis (TASK-008) | ANALYSIS_COMPLETE_PENDING_OWNER_REVIEW · H-036 |
+| 04d | `design/v0.1-candidate-resolver` | Candidate Resolver Design Decision Closure (TASK-008-R1) | DESIGN_REVISION_COMPLETE_PENDING_OWNER_REVIEW · H-037 |
+| 04e | `feat/v0.1-candidate-resolver` | Candidate Resolver Implementation (TASK-009) | READY_FOR_COMMIT · H-038 |
 | 04 | `feat/v0.1-basic-chatbot` | AI Prototype V0.1 ตามแผนเดิม | PLANNED · รออนุมัติขอบเขตงานต่อ |
 | 05 | `feat/v0.2-intent-variants` | V0.2 | PLANNED |
 | 06 | `feat/v0.3-informal-thai` | V0.3 | PLANNED |
@@ -374,6 +377,12 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 เดิมเสนอให้ใช้ TASK-005 สำหรับ Prototype ต่อมาแยกงานออกแบบและตรวจ Contract ไว้ใน TASK-005 ถึง R6 ก่อนวางแผน Prototype ใน TASK-006
 
 เจ้าของโครงการกำหนด TASK-006 ให้ทำ Input Validation, Normalization และ Result Contract บน `feat/v0.1-runtime-foundation` ตาม D-041 ผลอยู่ใน H-031 งาน Prototype ที่เหลือใช้แผนทดสอบตามลำดับ Dependency [Test Integration Plan](docs/v0.1-regression-spec.md#test-integration-plan)
+
+TASK-007 ส่งมอบ Candidate Collection แล้ว TASK-008 วิเคราะห์ขั้นตัดสินจาก Candidate เหล่านั้นก่อนลงมือเขียน Resolver งานถัดไปที่เสนอคืออนุมัติสัญญาระหว่าง Collection กับ Resolver แล้วจึงกำหนด Branch และเกณฑ์ Test-first สำหรับการ Implementation งาน Response Selection และ Engine Integration ยัง Pending ตามลำดับ Dependency เดิม [Candidate Resolver Analysis](docs/v0.1-candidate-resolver-analysis.md)
+
+หลัง Review TASK-008 เจ้าของโครงการอนุมัติ D1–D4 ใน TASK-008-R1 รายละเอียดสเปกพร้อมให้ตรวจทาน ขั้นที่เสนอถัดไปคือ Rule Registry, การผลิต Role Evidence และ Resolver แบบ Test-first ส่วนจุดประกอบ Input Routing กับ Response Selection รอกำหนดขอบเขตตามลำดับ Dependency [Candidate Resolver Design Specification](docs/v0.1-candidate-resolver-analysis.md)
+
+TASK-009 ส่งมอบ Registry, Role Evidence, Resolver และ Input Routing ถึง Decision Record ขั้นที่เสนอถัดไปคือ Response Selection จาก Template ที่อนุมัติใน R6 แล้วประกอบและตรวจ public Result ตามแผนเดิม ผลตรวจอยู่ใน H-038
 
 **เป้าหมาย:** สร้าง Rule-based Chatbot ภาษาไทยตัวแรกที่รันจริง
 
@@ -567,6 +576,11 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 | D-040 | 2026-11-28 | เจ้าของอนุมัติผล Intent สี่กรณี, ZWSP เดี่ยว S15, Template และ Result Contract V0.1 | อนุมัติใน R6 · คง Raw ตาม Input Policy เดิม ใช้ frozen dataclass พร้อม Runtime Validation และอนุมัติขอบเขตการทดลองชั่วคราว 32,768 raw code points กับ 2 วินาทีต่อ child process |
 | D-041 | 2026-11-28 | เจ้าของโครงการกำหนด TASK-006 บน `feat/v0.1-runtime-foundation` | ใช้ Behavioral Contract R6 ทำสามส่วนพื้นฐานและพิสูจน์แต่ละส่วนก่อนเริ่มกฎ, Resolver, Response Selection หรือ CLI |
 | D-042 | 2026-11-28 | เจ้าของโครงการกำหนด TASK-007 บน `feat/v0.1-rule-matching-guards` | จับคู่และรวบรวมหลักฐานจากวลีที่อนุมัติ เก็บทุก Candidate ที่ผ่าน Guard พร้อมช่วงใน Matching Text การตัดสินผู้ชนะและการเลือกคำตอบรอขั้นถัดไป |
+| D-043 | 2026-11-28 | เจ้าของโครงการกำหนด TASK-008 บน `design/v0.1-candidate-resolver` | เพิ่มงานวิเคราะห์ก่อนเขียน Resolver โดยใช้ Contract และ Expected Outcomes ที่ตรึงใน R6 |
+| D-044 | 2026-11-28 | เสนอ Resolver แบบ pure function รับ Candidate ที่ผ่าน Guard พร้อมหลักฐานบทบาท และคืน Decision ภายในแยกจากการเลือกคำตอบ | Proposed · หลักฐานบทบาทยังไม่อยู่ใน Collection และ span ปัจจุบันอ้าง Matching Text รอเจ้าของโครงการอนุมัติ interface, reason codes และขอบเขตงานถัดไป |
+| D-045 | 2026-11-28 | อนุมัติ Role Evidence และ frozen Decision Record (TASK-008-R1 D1–D2) | Owner Review ของ TASK-008 อนุมัติให้ใช้หลักฐานจากกฎและบริบทที่ตรวจย้อนกลับได้ ใช้ผู้ชนะเฉพาะ RESOLVED รวม explicit UNKNOWN และแยก Record จาก Response Text |
+| D-046 | 2026-11-28 | อนุมัติ Rule Registry และ Input Routing ก่อน Resolver (TASK-008-R1 D3–D4) | ตรวจ Candidate เทียบ Registry และรายงาน metadata mismatch เป็น Configuration Error ส่งเฉพาะ content เข้า Resolver หลังแยก empty กับ format_only หลักการนี้ใช้แทนส่วนที่เกี่ยวข้องในข้อเสนอ D-044 |
+| D-047 | 2026-11-28 | เจ้าของโครงการกำหนด TASK-009 บน `feat/v0.1-candidate-resolver` | ใช้ D1–D4 ทำ Registry, Role Evidence, Resolver และ Input Routing แบบ Test-first ให้ `decide` คืน Decision Record เพื่อทดสอบก่อนเชื่อม Response Selection |
 
 ## 11. Development History (บันทึกเพิ่มตามงานจริง)
 
@@ -926,6 +940,40 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 - `python3 -B -m scripts.run_tests` ก่อนงาน 68/68 หลังงาน 77/77 (Exit `0`, Failure 0, Error 0, Skip 0) ตรวจ Syntax ตาม CI ผ่าน 25 ไฟล์ และ Relative Links 86 จุด (Exit `0`) `python3 -B -m scripts.evaluate_baseline` Exit `0` ผล Always-UNKNOWN 4/32 (12.5%) ตรงรายงานทุกไบต์ SHA-256 ของ Regression Spec, Development Dataset, Baseline Report และ R1 Report ตรง H-029/H-031 ผลนี้ยังไม่มีการวัดความแม่นยำของ Runtime
 - เพิ่ม `thai_ai/{matching,guards,candidates,_rule_metadata}.py` และ `tests/test_candidate_collection.py` แก้ `thai_ai/result.py` ให้ใช้ตัวตรวจ metadata เดียวกัน และอัปเดต README กับ DESIGN.md งานถัดไปที่เสนอคือ Candidate Resolver หลังเจ้าของโครงการทบทวน Branch เพื่อทดสอบ precedence และ ambiguity ด้วย Candidate ที่ตรวจย้อนกลับได้ การเทียบ span กลับ Raw และการรองรับรูปประโยคอื่นต้องมีข้อกำหนดหรือกรณีทดสอบเพิ่มเติม
 
+### H-035 — `feat/v0.1-rule-matching-guards` / ปิด TASK-007
+
+- ผล Local ก่อน Commit อยู่ใน H-034 ผล GitHub Actions ผ่านและ Pull Request Merge สำเร็จตามคำยืนยันของเจ้าของโครงการ แยกเก็บสองสถานะนี้จาก Local Verification รายละเอียด PR Number, Commit SHA และ Workflow Run ID ยังไม่มีหลักฐาน
+
+### H-036 — `design/v0.1-candidate-resolver` / TASK-008
+
+- วันที่ 2026-11-28 · `ANALYSIS_COMPLETE_PENDING_OWNER_REVIEW` · Remote CI และ Merge ของ TASK-008 ยังรอหลักฐานจากเจ้าของโครงการ
+- Implemented มี Validation, Normalization, Result และ Candidate Collection ข้อเสนอ Resolver แยก same-intent ranking จาก cross-intent precedence ตาม R6 และคืน Decision State ให้ Response Selection การส่งหลักฐานบทบาท ผู้ชนะ และ reason codes รออนุมัติ พิกัดหลักฐานอยู่ใน Matching Text
+- Traceability ครบ 148 Case IDs มี 146 Mandatory และ 2 Pending สถานะสะสมจาก Runtime ที่มีอยู่คือ 57 ครบระดับ Component, 73 บางส่วน, 16 รอ Component/Review ชุด Resolver fixtures 13 กรณียังตรวจเฉพาะ Collection และรอการตัดสินจริง
+- Local Verification บน Python 3.14.8 / Darwin arm64 ทั้งหมด Exit `0` โดย `python3 -B -m scripts.run_tests` ก่อนและหลังผ่าน 77/77 (Failure 0, Error 0, Skip 0) และ `python3 -B -` นับ Case IDs จาก subtests ของ Component 23 methods ได้ 57 ครบและ 73 บางส่วนตรง Matrix ตรวจ Syntax 25 ไฟล์ UTF-8 และ Markdown fences 10 ไฟล์ Relative Links/Anchors 109 จุด และเทียบ Matrix ครบ 148 แถวกับ Regression JSON ประวัติ D-001–D-042 และ H-001–H-034 ตรงต้นฉบับ
+- `python3 -B -m scripts.evaluate_baseline` Exit `0` ได้ Always-UNKNOWN 4/32 (12.5%) และ stdout ตรงรายงานเดิมทุกไบต์ SHA-256 ของ Development Dataset, Regression JSON, Baseline Report และ R1 Report ตรง H-021/H-029/H-031 ผล Local ยังไม่มีการตัดสินจาก Resolver หรือการประเมิน AI Engine
+- ไฟล์ที่เปลี่ยนคือ [Candidate Resolver Analysis](docs/v0.1-candidate-resolver-analysis.md), DESIGN.md และ Documentation Index กับ Repository Structure ใน README.md งานถัดไปให้เจ้าของโครงการทบทวนสัญญา evidence/decision และอนุมัติขอบเขต Implementation เพื่อกำหนด RED จาก fixture เดิมก่อนเริ่ม Runtime
+
+### H-037 — `design/v0.1-candidate-resolver` / TASK-008-R1
+
+- วันที่ 2026-11-28 · `DESIGN_REVISION_COMPLETE_PENDING_OWNER_REVIEW` · Remote CI และ Merge ของ Design Branch ยังรอหลักฐาน
+- เจ้าของโครงการทบทวน TASK-008 และอนุมัติ D1–D4 ตาม D-045/D-046 ปรับสเปกเดิมให้ระบุ Role Evidence, Decision State และ Reason Code, การตรวจ Registry/Candidate และ Input Routing ก่อน Resolver
+- Candidate Collection ปัจจุบันใช้ tuple ของ Rule และรวมหลาย span ต่อกฎ การสร้าง Registry snapshot, การส่งหลักฐานบทบาท และการประกอบ Engine ยังเป็น Dependency Matrix คง 148 Case IDs และแยกจุดตรวจ Resolver 13, Collection 63, Engine 99, Response 85, Foundation 57 และ Pending 2 จำนวนจุดตรวจซ้อนกันได้
+- Local Verification บน Python 3.14.8 / Darwin arm64 · `python3 -B -m scripts.run_tests` Exit `0` ผ่าน 77/77, Failure 0, Error 0, Skip 0 · `python3 -B -m scripts.evaluate_baseline` Exit `0` ได้ Always-UNKNOWN 4/32 (12.5%) และ stdout ตรงรายงานเดิมทุกไบต์
+- ตรวจด้วย `python3 -B -` Exit `0` ยืนยัน Syntax 25 ไฟล์, Markdown UTF-8 และ fences 10 ไฟล์, Relative Links/Anchors 108 จุด, Matrix ตรง JSON 148/148 และ SHA-256 ของไฟล์สำคัญตรงกับค่าที่บันทึกไว้ ประวัติ D-001–D-044 และ H-001–H-036 ตรงต้นฉบับ ตรวจ Mermaid แบบ Static ผ่าน 2 แผนภาพ รอบแรก Exit `1` เพราะสคริปต์คาดจำนวนเส้นของ Decision Flowchart ต่ำไปหนึ่งเส้น หลังแก้ตัวนับและตรวจเส้นทางซ้ำได้ Exit `0` ผลตรวจนี้ยังไม่มีผลจาก Resolver Runtime หรือการ render บน GitHub
+- แก้ [Candidate Resolver Design Specification](docs/v0.1-candidate-resolver-analysis.md) และ DESIGN.md งานถัดไปคือเจ้าของโครงการทบทวนรายละเอียดสเปกกับขอบเขต Implementation เพื่อเริ่ม Test-first จาก 13 Resolver fixtures คู่ precedence รูปใหม่, Raw Span Mapping และ Production Limits ยังรอข้อกำหนดหรือหลักฐาน
+
+### H-038 — `feat/v0.1-candidate-resolver` / TASK-009
+
+- วันที่ 2026-11-28 · Local Quality Gate `READY_FOR_COMMIT` · Remote CI `PENDING_REMOTE_VERIFICATION` · Merge รอหลักฐานจากเจ้าของโครงการ สเปก D1–D4 อยู่ใน Working Tree ตาม D-045/D-046 คำสั่ง TASK-009 อนุมัติให้เริ่ม Implementation ส่วนสถานะ Remote ของ Design Branch ยังไม่มีข้อมูลเพิ่ม
+- `RuleRegistry` มี tuple ของ Rule และ index แบบอ่านอย่างเดียว ตรวจ Configuration ก่อน Raw Input และใช้ snapshot เดียวกันสำหรับ Matching กับ Resolver ตรวจ Candidate ทุกตัวก่อนจัดอันดับ Rule ID ที่ไม่พบหรือ metadata ที่มีรูปถูกต้องแต่ไม่ตรง Registry ส่ง `RuntimeError` พร้อมรหัส Configuration ส่วน Candidate/Span ผิดรูปและ Candidate record ซ้ำมีรหัสของตนเอง Collector รวมหลาย Span ไว้ในหนึ่ง Candidate ต่อกฎ
+- `decide()` normalize ครั้งเดียวแล้วคืน EMPTY หรือ FORMAT_ONLY ก่อนเรียก Matcher/Resolver สำหรับ content ใช้หลักฐาน C08 จากคู่ช่วงตรงที่ผ่าน Guard และ R6 จากคู่ข้อความที่อนุมัติ เลือกใน Intent เดียวตาม Priority → Specificity → ASCII rule_id กรณีที่ไม่มีหลักฐานพอข้าม Intent คืน AMBIGUOUS frozen Decision Record เก็บหลักฐาน พิกัด Matching Text กฎผู้ชนะและเหตุผล รวม explicit UNKNOWN ผู้เรียกยังใช้ `collect_candidates()` และ `Result` ตาม interface เดิม
+- **Test-first** `python3 -B -m unittest tests.test_resolver` ครั้งแรก Exit `1` เพราะยังไม่มี module เมื่อเพิ่มเฉพาะ API และ stub ให้เทสต์เรียก Runtime ได้จริง แยกรันชื่อ class ต่อท้าย module พบ Resolution 4 methods (16 errors), Integrity 6 (24 failures, 1 error) และ Routing Integration 6 (1 failure, 76 errors) ทุกคำสั่ง Exit `1` สาเหตุหลักคือการจัดอันดับและ Routing ยังโยน `NotImplementedError` ส่วน Registry stub ยังไม่ปฏิเสธ Configuration ผิด หลัง Implement ได้ GREEN 4/4, 6/6, 6/6 (Exit `0`) เพิ่ม integration checks สองรายการสำหรับ snapshot เดียวกันและ Guard ที่ตัด Role Evidence
+- **Regression** `python3 -B -m scripts.run_tests` ก่อนงานผ่าน 77/77 หลังงาน 95/95 โดย Failure 0, Error 0, Skip 0 และ Exit `0` เทสต์ใหม่ 18 methods แบ่งเป็น Component 10 และ Integration 8 ตรวจ ID จาก subtests ที่ผ่านด้วย `python3 -B -` (Exit `0`) ได้ `RES-01`–`RES-13` ครบตาม outcome ระดับ Resolver และ 57 Text Case IDs ครบระดับ Decision ได้แก่ `DEV-001`–`DEV-032`, `INT-01`–`INT-19`, `INT-CR-ONLY`, `INT-ZWSP-ONLY`, `OPEN-BOM-PREFIX`, `OPEN-ZWSP-IN-WORD`, `OPEN-COMBINING-ONLY`, `OPEN-MIXED-REQUEST` และ `ERR-CONFIG` อีกหนึ่ง ID ที่ตรวจ Configuration precedence รวม 71 ID ไม่ซ้ำ
+- สถานะทั้ง Specification ยังเป็น 57 ครบที่ขอบเขต Component, 73 บางส่วน, 16 รอ และ 2 Pending ใน 73 บางส่วนมี 70 กรณีที่ตรวจถึง Decision แล้ว รวม 13 Resolver fixtures และ 57 Text Cases ส่วนผล Response Template, การส่งต่อข้อผิดพลาดผ่าน Engine, Manual Review และ Mapping กลับ Raw Text ยังรอส่วนงานที่เกี่ยวข้อง
+- `python3 -B -m unittest -v tests.test_candidate_collection tests.test_regression_spec` ผ่าน 33/33 (Exit `0`) `python3 -B -m scripts.evaluate_baseline` Exit `0` ได้ Always-UNKNOWN 4/32 (12.5%) stdout ตรงรายงานทุกไบต์ SHA-256 ของ Development Dataset, Regression JSON, Baseline Report และรายงาน R1 ตรง H-021/H-029/H-031 ผล Baseline เป็นของตัวจำแนกอ้างอิง
+- ตรวจด้วย `python3 -B -` Exit `0` ผ่าน Python Syntax ตาม CI 29 ไฟล์ ตัวอย่าง README 3 รายการ UTF-8 และ Markdown fences 10 ไฟล์ และ Relative Links/Anchors 108 จุด ตรวจ Matrix เทียบ JSON 148/148 แถวและยืนยันประวัติเดิม D-001–D-046 และ H-001–H-037 ตรงต้นฉบับ
+- เพิ่ม `thai_ai/{_evidence,registry,resolver}.py` กับ `tests/test_resolver.py` แก้ `thai_ai/{_rule_metadata,matching,candidates}.py`, README.md และ DESIGN.md งานถัดไปให้เจ้าของโครงการตรวจ TASK-009 และพิจารณา Response Selection เพื่อพิสูจน์ Template, Rule ID และ fault propagation ที่จุดคืน public Result
+
 ### แบบบันทึกผล Branch (คัดลอกเมื่อเริ่มงาน ไม่ใช่ผลจริง)
 
 ```markdown
@@ -999,11 +1047,15 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 - [x] ตรวจ Local Quality Gate ของ Runtime Foundation ใน TASK-006-R1
 - [x] เจ้าของโครงการยืนยันว่า TASK-006 และ TASK-006-R1 Merge เข้า `main`
 - [x] พัฒนาและตรวจ Rule Matching, Context Guards และ Candidate Collection ใน TASK-007
+- [x] เจ้าของโครงการยืนยันผล GitHub Actions และ Pull Request Merge ของ TASK-007
+- [x] จัดทำ Candidate Resolver Analysis และ Traceability ใน TASK-008
+- [x] เจ้าของโครงการอนุมัติหลักการ D1–D4 และจัดทำสเปก TASK-008-R1
+- [x] เจ้าของโครงการกำหนดขอบเขต Implementation และพัฒนา Candidate Resolver ใน TASK-009
 - [ ] พัฒนาและวัดผล AI ทีละ Milestone
 
-**Current Branch** `feat/v0.1-rule-matching-guards` ตามที่เจ้าของโครงการแจ้ง  
-**Current Task** TASK-007 — Rule Matching & Context Guards  
-**Status** `READY_FOR_COMMIT` · Local Tests ผ่าน 77/77 · Remote CI `PENDING_REMOTE_VERIFICATION`  
-**Next Step** เจ้าของโครงการตรวจ TASK-007 และเก็บหลักฐาน Remote CI ก่อนพิจารณา Candidate Resolver  
-**Reason** ผลระดับ Resolver ต้องใช้ Candidate ที่ตรวจย้อนกลับถึงกฎและหลักฐานได้  
-**Git Status** เจ้าของโครงการยืนยัน Merge ของ TASK-006 และ TASK-006-R1 เข้า `main` ส่วน Commit, Push, PR และ Merge ของ TASK-007 รอหลักฐาน
+**Current Branch** `feat/v0.1-candidate-resolver` ตามที่เจ้าของโครงการแจ้ง  
+**Current Task** TASK-009 — Candidate Resolver Implementation  
+**Status** `READY_FOR_COMMIT` · Local Tests 95/95  
+**Next Step** เจ้าของโครงการตรวจ TASK-009 ก่อนพิจารณา Response Selection  
+**Reason** Decision Record พร้อมใช้เป็นข้อมูลเข้าเพื่อทดสอบ Template, ผล public Result และข้อผิดพลาดตาม R6  
+**Git Status** เจ้าของโครงการตรวจและจัดการ Commit/Push · Remote CI และ Merge ของ TASK-009 รอหลักฐาน

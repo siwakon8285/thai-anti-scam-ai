@@ -8,7 +8,7 @@
 
 [![CI on main](https://github.com/siwakon8285/thai-anti-scam-ai/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/siwakon8285/thai-anti-scam-ai/actions/workflows/ci.yml?query=branch%3Amain)
 
-**สถานะ** Runtime และ Candidate Collection V0.1 · **Python อ้างอิง** 3.14.8 · **Runtime** Python Standard Library
+**สถานะ** Runtime V0.1 ถึงการตัดสิน Intent · **Python อ้างอิง** 3.14.8 · **Runtime** Python Standard Library
 
 [ความสามารถปัจจุบัน](#current-capabilities) · [สถาปัตยกรรม](#system-architecture) · [เริ่มต้นใช้งาน](#getting-started) · [ผลประเมิน](#testing-and-evaluation) · [เอกสาร](#documentation) · [แผนพัฒนา](#capability-roadmap)
 
@@ -22,21 +22,24 @@
 | --- | --- |
 | Runtime Foundation | ตรวจชนิดและอักขระดิบ สร้าง Matching Text ด้วย `strip()` และ NFC และตรวจโครงสร้างผลลัพธ์สามฟิลด์ |
 | Candidate Collection | จับวลีที่มีหลักฐานรองรับ ตรวจบริบทของคำปฏิเสธและคำพูดที่ถูกอ้าง และคืน Candidate ที่ผ่านพร้อมตำแหน่งใน Matching Text |
+| Candidate Resolver | เลือก Intent จาก Candidate ที่ผ่าน Guard และหลักฐานบทบาท หรือคืนเหตุผลที่งดตัดสิน |
 | [Development Dataset v0.1](datasets/development/v0.1.json) | ข้อความสมมติภาษาไทยและกรณีข้อความว่าง รวม 32 ตัวอย่าง ครบ 8 Intent |
 | [Baseline Evaluator](scripts/evaluate_baseline.py) | ตรวจ JSON และ Schema แล้ววัด Intent Accuracy และ Confusion Matrix ของตัวจำแนก Always-UNKNOWN |
-| [Automated Tests](tests/) | ตรวจ Runtime Foundation, Candidate Collection, Regression Specification, ชุดข้อมูล และ Evaluator |
+| [Automated Tests](tests/) | ตรวจ Runtime Foundation, Candidate Collection, Resolver, Regression Specification, ชุดข้อมูล และ Evaluator |
 
 ## System Architecture
 
-เส้นทึบแสดงขั้นตอนที่เรียกใช้ได้ถึงการรวบรวม Candidate เส้นประแสดงการตัดสินเจตนาและเลือกคำตอบที่อยู่ในแผน
+เส้นทึบแสดงขั้นตอนที่เรียกใช้ได้ถึงการตัดสิน Intent เส้นประแสดงการเลือกคำตอบที่อยู่ในแผน
 
 ```mermaid
 flowchart LR
     input["ข้อความภาษาไทย"] --> text["ตรวจและปรับข้อความ"]
-    text --> matches["จับคู่และตรวจบริบท"]
+    text -->|content| matches["จับคู่และตรวจบริบท"]
     matches --> candidates["รวบรวม Candidate"]
-    candidates -.-> selection["เลือกกฎ"]
-    selection -.-> response["เลือกคำตอบ"]
+    candidates --> selection["Candidate Resolver"]
+    selection --> decision["Decision Record"]
+    text -->|empty หรือ format-only| decision
+    decision -.-> response["เลือกคำตอบ"]
     response -.-> output["ตรวจ Result"]
 ```
 
@@ -86,9 +89,20 @@ collection = collect_candidates("สวัสดีครับ คุณคื�
 assert {candidate.intent for candidate in collection.candidates} == {"GREETING", "BOT_IDENTITY"}
 ```
 
+เรียก `decide()` เพื่อดู Intent, กฎผู้ชนะ และเหตุผลของผลตัดสิน
+
+```python
+from thai_ai.resolver import decide
+
+decision = decide("สวัสดีครับ คุณคือใคร")
+assert decision.intent == "BOT_IDENTITY"
+assert decision.rule_id == "identity.direct"
+assert decision.selection_basis == "C08_INTRO_QUESTION"
+```
+
 ## Testing and Evaluation
 
-Test Runner ใช้ `unittest` ส่วน [GitHub Actions](.github/workflows/ci.yml) ตรวจ Python Syntax และรันชุดทดสอบเดียวกัน Badge ด้านบนแสดงสถานะ CI ของ `main` ดูผล Candidate Collection และกรณีที่รอ Engine ใน [DESIGN.md](DESIGN.md#h-034--featv01-rule-matching-guards--task-007)
+Test Runner ใช้ `unittest` ส่วน GitHub Actions ตรวจ Python Syntax และรันชุดทดสอบเดียวกัน Badge ด้านบนแสดงสถานะ CI ของ `main` ผลตรวจ Resolver และกรณีที่รอ Engine อยู่ในประวัติการพัฒนา [GitHub Actions](.github/workflows/ci.yml) · [DESIGN.md](DESIGN.md#h-038--featv01-candidate-resolver--task-009)
 
 | ผล Reference Baseline v0.1 | ค่า |
 | --- | --- |
@@ -114,6 +128,7 @@ thai-anti-scam-ai/
 │   ├── v0.1-thai-text-processing.md
 │   ├── v0.1-rule-architecture.md
 │   ├── v0.1-regression-spec.md
+│   ├── v0.1-candidate-resolver-analysis.md
 │   └── pybot-reference-and-design-rationale.md
 ├── reports/
 │   ├── baseline-v0.1.json
@@ -124,11 +139,14 @@ thai-anti-scam-ai/
 │   └── run_tests.py
 ├── tests/
 ├── thai_ai/
+│   ├── _evidence.py
 │   ├── _rule_metadata.py
 │   ├── candidates.py
 │   ├── guards.py
 │   ├── matching.py
 │   ├── normalization.py
+│   ├── registry.py
+│   ├── resolver.py
 │   ├── result.py
 │   └── validation.py
 └── DESIGN.md
@@ -141,6 +159,7 @@ thai-anti-scam-ai/
 - [Thai Text Processing Experiments V0.1](docs/v0.1-thai-text-processing.md) — การทดลอง Unicode และการเทียบรูปข้อความภาษาไทย
 - [Rule Architecture V0.1](docs/v0.1-rule-architecture.md) — ข้อเสนอการเลือก Intent และสัญญาคำตอบ
 - [Regression Specification V0.1](docs/v0.1-regression-spec.md) — กรณีอ้างอิงและผลคาดหวังสำหรับทดสอบก่อนพัฒนา Engine
+- [Candidate Resolver Design V0.1](docs/v0.1-candidate-resolver-analysis.md) — สัญญาการตัดสิน Intent และ Traceability ของ Regression Cases
 - [PyBot Reference Study](docs/pybot-reference-and-design-rationale.md) — กรณีศึกษา PyBot และเหตุผลที่เลือกปรับแนวคิดให้เหมาะกับภาษาไทย
 - [DESIGN.md](DESIGN.md) — สถาปัตยกรรม แนวทางประเมิน และเหตุผลด้านการออกแบบ
 
@@ -148,14 +167,14 @@ thai-anti-scam-ai/
 
 | ขอบเขต | ความสามารถ |
 | --- | --- |
-| ปัจจุบัน | Runtime Foundation, Candidate Collection, ชุดทดสอบ และการประเมิน Reference Baseline |
-| แผนต้นแบบ V0.1 | จำแนกเจตนาและตอบข้อความภาษาไทยตามข้อกำหนด |
+| ปัจจุบัน | Runtime Foundation, Candidate Collection, Candidate Resolver, ชุดทดสอบ และการประเมิน Reference Baseline |
+| แผนต้นแบบ V0.1 | เลือกคำตอบภาษาไทยและประกอบผลจากการตัดสินตามข้อกำหนด |
 | ระยะถัดไปตามผลทดลอง | เพิ่มความครอบคลุมของภาษาไทย ศึกษาบริบทและ Session Memory แล้วพัฒนาการประเมินความเสี่ยงและการทดสอบอิสระ |
 
 ลำดับการเพิ่มความสามารถปรับได้ตามผลการทดลองใน [Adaptive Roadmap](DESIGN.md)
 
 ## Limitations and Ethical Considerations
 
-- กฎปัจจุบันรองรับวลีและรูปแบบบริบทที่มีกรณีทดสอบอนุมัติ การตัดสินเจตนา การเลือกคำตอบ และ Scam Detection ยังอยู่ในแผน
+- กฎปัจจุบันรองรับวลีและรูปแบบบริบทที่มีกรณีทดสอบอนุมัติ การเลือกคำตอบและ Scam Detection ยังอยู่ในแผน
 - ใช้ข้อมูลสมมติหรือข้อมูลที่ได้รับอนุญาตและตัดข้อมูลระบุตัวตน ชุด Held-out สำหรับการประเมินอิสระในอนาคตต้องแยกจากข้อมูลที่ใช้ปรับกฎ
 - หากพัฒนาการประเมินความเสี่ยงในอนาคต ผลต้องอธิบายหลักฐานและข้อจำกัด หลีกเลี่ยงการกล่าวหาบุคคลหรือรับรองความปลอดภัยจากการไม่พบสัญญาณ
