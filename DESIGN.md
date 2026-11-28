@@ -1,9 +1,10 @@
 # DESIGN — Thai Rule-based Anti-Scam AI
 
-> เอกสารกลางสำหรับการออกแบบ แผนพัฒนา และประวัติการทดลองของโครงการจบ  
-> ฉบับเอกสาร: 0.2 (ปรับสถานะ Repository และ Adaptive Roadmap) | วันที่: 28 พฤศจิกายน 2569 (2026-11-28)  
-> สถานะ AI: Runtime V0.1 ถึง Response Selection ผ่าน Local Tests การประกอบ Engine และการประเมินแบบอิสระยังอยู่ในแผน  
-> Repository: `thai-anti-scam-ai` (ชื่อที่เจ้าของโครงการเลือก); ชื่อทางการของงานวิจัยยังไม่สรุป
+> เอกสารกลางสำหรับการออกแบบ แผนพัฒนา และประวัติการทดลองของโครงการจบ
+>
+> - ฉบับเอกสาร: 0.2 (ปรับสถานะ Repository และ Adaptive Roadmap) | วันที่: 28 พฤศจิกายน 2569 (2026-11-28)
+> - สถานะ AI: Engine V0.1 มี Public API และผ่าน Local Tests การประเมินบน Development Set และการประเมินแบบอิสระยังอยู่ในแผน
+> - Repository: `thai-anti-scam-ai` (ชื่อที่เจ้าของโครงการเลือก); ชื่อทางการของงานวิจัยยังไม่สรุป
 
 ## 1. วัตถุประสงค์และขอบเขต
 
@@ -185,6 +186,20 @@ thai-anti-scam-ai/            # ชื่อ Repository ที่เลือก
 
 สร้างเท่าที่ใช้จริงในแต่ละ Branch ไม่ต้องสร้างไฟล์เปล่าทั้งหมดพร้อมกัน เพิ่ม `context.py`, Knowledge Base และ Risk Modules เมื่อถึง Milestone ที่เกี่ยวข้อง เก็บ Held-out Evaluation แยกจาก Workspace ที่ Codex อ่านได้ ไม่ Commit ข้อมูลส่วนตัวหรือชุดประเมินที่ต้องปิดบังลง GitHub; `.gitignore` ไม่ใช่เครื่องมือป้องกันการเข้าถึงของ Agent
 
+### 5.4 Engine Integration Contract V0.1
+
+TASK-011 ใช้ `thai_ai.engine.process_text(text, *, rules=...)` เป็นจุดเข้า Engine คืน frozen `thai_ai.result.Result` ตัวเดิม ผู้เรียกใช้ชุดกฎเริ่มต้นแปดรายการที่อยู่ใน `matching._DEFAULT_RULES` จาก TASK-007 (H-034/H-035) หรือส่ง tuple ของ Rule ผ่าน keyword `rules` ชุดเริ่มต้นไม่มี explicit UNKNOWN และ EMPTY_INPUT มาจาก Routing
+
+| ขั้น | ข้อมูลเข้า → ออก | สัญญาข้อผิดพลาด |
+| --- | --- | --- |
+| Registry | tuple ของ Rule → `RuleRegistry` ที่ตรวจแล้วหนึ่ง instance ต่อการเรียก | `RuntimeError` จาก Configuration เกิดก่อนอ่าน Input |
+| Validation และ Normalization | Raw built-in str → `_NormalizedText` พร้อม Raw, Matching Text และ kind เรียก `normalize_text` ครั้งเดียว ซึ่งตรวจ Raw ก่อน `strip() + NFC` | ส่งต่อ `TypeError` หรือ `ValueError` พร้อมเหตุและ raw code-point offset ตาม Policy |
+| Routing และ Collection | `empty`/ `format_only` → Decision Record ของ Input path โดยตรง ส่วน `content` → Exact/Regex fullmatch, Guards, Candidate และ Role Evidence จาก Matching Text พร้อม registry เดิม | ส่งต่อข้อผิดพลาดของ Matcher หรือ Guard และข้ามทั้งคู่ใน early paths |
+| Resolver | Candidate, Role Evidence, ความยาว Matching Text และ registry เดิม → frozen Decision Record | ส่งต่อข้อผิดพลาดของ Configuration, Candidate, Evidence หรือ Resolver |
+| Response และ Result | Decision Record และ registry instance เดิม → Template R6 ตาม Intent/path → `Result(intent, response, rule_id)` | ส่งต่อข้อผิดพลาดของ Decision, Registry, Template หรือการสร้าง Result โดยรักษา Exception เดิม |
+
+Engine แชร์เส้นทางตั้งแต่ Normalization ถึง Decision กับ `decide()` เพื่อรักษา Routing และนโยบายเดิม พิกัดหลักฐานอยู่ใน Matching Text ส่วน JSON เป็นหน้าที่ของผู้เรียกและใช้ `null` สำหรับ `rule_id=None`
+
 ## 6. หน้าที่และ Workflow
 
 | ผู้รับผิดชอบ | หน้าที่ |
@@ -315,6 +330,7 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 | 04d | `design/v0.1-candidate-resolver` | Candidate Resolver Design Decision Closure (TASK-008-R1) | DESIGN_REVISION_COMPLETE_PENDING_OWNER_REVIEW · H-037 |
 | 04e | `feat/v0.1-candidate-resolver` | Candidate Resolver Implementation (TASK-009) | READY_FOR_COMMIT · H-038 |
 | 04f | `feat/v0.1-response-selection` | Response Selection (TASK-010) | READY_FOR_COMMIT · H-039 |
+| 04g | `feat/v0.1-engine-integration` | Engine Integration V0.1 (TASK-011) | READY_FOR_COMMIT · H-040 |
 | 04 | `feat/v0.1-basic-chatbot` | AI Prototype V0.1 ตามแผนเดิม | PLANNED · รออนุมัติขอบเขตงานต่อ |
 | 05 | `feat/v0.2-intent-variants` | V0.2 | PLANNED |
 | 06 | `feat/v0.3-informal-thai` | V0.3 | PLANNED |
@@ -386,6 +402,8 @@ TASK-007 ส่งมอบ Candidate Collection แล้ว TASK-008 วิเ
 TASK-009 ส่งมอบ Registry, Role Evidence, Resolver และ Input Routing ถึง Decision Record ขั้นที่เสนอถัดไปคือ Response Selection จาก Template ที่อนุมัติใน R6 แล้วประกอบและตรวจ public Result ตามแผนเดิม ผลตรวจอยู่ใน H-038
 
 TASK-010 ส่งมอบ `select_response()` สำหรับสร้าง public Result จาก Decision Record และ Template R6 งานถัดไปที่เสนอคือ Engine Integration ตามลำดับเดิมเพื่อทดสอบผลและข้อผิดพลาดผ่านจุดเข้าเดียว ผลตรวจอยู่ใน H-039
+
+TASK-011 ส่งมอบ `process_text()` และทดสอบ Engine ตาม §5.4 ขั้นที่เสนอถัดไปคือประเมิน Engine ด้วย Development Set และ Evaluator เดิมหลังเจ้าของโครงการอนุมัติ โดยคง Independent Evaluation ตามลำดับที่ตกลง [Engine Regression Report](reports/engine-integration-v0.1.md)
 
 **เป้าหมาย:** สร้าง Rule-based Chatbot ภาษาไทยตัวแรกที่รันจริง
 
@@ -585,6 +603,7 @@ TASK-010 ส่งมอบ `select_response()` สำหรับสร้า�
 | D-046 | 2026-11-28 | อนุมัติ Rule Registry และ Input Routing ก่อน Resolver (TASK-008-R1 D3–D4) | ตรวจ Candidate เทียบ Registry และรายงาน metadata mismatch เป็น Configuration Error ส่งเฉพาะ content เข้า Resolver หลังแยก empty กับ format_only หลักการนี้ใช้แทนส่วนที่เกี่ยวข้องในข้อเสนอ D-044 |
 | D-047 | 2026-11-28 | เจ้าของโครงการกำหนด TASK-009 บน `feat/v0.1-candidate-resolver` | ใช้ D1–D4 ทำ Registry, Role Evidence, Resolver และ Input Routing แบบ Test-first ให้ `decide` คืน Decision Record เพื่อทดสอบก่อนเชื่อม Response Selection |
 | D-048 | 2026-11-28 | ใช้ Template R6 แบบคงที่ใน Response Selection (TASK-010) | ใช้แค็ตตาล็อกใน Runtime และเทียบถ้อยคำทุกเส้นทางกับ Regression JSON ผ่านเทสต์ เลือกด้วย Intent และ path จาก Decision ที่ผ่านการตรวจ ทวน Rule Registry แล้วคืน Result เดิม |
+| D-049 | 2026-11-28 | ใช้ `thai_ai.engine.process_text()` เป็น Public API ของ Engine V0.1 (TASK-011) | Engine เป็นเจ้าของ Registry snapshot ต่อการเรียก ส่ง instance เดียวกันผ่านการตัดสินและเลือกคำตอบ ใช้ชุดกฎเริ่มต้นของ TASK-007 และรักษา interface ของ Component |
 
 ## 11. Development History (บันทึกเพิ่มตามงานจริง)
 
@@ -989,6 +1008,16 @@ TASK-010 ส่งมอบ `select_response()` สำหรับสร้า�
 - ตรวจเอกสารด้วย `python3 -B -` ได้ Exit `0` ครอบคลุม UTF-8 และ Markdown fences 10 ไฟล์, Relative Links/Anchors 108 จุด, ตัวอย่าง Python ใน README 4 รายการ, Matrix 148/148 แถว และประวัติเดิม D-001–D-047 กับ H-001–H-038 รอบแรกได้ Exit `1` เพราะคำสั่งตรวจ README มี string literal ไม่สมบูรณ์ แก้คำสั่งและรันตรวจใหม่แล้วผ่าน
 - งานถัดไปให้เจ้าของโครงการตรวจ TASK-010 และพิจารณา Engine Integration เพื่อทดสอบการส่งต่อ stage faults และผล public Result ผ่านจุดเข้าเดียว `ERR-SELECTION` และการทดสอบ faults ผ่าน Engine ยังรอ ส่วน `OPEN-LENGTH-LIMIT` กับ `OPEN-REGEX-BUDGET` ยัง Pending
 
+### H-040 — `feat/v0.1-engine-integration` / TASK-011
+
+- วันที่ 2026-11-28 · Local Quality Gate `READY_FOR_COMMIT` · Remote CI `PENDING_REMOTE_VERIFICATION` · Merge รอหลักฐานจากเจ้าของโครงการ
+- บันทึก Integration Contract ใน §5.4 ก่อนเขียน Runtime `process_text()` สร้าง registry ก่อน validation แล้วแชร์เส้นทางเดิมกับ `decide()` จนได้ Decision Record ส่ง registry instance เดิมเข้า `select_response()` ซึ่งสร้าง `Result` ทดสอบยืนยันการ normalize ครั้งเดียว พิกัด Matching Text, early routing bypass, ผลซ้ำและลำดับกฎ รวม explicit UNKNOWN ใน configuration ที่ระบุ
+- **Test-first** `python3 -B -m unittest tests.test_engine` บน API stub ได้ Exit `1` (12 methods, 13 failures, 109 errors) เพราะ Pipeline ยังโยน `NotImplementedError` หลังเชื่อม Component ได้ GREEN 12/12 (Exit `0`) `python3 -B -m scripts.run_tests` ก่อนงาน 107/107 หลังงาน 119/119 ทั้งสอง Exit `0`, Failure 0, Error 0, Skip 0 ชุด Engine รวม Regression Specification ผ่าน 36/36 (Exit `0`)
+- **Regression** จับ Case IDs จาก subtests ด้วย `python3 -B -` (Exit `0`) พบ Engine API 102 IDs ได้แก่ 93 end-to-end (57 text และ 36 Input errors), 3 JSON wire, 1 Configuration จริง และ 5 injected faults ส่วน 44 IDs ตรวจที่ระดับ Component และ 2 คง Pending รวม 148 แถว ครบ Requirements 15 และ Scenarios 26 Exception เดิมและ cause ผ่าน Engine ตาม fault fixtures [Coverage Matrix](reports/engine-integration-v0.1.md#case-matrix)
+- **Performance** บน Python 3.14.8 / Darwin arm64 การทดลองแยก child ผ่าน 14/14 (Exit `0`) ที่ deadline 2 วินาที Engine median 30.12 µs สำหรับข้อความสั้น, 2.07 ms สำหรับข้อความยาว 32,768 code points และ 2.24 ms สำหรับ Regex near-match ขนาดเดียวกัน Peak traced Python allocations ของรูปที่ทดสอบ 2,952–5,566 bytes ตัวเลขขึ้นกับ input และสภาพแวดล้อม Production Input Limit กับ Regex Budget ยัง Pending [รายละเอียดการทดลอง](reports/engine-integration-v0.1.md#performance--ปริมาณงานทดลอง)
+- **Verification** ผ่าน Syntax ตาม CI 33 ไฟล์ (Exit `0`) `python3 -B -m scripts.evaluate_baseline` Exit `0` ให้ Always-UNKNOWN 4/32 (12.5%) ตรงรายงานทุกไบต์ SHA-256 ของ Development Dataset, Regression JSON และ Baseline Report ตรง H-039 ตรวจเอกสาร UTF-8 11 ไฟล์ ลิงก์และ Anchor 112 จุด ตัวอย่าง Python ใน README 4 รายการ เมทริกซ์ 148 แถว และประวัติเดิม D-001–D-048/H-001–H-039 ด้วย `python3 -B -` Exit `0`
+- เพิ่ม `thai_ai/engine.py`, `tests/test_engine.py` และ `reports/engine-integration-v0.1.md` แก้ `thai_ai/resolver.py`, README และ DESIGN.md งานถัดไปให้เจ้าของโครงการ Review ก่อนพิจารณา Development Evaluation เพื่อวัดผลบนชุดพัฒนาด้วย Evaluator เดิม
+
 ### แบบบันทึกผล Branch (คัดลอกเมื่อเริ่มงาน ไม่ใช่ผลจริง)
 
 ```markdown
@@ -1067,11 +1096,12 @@ TASK-010 ส่งมอบ `select_response()` สำหรับสร้า�
 - [x] เจ้าของโครงการอนุมัติหลักการ D1–D4 และจัดทำสเปก TASK-008-R1
 - [x] เจ้าของโครงการกำหนดขอบเขต Implementation และพัฒนา Candidate Resolver ใน TASK-009
 - [x] พัฒนา Response Selection และตรวจ public Result ที่ขอบเขต Component ใน TASK-010
+- [x] ประกอบ Engine V0.1 และทดสอบผ่าน Public API ใน TASK-011
 - [ ] พัฒนาและวัดผล AI ทีละ Milestone
 
-**Current Branch** `feat/v0.1-response-selection` ตามที่เจ้าของโครงการแจ้ง  
-**Current Task** TASK-010 — Response Selection  
-**Status** `READY_FOR_COMMIT` · Local Tests 107/107  
-**Next Step** เจ้าของโครงการตรวจ TASK-010 ก่อนพิจารณา Engine Integration  
-**Reason** Resolver และ Response Selection พร้อมให้ทดสอบร่วมผ่านจุดเข้า Engine เดียวและตรวจการส่งต่อข้อผิดพลาดตาม R6  
-**Git Status** เจ้าของโครงการตรวจและจัดการ Commit/Push · Remote CI และ Merge ของ TASK-010 รอหลักฐาน
+- **Current Branch** `feat/v0.1-engine-integration` ตามที่เจ้าของโครงการแจ้ง
+- **Current Task** TASK-011 — Engine Integration V0.1
+- **Status** `READY_FOR_COMMIT` · Local Tests 119/119
+- **Next Step** เจ้าของโครงการตรวจ TASK-011 ก่อนพิจารณา Development Evaluation
+- **Reason** Engine พร้อมให้วัดและวิเคราะห์ผลบน Development Set ด้วย Evaluator เดิม
+- **Git Status** เจ้าของโครงการตรวจและจัดการ Commit/Push · Remote CI และ Merge ของ TASK-011 รอหลักฐาน

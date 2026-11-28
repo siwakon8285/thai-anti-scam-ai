@@ -253,7 +253,11 @@ def resolve_candidates(
 
 def decide(text: str, *, rules: tuple[Rule, ...] = _DEFAULT_RULES) -> DecisionRecord:
     """Validate and route one message through the decision boundary."""
-    registry = RuleRegistry(rules)
+    return _decide_with_registry(text, RuleRegistry(rules))
+
+
+def _decide_with_registry(text: str, registry: RuleRegistry) -> DecisionRecord:
+    """Run the decision stages with an already validated registry snapshot."""
     view = normalize_text(text)
     if view.kind == "empty":
         return DecisionRecord(DecisionState.EMPTY, None, ReasonCode.EMPTY, DecisionEvidence((), ()))
