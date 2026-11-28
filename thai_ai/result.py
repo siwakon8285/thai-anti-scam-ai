@@ -1,14 +1,8 @@
 """Result fields for the V0.1 runtime."""
 
 from dataclasses import dataclass
-import re
 
-
-_INTENTS = frozenset({
-    "GREETING", "BOT_IDENTITY", "BOT_CAPABILITIES", "THANKS", "FAREWELL",
-    "HELP", "UNKNOWN", "EMPTY_INPUT",
-})
-_RULE_ID = re.compile(r"[a-z0-9][a-z0-9.-]*")
+from thai_ai._rule_metadata import INTENTS, is_rule_id
 
 
 @dataclass(frozen=True)
@@ -20,7 +14,7 @@ class Result:
     rule_id: str | None
 
     def __post_init__(self) -> None:
-        if type(self.intent) is not str or self.intent not in _INTENTS:
+        if type(self.intent) is not str or self.intent not in INTENTS:
             raise RuntimeError("invalid_result: intent must be a V0.1 taxonomy value")
 
         if type(self.response) is not str or not self.response or self.response.isspace():
@@ -33,5 +27,5 @@ class Result:
                 raise RuntimeError("invalid_result: rule_id is required for this intent")
         elif self.intent == "EMPTY_INPUT":
             raise RuntimeError("invalid_result: rule_id must be None for EMPTY_INPUT")
-        elif type(self.rule_id) is not str or not _RULE_ID.fullmatch(self.rule_id):
+        elif not is_rule_id(self.rule_id):
             raise RuntimeError("invalid_result: rule_id must match [a-z0-9][a-z0-9.-]*")

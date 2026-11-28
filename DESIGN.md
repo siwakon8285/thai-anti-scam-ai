@@ -2,7 +2,7 @@
 
 > เอกสารกลางสำหรับการออกแบบ แผนพัฒนา และประวัติการทดลองของโครงการจบ  
 > ฉบับเอกสาร: 0.2 (ปรับสถานะ Repository และ Adaptive Roadmap) | วันที่: 27 พฤศจิกายน 2569 (2026-11-27)  
-> สถานะ AI: Runtime Foundation V0.1 ผ่าน Local Quality Review การจำแนกเจตนาและการประเมิน AI แบบอิสระยังอยู่ในแผน  
+> สถานะ AI: Runtime Foundation และ Candidate Collection V0.1 ผ่าน Local Tests การตัดสินเจตนาและการประเมินแบบอิสระยังอยู่ในแผน  
 > Repository: `thai-anti-scam-ai` (ชื่อที่เจ้าของโครงการเลือก); ชื่อทางการของงานวิจัยยังไม่สรุป
 
 ## 1. วัตถุประสงค์และขอบเขต
@@ -309,7 +309,8 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 | 03e | `design/v0.1-behavioral-contract` | Final Contract & Quality Review (TASK-005-R4) | NEEDS_REVISION |
 | 03f | `design/v0.1-behavioral-contract` | Regression Validator Reliability & Contract Finalization (TASK-005-R5) | REVIEW_COMPLETE_PENDING_OWNER_APPROVAL |
 | 03g | `design/v0.1-behavioral-contract` | Contract Approval & Finalization (TASK-005-R6) | MERGED · PR #5 · หลักฐานใน H-030 |
-| 04a | `feat/v0.1-runtime-foundation` | AI Runtime Foundation (TASK-006 และ R1) | READY_FOR_COMMIT · ผลตรวจใน H-032 |
+| 04a | `feat/v0.1-runtime-foundation` | AI Runtime Foundation (TASK-006 และ R1) | MERGED ตามที่เจ้าของโครงการแจ้ง · H-033 |
+| 04b | `feat/v0.1-rule-matching-guards` | Rule Matching & Context Guards (TASK-007) | READY_FOR_COMMIT · H-034 |
 | 04 | `feat/v0.1-basic-chatbot` | AI Prototype V0.1 ตามแผนเดิม | PLANNED · รออนุมัติขอบเขตงานต่อ |
 | 05 | `feat/v0.2-intent-variants` | V0.2 | PLANNED |
 | 06 | `feat/v0.3-informal-thai` | V0.3 | PLANNED |
@@ -565,6 +566,7 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 | D-039 | 2026-11-28 | ใช้จุดเรียกและ Raw Typed Fixture ตรวจความขัดแย้ง และตรวจผลคาดหวังเทียบ Contract | Implemented เฉพาะ validator · ตรวจผู้ชนะและ path จาก Fixture โดยคงผลคาดหวังเดิม ส่วน Pending, S15, Template และ Result Contract รอ Owner Approval |
 | D-040 | 2026-11-28 | เจ้าของอนุมัติผล Intent สี่กรณี, ZWSP เดี่ยว S15, Template และ Result Contract V0.1 | อนุมัติใน R6 · คง Raw ตาม Input Policy เดิม ใช้ frozen dataclass พร้อม Runtime Validation และอนุมัติขอบเขตการทดลองชั่วคราว 32,768 raw code points กับ 2 วินาทีต่อ child process |
 | D-041 | 2026-11-28 | เจ้าของโครงการกำหนด TASK-006 บน `feat/v0.1-runtime-foundation` | ใช้ Behavioral Contract R6 ทำสามส่วนพื้นฐานและพิสูจน์แต่ละส่วนก่อนเริ่มกฎ, Resolver, Response Selection หรือ CLI |
+| D-042 | 2026-11-28 | เจ้าของโครงการกำหนด TASK-007 บน `feat/v0.1-rule-matching-guards` | จับคู่และรวบรวมหลักฐานจากวลีที่อนุมัติ เก็บทุก Candidate ที่ผ่าน Guard พร้อมช่วงใน Matching Text การตัดสินผู้ชนะและการเลือกคำตอบรอขั้นถัดไป |
 
 ## 11. Development History (บันทึกเพิ่มตามงานจริง)
 
@@ -899,6 +901,31 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 - `python3 -B -m scripts.run_tests` ก่อนและหลังผ่าน 68/68 (Exit `0`, Failure 0, Error 0, Skip 0) ตรวจ Syntax ตาม CI ผ่าน 20 ไฟล์และ Relative Links 86 จุด `python3 -B -m scripts.evaluate_baseline` Exit `0`, Always-UNKNOWN 4/32 (12.5%) และ stdout ตรงรายงานทุกไบต์ SHA-256 ของ Regression Spec, Development Dataset, Baseline Report และ R1 Report ตรง H-029/H-031 ผล EXP-001–003 และ hash ของ script/fixture ตรงรายงานเมื่อรัน `--behavior-only` (Exit `0`)
 - Result ตรวจโครงสร้างและรูปแบบรหัสได้ การยืนยันผู้ชนะ เส้นทาง UNKNOWN และความหมายของคำตอบยังต้องตรวจร่วมกับ Engine ส่วน `OPEN-LENGTH-LIMIT` และ `OPEN-REGEX-BUDGET` ยัง Pending งานถัดไปให้เจ้าของโครงการตรวจและดำเนินการ Commit/Push เพื่อเก็บหลักฐาน Remote CI แล้วจึงพิจารณา Rule Matching และ Context Guards เพื่อรองรับ Candidate ที่ตรวจย้อนกลับได้
 
+### H-033 — `feat/v0.1-runtime-foundation` / ปิด TASK-006 และ TASK-006-R1
+
+- เจ้าของโครงการยืนยันว่า TASK-006 และ TASK-006-R1 ผ่าน Local Review และ Merge เข้า `main` แล้ว ผล Local อยู่ใน H-031 และ H-032 ยังไม่มีเลข PR, Merge SHA หรือหลักฐาน Remote CI เพิ่มเติม
+
+### H-034 — `feat/v0.1-rule-matching-guards` / TASK-007
+
+- สถานะ `READY_FOR_COMMIT` · Remote CI `PENDING_REMOTE_VERIFICATION` · Merge รอเจ้าของโครงการยืนยัน
+- `thai_ai.matching.Rule` เป็น frozen dataclass รองรับวลีคงที่ ให้ Priority เป็น int และ Specificity 0–2 กฎเริ่มต้นใช้ Priority 0 และแยกคำถามที่อ้างบอตหรือระบบชัดที่ Specificity 2 ใช้ตัวตรวจ Taxonomy และรูปแบบ Rule ID เดียวกับ Result ห้ามลงทะเบียน EMPTY_INPUT และตรวจ Rule ID ซ้ำก่อนตรวจ Input
+- Matching ใช้ Exact สำหรับวลีที่เป็นทั้งประโยคหรือทั้งช่วง และ Regex แบบ `fullmatch` กับรูปประโยคคงที่ที่ระบุขอบเขตคำอ้าง คำปฏิเสธ ผู้รับคนอื่น และคำขอเฉพาะด้าน หากเป็นข้อความสองช่วงที่คั่นด้วย ASCII space จะพิจารณาเมื่อทั้งคู่มีหลักฐานตามกฎหรือรูปบริบท Guard ตัดเฉพาะหลักฐานที่ถูกปฏิเสธ อ้าง หรือส่งถึงเป้าหมายอื่น รวมคำขอเฉพาะที่ตัด HELP ตาม S11 กรณี S12 รองรับ Rule UNKNOWN ที่ลงทะเบียนแบบระบุคำขอเต็ม ตัวเลือกนี้อยู่ใน configuration ทดสอบ กฎเริ่มต้นใช้ configuration แบบไม่มี explicit UNKNOWN ตาม R6
+- `thai_ai.candidates.collect_candidates(text, *, rules=...)` คืน `CandidateCollection` ที่ถือ Raw/Matching Text และประเภท Input ในหน่วยความจำ ข้าม Matcher สำหรับ empty/format-only แต่ละ `Candidate` มี Rule ID, Intent, Priority, Specificity และช่วง code points แบบครึ่งเปิดใน Matching Text รวมช่วงที่ผ่านของกฎเดียวกัน เก็บลำดับ Rule ID เพื่อผลซ้ำ Candidate ในข้อความหลายเจตนายังอยู่ครบ ลำดับนี้ไม่มีความหมายด้านความสำคัญ วิธีแยกขั้นอาศัยแนวคิดจาก PyBot Reference
+- **Test-first** `python3 -B -m unittest -v tests.test_candidate_collection` หลังสร้าง interface ขั้นต่ำได้ RED 8 methods รวม 68 failures และ 2 errors (Exit `1`) จากพฤติกรรมที่ยังไม่มี เช่น ผลว่างแทน Candidate และการตรวจ Input ก่อน duplicate configuration หลัง Implement ผ่าน 8/8 (Exit `0`) เพิ่มกรณี S12 พบว่า Matcher ตัด exact UNKNOWN ไปพร้อมหลักฐาน HELP ได้ RED 1 failure (Exit `1`) หลังแก้ให้ exact UNKNOWN ใช้หลักฐานจากคำขอทั้งช่วงได้ GREEN 9/9 (Exit `0`)
+
+| สถานะสำหรับ TASK-007 | จำนวน | Case IDs และขอบเขต |
+| --- | ---: | --- |
+| Fully Verified | 1 | `ERR-CONFIG` ตรวจ duplicate ID และ Error precedence |
+| Partially Verified · Matching และ Guards | 57 | `DEV-001`–`DEV-032`, `INT-01`–`INT-19`, `INT-CR-ONLY`, `INT-ZWSP-ONLY`, `OPEN-BOM-PREFIX`, `OPEN-ZWSP-IN-WORD`, `OPEN-COMBINING-ONLY`, `OPEN-MIXED-REQUEST` ตรวจ Candidate ที่มีหรือไม่มี รักษาหลักฐานหลายเจตนา กรองบริบทและข้าม Matcher ใน early paths ตรวจ Candidate หลังข้อความลาและเทียบ Candidate เมื่อมี padding ผลและ response ระดับ Engine ยังรอ |
+| Partially Verified · Collection และ faults | 15 | `RES-01`–`RES-13` ตรวจ metadata และทุก Candidate ที่ผ่าน boolean guards ที่ fixture ให้ รวม permutation ที่ระบุ ส่วน intro precedence และ winner ยังรอ Resolver · `ERR-MATCHING`, `ERR-GUARD` ตรวจส่งข้อผิดพลาดตัวเดิมต่อที่จุดรวบรวมผล |
+| Awaiting · ยังไม่รันเป็น Behavioral Cases | 16 | `ERR-SELECTION`, `ERR-RESPONSE` และ 14 กรณี `REVIEW-*` / `REJECT-*` |
+| Pending Decision | 2 | `OPEN-LENGTH-LIMIT`, `OPEN-REGEX-BUDGET` |
+
+- ตรวจ Case IDs ที่ผ่านจาก subtests ได้ 73 รายการตรง mapping ผลสะสมจาก 146 Mandatory Cases เป็น **57 ครบ, 73 บางส่วน, 16 รอ** โดยรวม `ERR-OUTPUT` ที่ตรวจบางส่วนใน TASK-006 Expected Outcomes มาจากชุดเดิมและ R2/R6 ส่วน Resolver fixtures ตรวจการรวบรวมผู้ผ่านโดยรักษาค่าจาก fixture
+- Regex ทั้งหมดเป็นรูปคงที่ ไม่มี nested quantifiers ทดสอบด้วย `python3 -B -` และ `subprocess.run(timeout=2)` ใช้ข้อความทักซ้ำแล้วลงท้ายผิด ข้อความอ้างที่ไม่มีตัวปิด คำขอสูตรที่มี LF กลางข้อความ และคำทักนำที่ส่วนท้ายไม่ตรง ที่ขนาด 128, 512, 2,048, 8,192 และ 32,768 raw code points แยกการวัดเวลาออกจาก peak traced memory ผ่าน 40/40 child processes (Exit `0`) ที่ขนาดสูงสุดใช้ 2.005–2.436 ms และ 1,534–67,512 bytes ตามรูปข้อความ ขอบเขตนี้เป็นการทดลอง เพดานใช้งานจริงและ Regex Budget ยัง Pending
+- `python3 -B -m scripts.run_tests` ก่อนงาน 68/68 หลังงาน 77/77 (Exit `0`, Failure 0, Error 0, Skip 0) ตรวจ Syntax ตาม CI ผ่าน 25 ไฟล์ และ Relative Links 86 จุด (Exit `0`) `python3 -B -m scripts.evaluate_baseline` Exit `0` ผล Always-UNKNOWN 4/32 (12.5%) ตรงรายงานทุกไบต์ SHA-256 ของ Regression Spec, Development Dataset, Baseline Report และ R1 Report ตรง H-029/H-031 ผลนี้ยังไม่มีการวัดความแม่นยำของ Runtime
+- เพิ่ม `thai_ai/{matching,guards,candidates,_rule_metadata}.py` และ `tests/test_candidate_collection.py` แก้ `thai_ai/result.py` ให้ใช้ตัวตรวจ metadata เดียวกัน และอัปเดต README กับ DESIGN.md งานถัดไปที่เสนอคือ Candidate Resolver หลังเจ้าของโครงการทบทวน Branch เพื่อทดสอบ precedence และ ambiguity ด้วย Candidate ที่ตรวจย้อนกลับได้ การเทียบ span กลับ Raw และการรองรับรูปประโยคอื่นต้องมีข้อกำหนดหรือกรณีทดสอบเพิ่มเติม
+
 ### แบบบันทึกผล Branch (คัดลอกเมื่อเริ่มงาน ไม่ใช่ผลจริง)
 
 ```markdown
@@ -970,11 +997,13 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 - [x] เจ้าของโครงการยืนยัน PR #5 Merge เข้า `main`
 - [x] พัฒนา Runtime Foundation และรัน Behavioral Tests ใน TASK-006
 - [x] ตรวจ Local Quality Gate ของ Runtime Foundation ใน TASK-006-R1
+- [x] เจ้าของโครงการยืนยันว่า TASK-006 และ TASK-006-R1 Merge เข้า `main`
+- [x] พัฒนาและตรวจ Rule Matching, Context Guards และ Candidate Collection ใน TASK-007
 - [ ] พัฒนาและวัดผล AI ทีละ Milestone
 
-**Current Branch** `feat/v0.1-runtime-foundation` ตามที่เจ้าของโครงการแจ้ง  
-**Current Task** TASK-006-R1 — Runtime Foundation Quality Review  
-**Status** `READY_FOR_COMMIT` · Local Tests ผ่าน 68/68 · Remote CI `PENDING_REMOTE_VERIFICATION`  
-**Next Step** เจ้าของโครงการตรวจการแก้เทสต์และดำเนินการ Commit/Push  
-**Reason** เก็บหลักฐาน Remote CI ของ Branch ก่อนพิจารณาปิดงาน  
-**Git Status** PR #5 Merge เข้า `main` ด้วย `a8eb239` ตามหลักฐานของเจ้าของโครงการ ส่วน Commit, Push, PR และ Merge ของ TASK-006 รอหลักฐาน
+**Current Branch** `feat/v0.1-rule-matching-guards` ตามที่เจ้าของโครงการแจ้ง  
+**Current Task** TASK-007 — Rule Matching & Context Guards  
+**Status** `READY_FOR_COMMIT` · Local Tests ผ่าน 77/77 · Remote CI `PENDING_REMOTE_VERIFICATION`  
+**Next Step** เจ้าของโครงการตรวจ TASK-007 และเก็บหลักฐาน Remote CI ก่อนพิจารณา Candidate Resolver  
+**Reason** ผลระดับ Resolver ต้องใช้ Candidate ที่ตรวจย้อนกลับถึงกฎและหลักฐานได้  
+**Git Status** เจ้าของโครงการยืนยัน Merge ของ TASK-006 และ TASK-006-R1 เข้า `main` ส่วน Commit, Push, PR และ Merge ของ TASK-007 รอหลักฐาน
