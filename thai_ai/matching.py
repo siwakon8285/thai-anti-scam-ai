@@ -1,8 +1,9 @@
 """Find rule evidence in a validated, normalized matching view."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+from typing import Literal
 
-from thai_ai._rule_metadata import INTENTS, is_rule_id
+from thai_ai._rule_metadata import is_rule_id, is_rule_intent
 from thai_ai.guards import _Scope, _contextual_evidence
 from thai_ai.normalization import normalize_text
 
@@ -19,14 +20,7 @@ class Rule:
     contextual_signals: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
-        if not is_rule_id(self.rule_id):
-            raise RuntimeError("invalid_rule: invalid rule_id")
-        if type(self.intent) is not str or self.intent not in INTENTS or self.intent == "EMPTY_INPUT":
-            raise RuntimeError("invalid_rule: expected a rule-eligible V0.1 intent")
-        if type(self.priority) is not int:
-            raise RuntimeError("invalid_rule: priority must be an integer")
-        if type(self.specificity) is not int or self.specificity not in (0, 1, 2):
-            raise RuntimeError("invalid_rule: specificity must be 0, 1, or 2")
+        self._validate_metadata()
         if type(self.phrases) is not tuple or not self.phrases:
             raise RuntimeError("invalid_rule: at least one literal phrase is required")
         for phrases in (self.phrases, self.contextual_signals):
@@ -42,12 +36,23 @@ class Rule:
             if len(set(phrases)) != len(phrases):
                 raise RuntimeError("invalid_rule: duplicate literal phrase")
 
+    def _validate_metadata(self) -> None:
+        if not is_rule_id(self.rule_id):
+            raise RuntimeError("invalid_rule: invalid rule_id")
+        if not is_rule_intent(self.intent):
+            raise RuntimeError("invalid_rule: expected a rule-eligible V0.1 intent")
+        if type(self.priority) is not int:
+            raise RuntimeError("invalid_rule: priority must be an integer")
+        if type(self.specificity) is not int or self.specificity not in (0, 1, 2):
+            raise RuntimeError("invalid_rule: specificity must be 0, 1, or 2")
+
 
 @dataclass(frozen=True)
 class _Match:
     rule: Rule
     span: tuple[int, int]
     scope: _Scope
+    pair_side: Literal["opening", "following"] | None = None
 
 
 def _match_clause(clause: str, offset: int, rules: tuple[Rule, ...]) -> tuple[_Match, ...]:
@@ -84,7 +89,11 @@ def _find_matches(matching_text: str, rules: tuple[Rule, ...]) -> tuple[_Match, 
         if left:
             right = _match_clause(second, len(first) + 1, rules)
             if right:
-                return whole + left + right
+                return (
+                    *whole,
+                    *(replace(match, pair_side="opening") for match in left),
+                    *(replace(match, pair_side="following") for match in right),
+                )
     return whole
 
 
