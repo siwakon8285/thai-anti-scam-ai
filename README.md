@@ -78,14 +78,23 @@ Test Runner ใช้ `unittest` ส่วน [GitHub Actions](.github/workflows
 
 ```text
 thai-anti-scam-ai/
-├── datasets/development/v0.1.json
+├── datasets/
+│   ├── development/v0.1.json
+│   └── regression/v0.1.json
 ├── docs/
 │   ├── assets/
 │   │   └── ban.png
 │   ├── v0.1-behavior.md
+│   ├── v0.1-behavioral-contract-analysis.md
+│   ├── v0.1-thai-text-processing.md
+│   ├── v0.1-rule-architecture.md
+│   ├── v0.1-regression-spec.md
 │   └── pybot-reference-and-design-rationale.md
-├── reports/baseline-v0.1.json
+├── reports/
+│   ├── baseline-v0.1.json
+│   └── text-processing-v0.1.json
 ├── scripts/
+│   ├── experiments/text_processing.py
 │   ├── evaluate_baseline.py
 │   └── run_tests.py
 ├── tests/
@@ -96,6 +105,10 @@ thai-anti-scam-ai/
 ## Documentation
 
 - [Behavior Specification V0.1](docs/v0.1-behavior.md) — Intent ที่รองรับตามแผน พฤติกรรมที่คาดหวัง และ Proposed Contract
+- [Behavioral Contract Analysis V0.1](docs/v0.1-behavioral-contract-analysis.md) — ขอบเขต Intent การตรวจย้อนกลับ 32 ตัวอย่าง และข้อเสนอด้าน Regression
+- [Thai Text Processing Experiments V0.1](docs/v0.1-thai-text-processing.md) — การทดลอง Unicode และการเทียบรูปข้อความภาษาไทย
+- [Rule Architecture V0.1](docs/v0.1-rule-architecture.md) — ข้อเสนอการเลือก Intent และสัญญาคำตอบ
+- [Regression Specification V0.1](docs/v0.1-regression-spec.md) — กรณีอ้างอิงและผลคาดหวังสำหรับทดสอบก่อนพัฒนา Engine
 - [PyBot Reference Study](docs/pybot-reference-and-design-rationale.md) — กรณีศึกษา PyBot และเหตุผลที่เลือกปรับแนวคิดให้เหมาะกับภาษาไทย
 - [DESIGN.md](DESIGN.md) — สถาปัตยกรรม แนวทางประเมิน และเหตุผลด้านการออกแบบ
 

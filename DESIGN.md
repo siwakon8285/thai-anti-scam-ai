@@ -301,8 +301,15 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 | 00 | `main` — เอกสารตั้งต้น | เริ่ม Repository | เจ้าของโครงการยืนยันแล้ว |
 | 01 | `chore/project-foundation` | โครงสร้างและข้อกำหนด (TASK-002) | MERGED |
 | 02 | `ci/github-actions` | GitHub Actions CI (TASK-003) | MERGED · Remote CI ผ่านตามที่เจ้าของโครงการยืนยัน |
-| 03 | `test/v0.1-baseline` | AI Behavior Specification & Baseline Evaluation (TASK-004) | READY_FOR_COMMIT หลัง R6-FINAL · Remote CI: PENDING_REMOTE_VERIFICATION |
-| 04 | `feat/v0.1-basic-chatbot` | AI Prototype V0.1 (เสนอเป็น TASK-005) | PLANNED |
+| 03 | `test/v0.1-baseline` | AI Behavior Specification & Baseline Evaluation (TASK-004) | MERGED · PR #4 · Remote CI ผ่านตามหลักฐานจากเจ้าของโครงการ |
+| 03a | `design/v0.1-behavioral-contract` | Behavioral Contract & Regression Engineering (TASK-005 Analysis Phase) | ANALYSIS_COMPLETE_PENDING_REVIEW |
+| 03b | `design/v0.1-behavioral-contract` | Thai Text Processing Research & Experiments (TASK-005-R1) | RESEARCH_COMPLETE_PENDING_REVIEW |
+| 03c | `design/v0.1-behavioral-contract` | Rule Architecture, Conflict Resolution & Response Contract (TASK-005-R2) | DESIGN_COMPLETE_PENDING_REVIEW |
+| 03d | `design/v0.1-behavioral-contract` | Regression Engineering & Behavioral Contract Validation (TASK-005-R3) | REGRESSION_SPEC_COMPLETE_PENDING_REVIEW |
+| 03e | `design/v0.1-behavioral-contract` | Final Contract & Quality Review (TASK-005-R4) | NEEDS_REVISION |
+| 03f | `design/v0.1-behavioral-contract` | Regression Validator Reliability & Contract Finalization (TASK-005-R5) | REVIEW_COMPLETE_PENDING_OWNER_APPROVAL |
+| 03g | `design/v0.1-behavioral-contract` | Contract Approval & Finalization (TASK-005-R6) | READY_FOR_COMMIT |
+| 04 | `feat/v0.1-basic-chatbot` | AI Prototype V0.1 (แผน TASK-006) | PLANNED · รอคำสั่งเริ่มงาน |
 | 05 | `feat/v0.2-intent-variants` | V0.2 | PLANNED |
 | 06 | `feat/v0.3-informal-thai` | V0.3 | PLANNED |
 | 07 | `feat/v0.4-negation-ambiguity` | V0.4 | PLANNED |
@@ -356,7 +363,15 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 
 ใช้ Mermaid ที่แก้ไขต่อได้ แยก Current Implementation จาก Planned Architecture และจัดทำแผนภาพของโครงการเองโดยไม่คัดลอกจาก PyBot งานเอกสารผ่านการตรวจในเครื่องและอยู่ในสถานะ `READY_FOR_COMMIT` ตาม H-014 ส่วน Remote CI ยังรอหลักฐานของ Branch นี้
 
-### 04 — `feat/v0.1-basic-chatbot` / เสนอเป็น TASK-005 AI Prototype V0.1
+### 03a — `design/v0.1-behavioral-contract` / TASK-005 Analysis Phase
+
+เจ้าของโครงการกำหนดให้แทรกการวิเคราะห์สัญญาพฤติกรรมก่อน Prototype เพื่อระบุขอบเขต Intent, ตรวจตัวอย่างพัฒนา, แยกนโยบาย Input/Output และออกแบบ Regression ที่ตรวจย้อนกลับได้ ขอบเขตนี้ใช้การตรวจเอกสารและการสังเกต Python String Operations ในหน่วยความจำ ผลทดลอง TASK-005-R1 บันทึกใน H-024 ข้อเสนอทางเทคนิคและเกณฑ์ Implementation รอทบทวน [Behavioral Contract Analysis V0.1](docs/v0.1-behavioral-contract-analysis.md)
+
+### 04 — `feat/v0.1-basic-chatbot` / AI Prototype V0.1 ตามแผนเดิม
+
+เดิมเสนอให้ใช้ TASK-005 สำหรับ Prototype ต่อมาแยกงานออกแบบและตรวจ Contract ไว้ใน TASK-005 ถึง R6 ก่อนวางแผน Prototype ใน TASK-006
+
+แผน TASK-006 ใช้ Regression Specification ที่ตรึงใน R6 เขียน Behavioral Tests และบันทึก RED ก่อนพัฒนา Input Validation, Normalization และ Result Contract จากนั้นเพิ่ม Matching, Guards, Resolver และ Response ตาม Dependency ทดสอบ Mandatory IDs ที่รันจริงและวัดผล Engine แยกจากผล Specification งานยังอยู่ในแผน [Test Integration Plan](docs/v0.1-regression-spec.md#test-integration-plan)
 
 **เป้าหมาย:** สร้าง Rule-based Chatbot ภาษาไทยตัวแรกที่รันจริง
 
@@ -539,6 +554,15 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 | D-029 | 2026-11-27 | ใช้ Project Banner แบบ SVG ต้นฉบับสำหรับ Visual Identity | ให้หน้าหลักสื่อถึงงานวิจัยภาษาไทยแบบใช้กฎด้วยตัวอักษรไทยและโล่เชิงสัญลักษณ์ บนพื้น Navy–Teal ใช้ SVG เพื่อรักษาความคมชัดและแก้ไข Source ได้ แยกภาพประจำโครงการจากแผนภาพ Runtime ใช้สถานะ Research in Progress โดยไม่กล่าวอ้างผลหรือความพร้อมใช้งาน และไม่ใช้ Assets ของ PyBot |
 | D-030 | 2026-11-27 | ใช้ ban.png เป็น Banner บน README | เจ้าของโครงการเลือกภาพนี้สำหรับหน้าหลัก เก็บ SVG ต้นฉบับไว้ตามเดิม และกำกับภาพว่าแสดงแนวคิดงานวิจัยที่ยังไม่ได้ Implement |
 | D-031 | 2026-11-27 | ยืนยัน ban.png เป็น Banner ที่ใช้งานจริงก่อนส่งงาน | ทำตามการเลือกของเจ้าของโครงการใน D-030 และแก้ Directory Tree ให้ตรงกับไฟล์จริงที่พบในรอบ R6-FINAL ประวัติการสร้าง SVG ยังคงอยู่ใน D-029 และ H-017 |
+| D-032 | 2026-11-27 | แทรก TASK-005 Analysis Phase ก่อน AI Prototype V0.1 | เจ้าของโครงการกำหนด Branch และขอบเขตเพื่อทบทวน Contract กับ Regression ก่อนเริ่ม Runtime ผลกระทบคือ Prototype ยังอยู่ในแผนและรอการอนุมัติหลังทบทวน |
+| D-033 | 2026-11-27 | เสนอนโยบาย Input, Selection, Output และ Regression ที่ตรวจย้อนกลับได้ | Proposed · คง Taxonomy ตาม D-013 และบันทึก Q-00 ถึง Q-14 หลักฐาน String Operations ยังไม่พอเลือก Normalization หรือเพดานความยาว รายละเอียดรอทดลองและทบทวน |
+| D-034 | 2026-11-27 | ใช้มาตรฐาน Concise Documentation | เจ้าของโครงการกำหนดให้ลดเนื้อหาซ้ำและเก็บหลักฐานที่ใช้ตรวจซ้ำได้ ความละเอียดของการศึกษาและทดสอบขึ้นกับงาน [AGENTS.md](AGENTS.md#concise-documentation) |
+| D-035 | 2026-11-27 | เสนอ Raw เป็นตัวควบคุมและ strip + NFC สำหรับทดสอบ Matching View หลังตรวจ Input | Proposed · รักษาความต่าง 8/8 และรวมคู่เทียบเท่า 3/8 ในชุดสมมติ ส่วน compatibility folding และเพดานความยาวต้องศึกษาต่อ |
+| D-036 | 2026-11-27 | เสนอ Input Policy, ลำดับเลือกกฎ และ Response Contract V0.1 | Proposed · ตรวจอักขระก่อน blank ใช้ allowlist TAB/LF/CR จัดกฎภายใน Intent ตาม Priority → Specificity → rule_id และแยก ambiguity จาก Internal Error |
+| D-037 | 2026-11-27 | ใช้ Contract ที่เจ้าของโครงการเลือกเป็นฐาน Regression Specification ของ R3 | ใช้ในชุดอ้างอิงรอบนี้ · Pending ไม่มีผลคาดหวังบังคับ ส่วนการอนุมัติ Runtime และ Template รอการตรวจทาน |
+| D-038 | 2026-11-28 | เสนอแก้การตรวจ oracle ขัดกันข้ามหมวดก่อนตรึง Regression | Proposed · กำหนดความเท่ากันตามจุดเรียกและ Configuration เดียวกัน รอเจ้าของทบทวนโดยคง Expected Outcome เดิม |
+| D-039 | 2026-11-28 | ใช้จุดเรียกและ Raw Typed Fixture ตรวจความขัดแย้ง และตรวจผลคาดหวังเทียบ Contract | Implemented เฉพาะ validator · ตรวจผู้ชนะและ path จาก Fixture โดยคงผลคาดหวังเดิม ส่วน Pending, S15, Template และ Result Contract รอ Owner Approval |
+| D-040 | 2026-11-28 | เจ้าของอนุมัติผล Intent สี่กรณี, ZWSP เดี่ยว S15, Template และ Result Contract V0.1 | อนุมัติใน R6 · คง Raw ตาม Input Policy เดิม ใช้ frozen dataclass พร้อม Runtime Validation และอนุมัติขอบเขตการทดลองชั่วคราว 32,768 raw code points กับ 2 วินาทีต่อ child process |
 
 ## 11. Development History (บันทึกเพิ่มตามงานจริง)
 
@@ -756,6 +780,83 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 - `python3 -B -m scripts.run_tests` ได้ Pass 30/30, Failure 0, Error 0, Skip 0 (Exit `0`) และ `python3 -B -m scripts.evaluate_baseline` ได้ 4/32 หรือ 12.5% (Exit `0`) โดย Output ตรงกับรายงานเดิมทุกไบต์ ตรวจ SHA-256 ยืนยันว่า Dataset และ Baseline Report ตรงกับค่าที่บันทึกไว้ก่อนเริ่มงาน
 - แก้เฉพาะ `README.md` และ `DESIGN.md` การแสดง Banner บน GitHub และ Remote CI ยังรอตรวจหลังเจ้าของโครงการ Push
 
+### H-020 — `test/v0.1-baseline` / ปิด TASK-004 และ README Refinement
+
+- วันที่บันทึก: 2026-11-27 · สถานะ Merge: `MERGED` ตามหลักฐานที่เจ้าของโครงการระบุใน TASK-005 ทาง PR #4 เข้า `main` ด้วย Merge Commit แบบย่อ `164e9a3`
+- Remote CI ผ่านตามคำยืนยันของเจ้าของโครงการ ผู้ใช้ระบุว่าภาพหน้า GitHub แสดงเครื่องหมายตรวจสอบสีเขียวบน Merge Commit ยังไม่มี Full SHA, SHA ของ Merge อื่นสำหรับ Baseline, Run ID, จำนวน Remote Tests หรือ Duration
+- เจ้าของโครงการยืนยันว่า Banner แสดงบนหน้า README จริงและเป็นผู้นำ SVG เดิมออก ในเครื่องตรวจ `docs/assets/ban.png` ได้ 2244 × 701 พิกเซล และ 1,730,078 ไบต์ ประวัติการใช้ SVG อยู่ใน D-029, H-017 ถึง H-019 โดยผลการแสดง Mermaid บน GitHub ยังไม่มีหลักฐานเฉพาะ
+- Local Results ก่อนปิด Branch ตาม H-019 แยกจากผล Remote ข้อความสถานะเก่าในประวัติสะท้อนข้อมูล ณ เวลาที่บันทึก
+
+### H-021 — `design/v0.1-behavioral-contract` / TASK-005 Analysis Phase
+
+- วันที่: 2026-11-27 · สถานะงาน Local: `ANALYSIS_COMPLETE_PENDING_REVIEW` ก่อนเจ้าของโครงการพิจารณา Commit/Push · Remote CI และ Merge ของ TASK-005 ยังรอหลักฐานจากเจ้าของโครงการ
+- งาน: สรุป Current Implementation กับ Contract เดิม วิเคราะห์ 8 Intent และ Traceability 32 กรณี ยืนยันจากเอกสารได้ 28 กรณี คง Label เดิมและส่งเรื่อง 004, 006, 007, 021 ให้ทบทวน ออกแบบ Regression/Test-first, Decision Matrix และแผนทดลอง TASK-005-R1
+- ผลทดลองจริง: `python3 -B -` ผ่าน stdin (คำสั่งเต็มในเอกสารวิเคราะห์) Exit `0` บน Python 3.14.8 / Darwin arm64 / UCD 16.0.0 พบ whitespace ของ Python 29 code points, BOM และ zero-width ที่ตรวจยังอยู่หลัง strip, surrogate ทดลอง encode แบบ UTF-8 ไม่ได้ และ NFKC เปลี่ยนรูปสระอำในตัวอย่างที่ NFC คงไว้
+- ก่อนและหลังแก้เอกสาร: `python3 -B -m scripts.run_tests` ได้ 30 Tests, Pass 30, Failure 0, Error 0, Skip 0, Exit `0` และ `python3 -B -m scripts.evaluate_baseline` ได้ 32 ตัวอย่าง ถูก 4 ผิด 28 (12.5%), Exit `0` โดย stdout ตรงรายงานเดิมทุกไบต์
+- Dataset SHA-256 `dde615e2e63116f0f410027833f4f76dcc7928e44814f6e33fc5864078cbcaed` และ Baseline Report SHA-256 `c1219b9eab5e806e181e0d02c6525349e8da9f9aee9fdad77636246d7a79e38e`
+- ตรวจ Syntax ตามวิธี CI ด้วย `python3 -B -` และ `compile()` ในหน่วยความจำครบ 10 ไฟล์ (Exit `0`) ตรวจ UTF-8 และโครงสร้าง Markdown แบบ Static 6 ไฟล์ ตรวจ Traceability จาก JSON 32/32, coverage map 15 Requirements, Decision Matrix 15 คำถาม และ Directory Tree ใน README 14 เส้นทาง (Exit `0`) ประวัติเดิม D-001 ถึง D-031 และ H-001 ถึง H-019 ตรงตาม SHA-256 ของช่วงข้อความก่อนแก้ และไฟล์อื่นนอกชุดส่งมอบ 17 ไฟล์มี SHA-256 เดิม
+- ตรวจ Relative Links 55 รายการ พบ Anchor เดิมใน PyBot Reference ชี้ `../README.md#architecture` ซึ่งไม่มีแล้วหลังเปลี่ยนชื่อหัวข้อใน README คงรายการเดิมตามขอบเขตที่ให้เพิ่มเฉพาะ Mapping ของ TASK-005 ลิงก์ Relative ที่เพิ่มในรอบนี้ชี้ไปยังปลายทางจริง
+- ไฟล์ที่เปลี่ยน: เพิ่ม `docs/v0.1-behavioral-contract-analysis.md` และแก้ `DESIGN.md`, `README.md`, `docs/pybot-reference-and-design-rationale.md`
+- ข้อจำกัด: Local Tests ครอบคลุม Tooling ยังไม่มี Behavioral Test หรือ Benchmark ของ Engine ผลเปรียบเทียบ Normalization, การเลือก Intent, เพดานความยาว และ Result Object ยังรอหลักฐานหรือการตัดสินใจ
+- งานถัดไปที่เสนอ: เจ้าของโครงการทบทวน Contract และแผน TASK-005-R1 เพื่อกำหนด oracle กับกรณีเสี่ยงก่อนทดลองเปรียบเทียบวิธี
+
+### H-022 — `design/v0.1-behavioral-contract` / TASK-005 Documentation Refinement
+
+- เพิ่มมาตรฐาน Concise Documentation ใน `AGENTS.md` และแก้ลิงก์ Evaluation Architecture ใน PyBot Reference ตามข้อค้นพบ H-021
+- ตรวจ Relative Links 56 จุดใน Markdown 6 ไฟล์ผ่าน และ `python3 -B -m scripts.run_tests` ได้ 30/30, Failure 0, Error 0, Skip 0 ทั้งคู่ Exit `0`
+- การปรับเนื้อหา PyBot Reference รอไฟล์ฉบับปรับปรุงจากเจ้าของโครงการ เพื่อนำมาเทียบกับข้อค้นพบ TASK-005 และหลักฐานอ้างอิง
+
+### H-023 — `design/v0.1-behavioral-contract` / TASK-005 Documentation Refinement ส่งตรวจ
+
+- ใช้ PyBot Reference ฉบับย่อของเจ้าของโครงการเป็นฐาน แทรกข้อค้นพบ TASK-005 ในตารางเดิมและลิงก์รายละเอียดการทดลอง คง Source References, License, ข้อจำกัด และสถานะ Implemented/Proposed
+- ตรวจ Relative Links ผ่าน 44/44 ใน Markdown 6 ไฟล์ ป้าย Source References ของ PyBot ครบ 33 รายการ และ `python3 -B -m scripts.run_tests` ผ่าน 30/30, Failure 0, Error 0, Skip 0 ทั้งหมด Exit `0`
+- สถานะส่งตรวจในเครื่อง เจ้าของโครงการทบทวนเอกสารและข้อเสนอ TASK-005 ก่อนพิจารณาแผนทดลอง
+
+### H-024 — `design/v0.1-behavioral-contract` / TASK-005-R1
+
+- สถานะในเครื่อง `RESEARCH_COMPLETE_PENDING_REVIEW` ตรวจ Unicode และ Matching View บนข้อความสมมติ ใช้ข้อมูลเพื่อทบทวน Input Contract คง Dataset และ Label เดิมทั้งสี่รายการที่ส่งให้ทบทวน
+- `python3 -B -m scripts.experiments.text_processing` รันเต็มสองชุด Exit `0` ทั้งคู่ EXP-001 ตรง 64/64 และ EXP-002 ตรง 24/24 พบ Python whitespace 29 เทียบกับ White_Space 25 ตัว ผล EXP-001–003 ตรงกันทั้งสองชุด และตรวจซ้ำด้วย `--behavior-only` Exit `0` ตรงกับรายงาน
+- EXP-003 ให้ strip + NFC รวมได้ 3/8 คู่และ collision 0/8 ส่วน strip + NFKC รวมได้ 5/8 และ collision 1/8 EXP-004 วัด 340 จุดต่อชุด เวลา median ต่างกันมัธยฐาน 2.73% และมากสุด 35.94% ค่า peak traced allocations ตรงกัน 340/340 จุด ผลเป็นต้นทุนของ Text Processing ยังไม่กำหนดเพดาน Engine
+- ก่อนและหลังงาน `python3 -B -m scripts.run_tests` ผ่าน 30/30, Failure 0, Error 0, Skip 0 และ `python3 -B -m scripts.evaluate_baseline` ได้ 4/32 (12.5%) ตรง Baseline Report ทุกไบต์ ทั้งคู่ Exit `0` Hash Dataset และ Baseline Report ตรง H-021 ตรวจ Syntax ตาม CI ผ่าน 11 ไฟล์ Exit `0`
+- ส่งมอบสคริปต์ รายงาน JSON และบทสรุป อัปเดต Decision Matrix และ Documentation Index เจ้าของโครงการทบทวน whitespace/controls, format characters และตัวเลือก Normalization ก่อนอนุมัติงานถัดไป Remote CI และ Merge ยังรอหลักฐาน [สคริปต์](scripts/experiments/text_processing.py) · [รายงาน JSON](reports/text-processing-v0.1.json) · [บทสรุป](docs/v0.1-thai-text-processing.md)
+
+### H-025 — `design/v0.1-behavioral-contract` / TASK-005-R2
+
+- สถานะในเครื่อง `DESIGN_COMPLETE_PENDING_REVIEW` จัดทำ Input Policy, Rule Contract, Decision Table, Response Rubric และ 26 Scenario ที่อ้าง Requirement เดิม เพื่อเตรียม Regression ใน R3 คง Raw และ Label ของ 004, 006, 007, 021 [Rule Architecture V0.1](docs/v0.1-rule-architecture.md)
+- ก่อนและหลัง `python3 -B -m scripts.run_tests` ผ่าน 30/30, Failure 0, Error 0, Skip 0 และ `python3 -B -m scripts.evaluate_baseline` ได้ 4/32 (12.5%) ตรงรายงานเดิมทุกไบต์ ทั้งคู่ Exit `0` SHA-256 ของ Dataset, Baseline Report และผล R1 ตรงกับก่อนเริ่มงาน
+- `python3 -B -m scripts.experiments.text_processing --behavior-only` Exit `0` และ EXP-001–003 ตรงรายงาน R1 ตรวจ allowlist กับหลักฐาน EXP-002 ได้ whitespace ที่รับ 22 code points และครอบคลุม EMPTY_INPUT เดิม 4/4 ตรวจ Syntax 11 ไฟล์และ Relative Links ผ่าน การตรวจเอกสารรอบแรก Exit `1` เพราะตัวกรองนับหัวตารางในจำนวน Scenario หลังระบุรูป S01–S26 ตรวจซ้ำได้ Exit `0`
+- งานรอบนี้ใช้ Decision Table และการตรวจเอกสาร ยังไม่มีผลจาก Intent Resolver จริง เจ้าของโครงการทบทวน allowlist, Bidi_Control, การเลือกข้าม Intent และ Rubric ก่อนตรึง expected outcomes ใน R3 เพดานความยาวและต้นทุน Regex รอการวัดเมื่อมีกฎจริง Remote CI และ Merge รอหลักฐาน
+
+### H-026 — `design/v0.1-behavioral-contract` / TASK-005-R3
+
+- สถานะในเครื่อง `REGRESSION_SPEC_COMPLETE_PENDING_REVIEW` สร้าง 147 Cases แบ่งเป็น Mandatory 141 และ Pending 6 เชื่อมครบ 15 Requirements และ 26 Scenario ของ R2 คง Raw Input กับ Label เดิมครบ 32 ตัวอย่าง วางชุดอ้างอิงก่อนเริ่ม Runtime [Regression Specification V0.1](docs/v0.1-regression-spec.md)
+- เพิ่ม Test Methods ตรวจ Specification 15 วิธี และ helper ใต้ `tests/` ที่ใช้ Strict JSON Parser เดิม ตรวจ Schema, Fixtures, Coverage และผลขัดแย้ง การทดสอบ negative case ของตำแหน่งอักขระคืน Exit `1` ครั้งแรกเพราะ validator ยอมรับตำแหน่งตัวที่สอง หลังแก้ validator ชุด Specification ผ่าน 15/15 Exit `0` โดยคงผลคาดหวังเดิม
+- `python3 -B -m scripts.run_tests` ก่อนงานผ่าน 30/30 และหลังงาน 45/45, Failure 0, Error 0, Skip 0, Exit `0` `python3 -B -m scripts.evaluate_baseline` ก่อนและหลังได้ 4/32 (12.5%) ตรงรายงานเดิมทุกไบต์ Exit `0` Dataset, Baseline Report และรายงาน R1 มี SHA-256 เดิม ตรวจ Syntax ตาม CI ผ่าน 13 ไฟล์
+- Behavioral Tests และการตรวจความหมายของ Template โดยผู้ทบทวนยังรอดำเนินการ เจ้าของโครงการทบทวน Pending Cases, Template และเกณฑ์ทรัพยากรก่อนอนุมัติ Implementation และการเก็บ Behavioral RED แยกจาก Specification Validation Remote CI และ Merge ยังรอหลักฐาน
+
+### H-027 — `design/v0.1-behavioral-contract` / TASK-005-R4
+
+- วันที่ 2026-11-28 · ตรวจครบ 147 กรณี (141 Mandatory, 6 Pending), 15/15 Requirements, 26/26 Scenario IDs และถ้อยคำจริง 11 Template records สำหรับ 8 Intent S15 ยังขาด ZWSP เดี่ยว แม้มีกรณีผสม อ้างอิง Development Dataset เดิมครบ 32 ตัวอย่าง
+- สถานะ `NEEDS_REVISION` เพราะ synthetic probe ระดับ HIGH ยืนยันว่า validator ยอมรับ Result กับ ValueError สำหรับ Input เดียวกันเมื่อแยกหมวด จาก 12 probes ปฏิเสธ 9 และยอมรับ 3 รวมผู้ชนะ Priority ต่ำกว่าและ path format-only ที่ระบุผิดด้วย คง Source Code และ Expected Outcome เดิม [ผลตรวจและแนวทางแก้](docs/v0.1-regression-spec.md#final-quality-review)
+- `python3 -B -m scripts.run_tests` ผ่าน 45/45, Failure 0, Error 0, Skip 0, Exit `0` `python3 -B -m scripts.evaluate_baseline` ได้ 4/32 (12.5%) และ stdout ตรงรายงานเดิมทุกไบต์ Exit `0` Syntax ตาม CI ผ่าน 13 ไฟล์ และ Dataset ทั้งสองชุด, Baseline Report, รายงาน R1 มี SHA-256 เดิม
+- เพิ่มแผน Test-first ตาม Dependency และข้อเสนอแยก process สำหรับทดลอง Regex เจ้าของโครงการทบทวนการแก้ HIGH, Pending และ Template ก่อนพิจารณา Implementation เพดานและงบใช้งานจริงรอผล Engine ส่วน Remote CI และ Merge ยังรอหลักฐาน
+
+### H-028 — `design/v0.1-behavioral-contract` / TASK-005-R5
+
+- สถานะ `REVIEW_COMPLETE_PENDING_OWNER_APPROVAL` แก้ HIGH เรื่อง category แยกคีย์ของจุดเรียกเดียวกัน และ MEDIUM เรื่องผลผู้ชนะกับ format-only ที่ขัด Contract ตรวจ ZWSP เดี่ยวด้วย synthetic fixture ในหน่วยความจำ การเพิ่ม S15 ลง Dataset ยังรออนุมัติ [Regression Specification](docs/v0.1-regression-spec.md)
+- ก่อนแก้ 12 probes จาก R4 ปฏิเสธ 9 และยอมรับ 3 หลังแก้ปฏิเสธ 12/12 `python3 -B -m unittest -v tests.test_regression_spec` ได้ RED 23 methods, 10 failures รวม subtests, 1 error, Exit `1` หลังแก้ผ่าน 23/23 Exit `0` ครอบคลุม fixture ที่ถูกต้อง การสลับ Candidate, tie, guard และกรณีผลเดียวกันแต่ตรวจ follow-up เพิ่ม
+- `python3 -B -m scripts.run_tests` ก่อนแก้ผ่าน 45/45 หลังแก้ผ่าน 53/53, Failure 0, Error 0, Skip 0 ทั้งคู่ Exit `0` `python3 -B -m scripts.evaluate_baseline` ได้ 4/32 (12.5%) และ stdout ตรงรายงานเดิมทุกไบต์ Exit `0` SHA-256 ของ Dataset ทั้งสองชุด, Baseline Report และรายงาน R1 คงเดิม มี 147 Cases (141 Mandatory, 6 Pending), Requirements 15/15 และ Scenario IDs 26/26
+- ทบทวนถ้อยคำจริง 11 records ของ 8 Intent คง Template และ Expected Outcome เดิม เสนอขอบเขตทดลอง 32,768 raw code points กับ 2 วินาทีต่อ child process ตรวจกลไกหยุดด้วย dummy worker ได้ timeout ที่ตั้ง 0.25 วินาทีและ reap สำเร็จ (child `-9`, parent Exit `0`, เวลา 0.253 วินาที) ส่วนเพดานและงบใช้งานจริงรอผล Engine
+- แก้ `tests/regression_spec_validation.py`, `tests/test_regression_spec.py`, Regression Specification, Decision Matrix และ DESIGN.md งานถัดไปคือ Owner Review สำหรับ Pending Cases, S15, Template และ Result Contract ก่อนตรึงผลคาดหวังสำหรับ Behavioral Tests · Remote CI `PENDING_REMOTE_VERIFICATION`
+
+### H-029 — `design/v0.1-behavioral-contract` / TASK-005-R6
+
+- สถานะในเครื่อง `READY_FOR_COMMIT` ตามผลอนุมัติ D-040 ตรึงสามกรณีเป็น UNKNOWN/no_match/None, คำขอเริ่มต้นร่วมกับคำขอบคุณเป็น HELP พร้อมอ้างกฎผู้ชนะ และเพิ่ม `INT-ZWSP-ONLY` สำหรับ S15 เป็น UNKNOWN/format_only/None รักษา ID เดิมและเปลี่ยนถ้อยคำเฉพาะ BOT_CAPABILITIES กับ UNKNOWN แบบ ambiguity
+- Regression Specification `v0.1` มี 148 Cases (146 Mandatory, 2 Pending), Requirements 15/15, Scenarios 26/26 และ SHA-256 `5d300acdadcb48d3bce4ea98bf9564a6e5346b81b45864a3c6b843199cc9b948` คง Pending สำหรับ Production Input Limit และ Regex Budget [Regression Specification](docs/v0.1-regression-spec.md)
+- ก่อนปรับ Local Tests ผ่าน 53/53 หลังอัปเดต Dataset รอบแรก Specification Tests 23 methods ได้ 1 failure และ 1 error (Exit `1`) จาก fixture ZWSP สังเคราะห์ที่กลายเป็นกรณีซ้ำ และตัวตรวจ Pending ที่อ้าง BOM ซึ่งอนุมัติแล้ว หลังปรับให้ตรวจ S15 จริงและใช้กรณีที่ยัง Pending ชุด Specification ผ่าน 24/24 และ Local Tests ผ่าน 54/54, Failure 0, Error 0, Skip 0, Exit `0`
+- Negative probes จาก R4 ถูกปฏิเสธ 12/12 และ R5 เพิ่มเติม 8/8 Syntax ตาม CI ผ่าน 13 ไฟล์ และตรวจ UTF-8 กับ Relative Links 85 รายการผ่าน Baseline 4/32 (12.5%) ตรงรายงานเดิมทุกไบต์ Exit `0` SHA-256 ของ Development Dataset, Baseline Report และ R1 Report คงเดิม Validator ตรวจ Specification ส่วน Behavioral Tests รอ TASK-006
+- Remote CI `PENDING_REMOTE_VERIFICATION` งานถัดไปคือเจ้าของโครงการตรวจทานการปิด Design Branch และสั่งเริ่ม TASK-006 เพื่อบันทึก Behavioral RED จากชุดที่อนุมัติก่อนเขียน Engine
+
 ### แบบบันทึกผล Branch (คัดลอกเมื่อเริ่มงาน ไม่ใช่ผลจริง)
 
 ```markdown
@@ -815,12 +916,20 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 - [x] จัดทำ PyBot Reference Mapping และเหตุผลด้านสถาปัตยกรรมใน TASK-004-R4
 - [x] ปรับ README ให้เน้นผลงาน วิธีใช้งาน และผลประเมินใน TASK-004-R5
 - [x] เพิ่ม Project Banner แบบ SVG และตรวจการแสดงผลในเครื่องใน TASK-004-R6
-- [ ] เจ้าของโครงการยืนยันการแสดงผล Mermaid และ Remote CI ของ `test/v0.1-baseline` บน GitHub
+- [x] เจ้าของโครงการยืนยัน Remote CI, Merge ของ `test/v0.1-baseline` และการแสดง Banner บน GitHub
+- [ ] หลักฐานเฉพาะการแสดงผล Mermaid บน GitHub
+- [x] จัดทำการวิเคราะห์ Behavioral Contract และ Regression Engineering ของ TASK-005
+- [x] ดำเนิน TASK-005-R1 Thai Text Processing Research & Experiments
+- [x] จัดทำ Rule Architecture, Conflict Resolution และ Response Contract ใน TASK-005-R2
+- [x] สร้างและตรวจ Regression Specification ใน TASK-005-R3
+- [x] ตรวจ Final Contract และบันทึกข้อค้นพบใน TASK-005-R4
+- [x] แก้ validator และตรวจหลักฐานตามขอบเขต TASK-005-R5
+- [x] บันทึก Contract และผลตรวจหลังเจ้าของโครงการอนุมัติใน TASK-005-R6
 - [ ] พัฒนาและวัดผล AI ทีละ Milestone
 
-**Current Branch:** `test/v0.1-baseline` ตามที่เจ้าของโครงการแจ้ง  
-**Current Task:** TASK-004-R6-FINAL — Banner Verification and Documentation Finalization  
-**Status:** `READY_FOR_COMMIT` · Local Tests ผ่าน 30/30 · Remote CI: `PENDING_REMOTE_VERIFICATION`  
-**Next Step:** เจ้าของโครงการตรวจทานหน้า README ก่อน Commit และ Push แล้วตรวจการแสดงผล Banner, Mermaid และ Remote CI บน GitHub  
-**Reason:** ยืนยันว่าภาพและเอกสารแสดงได้ตามที่ตรวจในเครื่อง และตรวจผลบน Runner ก่อนพิจารณา TASK-005 AI Prototype V0.1  
-**Git Status:** เจ้าของโครงการยืนยันว่า CI Branch Merge ผ่าน PR #2 แล้ว ส่วน Commit, Push, PR และ Merge ของ TASK-004 ยังไม่มีข้อมูลยืนยัน
+**Current Branch** `design/v0.1-behavioral-contract` ตามที่เจ้าของโครงการแจ้ง  
+**Current Task** TASK-005-R6 — Contract Approval & Finalization  
+**Status** `READY_FOR_COMMIT` · Local Tests ผ่าน 54/54 · Remote CI `PENDING_REMOTE_VERIFICATION`  
+**Next Step** เจ้าของโครงการตรวจทานการปิด Design Branch ก่อนสั่งเริ่ม TASK-006  
+**Reason** ใช้ Contract ที่ตรึงแล้วเก็บ Behavioral RED ก่อนพัฒนา Engine  
+**Git Status** เจ้าของโครงการยืนยัน PR #4 Merge เข้า `main` ด้วย `164e9a3` ส่วน Commit, Push, PR และ Merge ของ TASK-005 ยังไม่มีข้อมูลยืนยัน

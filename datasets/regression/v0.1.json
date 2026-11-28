@@ -1,0 +1,3637 @@
+{
+  "version": "v0.1",
+  "response_templates": {
+    "greeting": {
+      "intent": "GREETING",
+      "path": "matched",
+      "text": "สวัสดีครับ ยินดีที่ได้คุยด้วยครับ",
+      "rubric": "ทักกลับผู้ใช้โดยตรงอย่างสุภาพ"
+    },
+    "identity": {
+      "intent": "BOT_IDENTITY",
+      "path": "matched",
+      "text": "ผมเป็นต้นแบบบอตภาษาไทยแบบใช้กฎของโครงการ thai-anti-scam-ai ครับ",
+      "rubric": "ระบุชื่อโครงการปัจจุบันและลักษณะของต้นแบบบอต"
+    },
+    "capabilities": {
+      "intent": "BOT_CAPABILITIES",
+      "path": "matched",
+      "text": "ผมเป็นต้นแบบบอตภาษาไทยแบบใช้กฎ รองรับการทักทาย แนะนำตัว และสนทนาพื้นฐาน รวมถึงสอบถามรายละเอียดเมื่อคุณต้องการความช่วยเหลือ รุ่นนี้ยังไม่สามารถตรวจจับการหลอกลวงได้ครับ",
+      "rubric": "บอกขอบเขตที่ตั้งใจรองรับใน V0.1 และระบุชัดว่ายังตรวจจับการหลอกลวงไม่ได้"
+    },
+    "thanks": {
+      "intent": "THANKS",
+      "path": "matched",
+      "text": "ยินดีครับ",
+      "rubric": "ตอบรับคำขอบคุณอย่างสุภาพ"
+    },
+    "farewell": {
+      "intent": "FAREWELL",
+      "path": "matched",
+      "text": "แล้วพบกันใหม่ครับ",
+      "rubric": "กล่าวลาอย่างสุภาพโดยไม่มีผลข้างเคียงต่อการรับข้อความถัดไป"
+    },
+    "help": {
+      "intent": "HELP",
+      "path": "matched",
+      "text": "อยากให้ช่วยเรื่องอะไรครับ เล่าเพิ่มได้เลย เช่น อยากรู้ว่าบอตนี้ทำอะไรได้บ้าง",
+      "rubric": "ขอรายละเอียดและยกตัวอย่างที่รองรับ โดยไม่วินิจฉัยสถานการณ์หรืออ้างว่าลงมือช่วยแล้ว"
+    },
+    "unknown_explicit": {
+      "intent": "UNKNOWN",
+      "path": "matched",
+      "text": "ผมยังตอบเรื่องนี้ไม่ได้ครับ ลองบอกได้ไหมว่าต้องการให้ช่วยเรื่องอะไร",
+      "rubric": "แจ้งข้อจำกัดหรือชวนปรับคำขอโดยไม่แต่งข้อเท็จจริง"
+    },
+    "unknown_no_match": {
+      "intent": "UNKNOWN",
+      "path": "no_match",
+      "text": "ผมยังตอบเรื่องนี้ไม่ได้ครับ ลองบอกได้ไหมว่าต้องการให้ช่วยเรื่องอะไร",
+      "rubric": "แจ้งข้อจำกัดหรือชวนปรับคำขอโดยไม่แต่งข้อเท็จจริง"
+    },
+    "unknown_format_only": {
+      "intent": "UNKNOWN",
+      "path": "format_only",
+      "text": "ข้อความนี้ยังตีความไม่ได้ครับ กรุณาพิมพ์รายละเอียดเพิ่มเติมครับ",
+      "rubric": "ขอข้อความที่ตีความได้โดยไม่เหมารวมว่าผู้ใช้ส่งสตริงว่าง"
+    },
+    "unknown_ambiguity": {
+      "intent": "UNKNOWN",
+      "path": "ambiguity",
+      "text": "ข้อความนี้อาจมีหลายคำขอครับ คุณต้องการให้ช่วยเรื่องใดเป็นหลักครับ?",
+      "rubric": "ขอให้ระบุเจตนาหลักโดยไม่เลือกแทนผู้ใช้"
+    },
+    "empty": {
+      "intent": "EMPTY_INPUT",
+      "path": "empty",
+      "text": "กรุณาพิมพ์ข้อความก่อนครับ",
+      "rubric": "ขอให้ผู้ใช้ป้อนข้อความ"
+    }
+  },
+  "cases": [
+    {
+      "case_id": "DEV-001",
+      "requirement_ids": [
+        "BC-INT-01",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "สวัสดีครับ"
+      },
+      "rationale": "ตอบกลับด้วยคำทักทายภาษาไทยที่เหมาะสม",
+      "source_sample_id": "DEV-V01-001",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "GREETING",
+        "path": "matched",
+        "response_template": "greeting",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-002",
+      "requirement_ids": [
+        "BC-INT-01",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "สวัสดีตอนเช้าค่ะ"
+      },
+      "rationale": "ตอบกลับด้วยคำทักทายภาษาไทยที่เหมาะสม",
+      "source_sample_id": "DEV-V01-002",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "GREETING",
+        "path": "matched",
+        "response_template": "greeting",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-003",
+      "requirement_ids": [
+        "BC-INT-01",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "หวัดดี"
+      },
+      "rationale": "ตอบกลับด้วยคำทักทายภาษาไทยที่เหมาะสม",
+      "source_sample_id": "DEV-V01-003",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "GREETING",
+        "path": "matched",
+        "response_template": "greeting",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-004",
+      "requirement_ids": [
+        "BC-INT-01",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ทักทายครับ"
+      },
+      "rationale": "คำทักโดยตรงในบริบทข้อความเดียว",
+      "source_scenarios": [
+        "S01"
+      ],
+      "source_sample_id": "DEV-V01-004",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "GREETING",
+        "path": "matched",
+        "response_template": "greeting",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-005",
+      "requirement_ids": [
+        "BC-INT-02",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "คุณคือใคร"
+      },
+      "rationale": "แนะนำตัวว่าเป็นต้นแบบบอตภาษาไทยแบบใช้กฎของโครงการ",
+      "source_sample_id": "DEV-V01-005",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "BOT_IDENTITY",
+        "path": "matched",
+        "response_template": "identity",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-006",
+      "requirement_ids": [
+        "BC-INT-02",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "คุณชื่ออะไร"
+      },
+      "rationale": "ถามชื่อ ให้ตอบชื่อโครงการ thai-anti-scam-ai และชนิดต้นแบบ",
+      "source_scenarios": [
+        "S02"
+      ],
+      "source_sample_id": "DEV-V01-006",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "BOT_IDENTITY",
+        "path": "matched",
+        "response_template": "identity",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-007",
+      "requirement_ids": [
+        "BC-INT-02",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "นี่คือบอตอะไร"
+      },
+      "rationale": "ถามชนิดของบอต แยกจากถามหน้าที่",
+      "source_scenarios": [
+        "S03"
+      ],
+      "source_sample_id": "DEV-V01-007",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "BOT_IDENTITY",
+        "path": "matched",
+        "response_template": "identity",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-008",
+      "requirement_ids": [
+        "BC-INT-02",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "คุณเป็นบอตใช่ไหม"
+      },
+      "rationale": "แนะนำตัวว่าเป็นต้นแบบบอตภาษาไทยแบบใช้กฎของโครงการ",
+      "source_sample_id": "DEV-V01-008",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "BOT_IDENTITY",
+        "path": "matched",
+        "response_template": "identity",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-009",
+      "requirement_ids": [
+        "BC-INT-03",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "คุณทำอะไรได้บ้าง"
+      },
+      "rationale": "อธิบายขอบเขตการสนทนาที่รองรับจริงและระบุข้อจำกัดด้านการตรวจจับการหลอกลวง",
+      "source_sample_id": "DEV-V01-009",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "BOT_CAPABILITIES",
+        "path": "matched",
+        "response_template": "capabilities",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-010",
+      "requirement_ids": [
+        "BC-INT-03",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ระบบนี้รองรับการสนทนาเรื่องอะไร"
+      },
+      "rationale": "อธิบายขอบเขตการสนทนาที่รองรับจริงและระบุข้อจำกัดด้านการตรวจจับการหลอกลวง",
+      "source_sample_id": "DEV-V01-010",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "BOT_CAPABILITIES",
+        "path": "matched",
+        "response_template": "capabilities",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-011",
+      "requirement_ids": [
+        "BC-INT-03",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ขอบเขตความสามารถของคุณคืออะไร"
+      },
+      "rationale": "อธิบายขอบเขตการสนทนาที่รองรับจริงและระบุข้อจำกัดด้านการตรวจจับการหลอกลวง",
+      "source_sample_id": "DEV-V01-011",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "BOT_CAPABILITIES",
+        "path": "matched",
+        "response_template": "capabilities",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-012",
+      "requirement_ids": [
+        "BC-INT-03",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "คุณช่วยเรื่องอะไรได้บ้าง"
+      },
+      "rationale": "อธิบายขอบเขตการสนทนาที่รองรับจริงและระบุข้อจำกัดด้านการตรวจจับการหลอกลวง",
+      "source_sample_id": "DEV-V01-012",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "BOT_CAPABILITIES",
+        "path": "matched",
+        "response_template": "capabilities",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-013",
+      "requirement_ids": [
+        "BC-INT-04",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ขอบคุณครับ"
+      },
+      "rationale": "ตอบรับคำขอบคุณอย่างสุภาพ",
+      "source_sample_id": "DEV-V01-013",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "THANKS",
+        "path": "matched",
+        "response_template": "thanks",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-014",
+      "requirement_ids": [
+        "BC-INT-04",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ขอบใจนะ"
+      },
+      "rationale": "ตอบรับคำขอบคุณอย่างสุภาพ",
+      "source_sample_id": "DEV-V01-014",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "THANKS",
+        "path": "matched",
+        "response_template": "thanks",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-015",
+      "requirement_ids": [
+        "BC-INT-04",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ขอบคุณมากค่ะ"
+      },
+      "rationale": "ตอบรับคำขอบคุณอย่างสุภาพ",
+      "source_sample_id": "DEV-V01-015",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "THANKS",
+        "path": "matched",
+        "response_template": "thanks",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-016",
+      "requirement_ids": [
+        "BC-INT-04",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ขอบคุณสำหรับความช่วยเหลือ"
+      },
+      "rationale": "ตอบรับคำขอบคุณอย่างสุภาพ",
+      "source_sample_id": "DEV-V01-016",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "THANKS",
+        "path": "matched",
+        "response_template": "thanks",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-017",
+      "requirement_ids": [
+        "BC-INT-05",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ลาก่อน"
+      },
+      "rationale": "กล่าวลาอย่างสุภาพ",
+      "source_sample_id": "DEV-V01-017",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "FAREWELL",
+        "path": "matched",
+        "response_template": "farewell",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-018",
+      "requirement_ids": [
+        "BC-INT-05",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "แล้วพบกันใหม่ครับ"
+      },
+      "rationale": "กล่าวลาและการเรียกครั้งถัดไปยังทำได้",
+      "source_scenarios": [
+        "S10"
+      ],
+      "source_sample_id": "DEV-V01-018",
+      "follow_up_case": "DEV-001",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "FAREWELL",
+        "path": "matched",
+        "response_template": "farewell",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-019",
+      "requirement_ids": [
+        "BC-INT-05",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ขอตัวก่อนนะ"
+      },
+      "rationale": "กล่าวลาอย่างสุภาพ",
+      "source_sample_id": "DEV-V01-019",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "FAREWELL",
+        "path": "matched",
+        "response_template": "farewell",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-020",
+      "requirement_ids": [
+        "BC-INT-05",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ไปก่อนนะคะ"
+      },
+      "rationale": "กล่าวลาอย่างสุภาพ",
+      "source_sample_id": "DEV-V01-020",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "FAREWELL",
+        "path": "matched",
+        "response_template": "farewell",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-021",
+      "requirement_ids": [
+        "BC-INT-06",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ช่วยด้วยครับ"
+      },
+      "rationale": "ขอรายละเอียดอย่างสุภาพโดยไม่วินิจฉัยเหตุเร่งด่วน",
+      "source_scenarios": [
+        "S04"
+      ],
+      "source_sample_id": "DEV-V01-021",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "HELP",
+        "path": "matched",
+        "response_template": "help",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-022",
+      "requirement_ids": [
+        "BC-INT-06",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ขอความช่วยเหลือหน่อยค่ะ"
+      },
+      "rationale": "เสนอวิธีเริ่มต้นหรือขอรายละเอียดโดยยกตัวอย่างสิ่งที่ระบบรองรับจริง",
+      "source_sample_id": "DEV-V01-022",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "HELP",
+        "path": "matched",
+        "response_template": "help",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-023",
+      "requirement_ids": [
+        "BC-INT-06",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ช่วยฉันหน่อย"
+      },
+      "rationale": "เสนอวิธีเริ่มต้นหรือขอรายละเอียดโดยยกตัวอย่างสิ่งที่ระบบรองรับจริง",
+      "source_sample_id": "DEV-V01-023",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "HELP",
+        "path": "matched",
+        "response_template": "help",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-024",
+      "requirement_ids": [
+        "BC-INT-06",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ช่วยแนะนำวิธีเริ่มต้นหน่อย"
+      },
+      "rationale": "เสนอวิธีเริ่มต้นหรือขอรายละเอียดโดยยกตัวอย่างสิ่งที่ระบบรองรับจริง",
+      "source_sample_id": "DEV-V01-024",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "HELP",
+        "path": "matched",
+        "response_template": "help",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "DEV-025",
+      "requirement_ids": [
+        "BC-INT-07",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "วันนี้ฝนจะตกไหม"
+      },
+      "rationale": "แจ้งข้อจำกัดหรือขอให้ระบุคำขอที่ระบบรองรับโดยไม่แต่งข้อมูล",
+      "source_sample_id": "DEV-V01-025",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "no_match",
+        "response_template": "unknown_no_match",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "DEV-026",
+      "requirement_ids": [
+        "BC-INT-07",
+        "BC-OUT-02",
+        "BC-INT-06",
+        "BC-OUT-01"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ช่วยบอกสูตรทำขนมครกหน่อย"
+      },
+      "rationale": "วัตถุของคำขอเป็นสูตรอาหารนอกขอบเขต จึงตัด HELP",
+      "source_scenarios": [
+        "S11"
+      ],
+      "source_sample_id": "DEV-V01-026",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "no_match",
+        "response_template": "unknown_no_match",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "DEV-027",
+      "requirement_ids": [
+        "BC-INT-07",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "กรุงเทพฯ มีประชากรกี่คน"
+      },
+      "rationale": "แจ้งข้อจำกัดหรือขอให้ระบุคำขอที่ระบบรองรับโดยไม่แต่งข้อมูล",
+      "source_sample_id": "DEV-V01-027",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "no_match",
+        "response_template": "unknown_no_match",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "DEV-028",
+      "requirement_ids": [
+        "BC-INT-07",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "เล่านิทานเรื่องกระต่ายให้ฟังหน่อย"
+      },
+      "rationale": "แจ้งข้อจำกัดหรือขอให้ระบุคำขอที่ระบบรองรับโดยไม่แต่งข้อมูล",
+      "source_sample_id": "DEV-V01-028",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "no_match",
+        "response_template": "unknown_no_match",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "DEV-029",
+      "requirement_ids": [
+        "BC-INT-08",
+        "BC-OUT-02",
+        "BC-IN-02",
+        "BC-OUT-01"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": ""
+      },
+      "rationale": "แจ้งให้ผู้ใช้ป้อนข้อความ",
+      "source_scenarios": [
+        "S13"
+      ],
+      "source_sample_id": "DEV-V01-029",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "EMPTY_INPUT",
+        "path": "empty",
+        "response_template": "empty",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "DEV-030",
+      "requirement_ids": [
+        "BC-INT-08",
+        "BC-OUT-02",
+        "BC-IN-02",
+        "BC-OUT-01"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": " "
+      },
+      "rationale": "แจ้งให้ผู้ใช้ป้อนข้อความ",
+      "source_scenarios": [
+        "S13"
+      ],
+      "source_sample_id": "DEV-V01-030",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "EMPTY_INPUT",
+        "path": "empty",
+        "response_template": "empty",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "DEV-031",
+      "requirement_ids": [
+        "BC-INT-08",
+        "BC-OUT-02",
+        "BC-IN-02",
+        "BC-OUT-01"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "\t"
+      },
+      "rationale": "แจ้งให้ผู้ใช้ป้อนข้อความ",
+      "source_scenarios": [
+        "S13"
+      ],
+      "source_sample_id": "DEV-V01-031",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "EMPTY_INPUT",
+        "path": "empty",
+        "response_template": "empty",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "DEV-032",
+      "requirement_ids": [
+        "BC-INT-08",
+        "BC-OUT-02",
+        "BC-IN-02",
+        "BC-OUT-01"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "\n \t"
+      },
+      "rationale": "แจ้งให้ผู้ใช้ป้อนข้อความ",
+      "source_scenarios": [
+        "S13"
+      ],
+      "source_sample_id": "DEV-V01-032",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "EMPTY_INPUT",
+        "path": "empty",
+        "response_template": "empty",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "IN-01",
+      "requirement_ids": [
+        "BC-IN-01",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "json_value",
+        "value": null
+      },
+      "rationale": "null แทน Python None ต้องปฏิเสธก่อนประมวลผลข้อความ",
+      "source_scenarios": [
+        "S17"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "TypeError",
+        "reason": "invalid_type"
+      }
+    },
+    {
+      "case_id": "IN-02",
+      "requirement_ids": [
+        "BC-IN-01",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "json_value",
+        "value": true
+      },
+      "rationale": "bool แยกจาก int ต้องปฏิเสธก่อนประมวลผลข้อความ",
+      "source_scenarios": [
+        "S17"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "TypeError",
+        "reason": "invalid_type"
+      }
+    },
+    {
+      "case_id": "IN-03",
+      "requirement_ids": [
+        "BC-IN-01",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "json_value",
+        "value": 17
+      },
+      "rationale": "int ต้องปฏิเสธก่อนประมวลผลข้อความ",
+      "source_scenarios": [
+        "S17"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "TypeError",
+        "reason": "invalid_type"
+      }
+    },
+    {
+      "case_id": "IN-04",
+      "requirement_ids": [
+        "BC-IN-01",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "json_value",
+        "value": 2.5
+      },
+      "rationale": "float ต้องปฏิเสธก่อนประมวลผลข้อความ",
+      "source_scenarios": [
+        "S17"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "TypeError",
+        "reason": "invalid_type"
+      }
+    },
+    {
+      "case_id": "IN-05",
+      "requirement_ids": [
+        "BC-IN-01",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "json_value",
+        "value": []
+      },
+      "rationale": "list ต้องปฏิเสธก่อนประมวลผลข้อความ",
+      "source_scenarios": [
+        "S17"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "TypeError",
+        "reason": "invalid_type"
+      }
+    },
+    {
+      "case_id": "IN-06",
+      "requirement_ids": [
+        "BC-IN-01",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "json_value",
+        "value": {}
+      },
+      "rationale": "dict ต้องปฏิเสธก่อนประมวลผลข้อความ",
+      "source_scenarios": [
+        "S17"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "TypeError",
+        "reason": "invalid_type"
+      }
+    },
+    {
+      "case_id": "IN-07",
+      "requirement_ids": [
+        "BC-IN-01",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "bytes_hex",
+        "hex": "00ff"
+      },
+      "rationale": "สร้าง bytes จากเลขฐานสิบหก ต้องปฏิเสธก่อนประมวลผลข้อความ",
+      "source_scenarios": [
+        "S17"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "TypeError",
+        "reason": "invalid_type"
+      }
+    },
+    {
+      "case_id": "IN-08",
+      "requirement_ids": [
+        "BC-IN-01",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "str_subclass",
+        "value": "สวัสดีครับ"
+      },
+      "rationale": "instantiate subclass ขั้นต่ำด้วย built-in constructor ต้องปฏิเสธก่อนประมวลผลข้อความ",
+      "source_scenarios": [
+        "S17"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "TypeError",
+        "reason": "invalid_type"
+      }
+    },
+    {
+      "case_id": "IN-09",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ก\u0000"
+      },
+      "rationale": "NUL ต้องตรวจอักขระก่อน trim และไม่คืน Intent",
+      "source_scenarios": [
+        "S19"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "disallowed_control",
+        "code_point_offset": 1
+      }
+    },
+    {
+      "case_id": "IN-10",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "\u001b"
+      },
+      "rationale": "ESC ต้องตรวจอักขระก่อน trim และไม่คืน Intent",
+      "source_scenarios": [
+        "S19"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "disallowed_control",
+        "code_point_offset": 0
+      }
+    },
+    {
+      "case_id": "IN-11",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01",
+        "BC-IN-02"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": " \u000b"
+      },
+      "rationale": "VT แม้ Python trim ได้ ต้องตรวจอักขระก่อน trim และไม่คืน Intent",
+      "source_scenarios": [
+        "S18"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "disallowed_control",
+        "code_point_offset": 1
+      }
+    },
+    {
+      "case_id": "IN-12",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01",
+        "BC-IN-02"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": " \f"
+      },
+      "rationale": "FF แม้ Python trim ได้ ต้องตรวจอักขระก่อน trim และไม่คืน Intent",
+      "source_scenarios": [
+        "S18"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "disallowed_control",
+        "code_point_offset": 1
+      }
+    },
+    {
+      "case_id": "IN-13",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01",
+        "BC-IN-02"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": " "
+      },
+      "rationale": "NEL แม้ Python trim ได้ ต้องตรวจอักขระก่อน trim และไม่คืน Intent",
+      "source_scenarios": [
+        "S18"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "disallowed_control",
+        "code_point_offset": 1
+      }
+    },
+    {
+      "case_id": "IN-14",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01",
+        "BC-IN-02"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": " \u001c"
+      },
+      "rationale": "U+001C แม้ Python trim ได้ ต้องตรวจอักขระก่อน trim และไม่คืน Intent",
+      "source_scenarios": [
+        "S18"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "disallowed_control",
+        "code_point_offset": 1
+      }
+    },
+    {
+      "case_id": "IN-15",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01",
+        "BC-IN-02"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": " \u001d"
+      },
+      "rationale": "U+001D แม้ Python trim ได้ ต้องตรวจอักขระก่อน trim และไม่คืน Intent",
+      "source_scenarios": [
+        "S18"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "disallowed_control",
+        "code_point_offset": 1
+      }
+    },
+    {
+      "case_id": "IN-16",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01",
+        "BC-IN-02"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": " \u001e"
+      },
+      "rationale": "U+001E แม้ Python trim ได้ ต้องตรวจอักขระก่อน trim และไม่คืน Intent",
+      "source_scenarios": [
+        "S18"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "disallowed_control",
+        "code_point_offset": 1
+      }
+    },
+    {
+      "case_id": "IN-17",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01",
+        "BC-IN-02"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": " \u001f"
+      },
+      "rationale": "U+001F แม้ Python trim ได้ ต้องตรวจอักขระก่อน trim และไม่คืน Intent",
+      "source_scenarios": [
+        "S18"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "disallowed_control",
+        "code_point_offset": 1
+      }
+    },
+    {
+      "case_id": "IN-18",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "؜ก"
+      },
+      "rationale": "Bidi_Control U+061C ต้องตรวจอักขระก่อน trim และไม่คืน Intent",
+      "source_scenarios": [
+        "S19"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "bidi_control",
+        "code_point_offset": 0
+      }
+    },
+    {
+      "case_id": "IN-19",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "‎ก"
+      },
+      "rationale": "Bidi_Control U+200E ต้องตรวจอักขระก่อน trim และไม่คืน Intent",
+      "source_scenarios": [
+        "S19"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "bidi_control",
+        "code_point_offset": 0
+      }
+    },
+    {
+      "case_id": "IN-20",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "‏ก"
+      },
+      "rationale": "Bidi_Control U+200F ต้องตรวจอักขระก่อน trim และไม่คืน Intent",
+      "source_scenarios": [
+        "S19"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "bidi_control",
+        "code_point_offset": 0
+      }
+    },
+    {
+      "case_id": "IN-21",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "‪ก"
+      },
+      "rationale": "Bidi_Control U+202A ต้องตรวจอักขระก่อน trim และไม่คืน Intent",
+      "source_scenarios": [
+        "S19"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "bidi_control",
+        "code_point_offset": 0
+      }
+    },
+    {
+      "case_id": "IN-22",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "‫ก"
+      },
+      "rationale": "Bidi_Control U+202B ต้องตรวจอักขระก่อน trim และไม่คืน Intent",
+      "source_scenarios": [
+        "S19"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "bidi_control",
+        "code_point_offset": 0
+      }
+    },
+    {
+      "case_id": "IN-23",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "‬ก"
+      },
+      "rationale": "Bidi_Control U+202C ต้องตรวจอักขระก่อน trim และไม่คืน Intent",
+      "source_scenarios": [
+        "S19"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "bidi_control",
+        "code_point_offset": 0
+      }
+    },
+    {
+      "case_id": "IN-24",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "‭ก"
+      },
+      "rationale": "Bidi_Control U+202D ต้องตรวจอักขระก่อน trim และไม่คืน Intent",
+      "source_scenarios": [
+        "S19"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "bidi_control",
+        "code_point_offset": 0
+      }
+    },
+    {
+      "case_id": "IN-25",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "‮ก"
+      },
+      "rationale": "Bidi_Control U+202E ต้องตรวจอักขระก่อน trim และไม่คืน Intent",
+      "source_scenarios": [
+        "S19"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "bidi_control",
+        "code_point_offset": 0
+      }
+    },
+    {
+      "case_id": "IN-26",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "⁦ก"
+      },
+      "rationale": "Bidi_Control U+2066 ต้องตรวจอักขระก่อน trim และไม่คืน Intent",
+      "source_scenarios": [
+        "S19"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "bidi_control",
+        "code_point_offset": 0
+      }
+    },
+    {
+      "case_id": "IN-27",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "⁧ก"
+      },
+      "rationale": "Bidi_Control U+2067 ต้องตรวจอักขระก่อน trim และไม่คืน Intent",
+      "source_scenarios": [
+        "S19"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "bidi_control",
+        "code_point_offset": 0
+      }
+    },
+    {
+      "case_id": "IN-28",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "⁨ก"
+      },
+      "rationale": "Bidi_Control U+2068 ต้องตรวจอักขระก่อน trim และไม่คืน Intent",
+      "source_scenarios": [
+        "S19"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "bidi_control",
+        "code_point_offset": 0
+      }
+    },
+    {
+      "case_id": "IN-29",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "⁩ก"
+      },
+      "rationale": "Bidi_Control U+2069 ต้องตรวจอักขระก่อน trim และไม่คืน Intent",
+      "source_scenarios": [
+        "S19"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "bidi_control",
+        "code_point_offset": 0
+      }
+    },
+    {
+      "case_id": "IN-30",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "code_points",
+        "values": [
+          55296
+        ]
+      },
+      "rationale": "high surrogate เดี่ยว",
+      "source_scenarios": [
+        "S19"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "surrogate",
+        "code_point_offset": 0
+      }
+    },
+    {
+      "case_id": "IN-31",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "code_points",
+        "values": [
+          3585,
+          56320
+        ]
+      },
+      "rationale": "low surrogate หลังอักษรไทย",
+      "source_scenarios": [
+        "S19"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "surrogate",
+        "code_point_offset": 1
+      }
+    },
+    {
+      "case_id": "IN-32",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "code_points",
+        "values": [
+          55357,
+          56425
+        ]
+      },
+      "rationale": "surrogate pair ที่ยังเป็นสอง code points",
+      "source_scenarios": [
+        "S19"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "surrogate",
+        "code_point_offset": 0
+      }
+    },
+    {
+      "case_id": "IN-33",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "code_points",
+        "values": [
+          0,
+          55296,
+          8238
+        ]
+      },
+      "rationale": "NUL มาก่อน surrogate และ bidi",
+      "source_scenarios": [
+        "S19"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "disallowed_control",
+        "code_point_offset": 0
+      }
+    },
+    {
+      "case_id": "IN-34",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "code_points",
+        "values": [
+          55296,
+          0
+        ]
+      },
+      "rationale": "surrogate มาก่อน NUL",
+      "source_scenarios": [
+        "S19"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "surrogate",
+        "code_point_offset": 0
+      }
+    },
+    {
+      "case_id": "IN-35",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "code_points",
+        "values": [
+          8238,
+          55296
+        ]
+      },
+      "rationale": "bidi มาก่อน surrogate",
+      "source_scenarios": [
+        "S19"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "ValueError",
+        "reason": "bidi_control",
+        "code_point_offset": 0
+      }
+    },
+    {
+      "case_id": "IN-SUBCLASS-PRECEDENCE",
+      "requirement_ids": [
+        "BC-IN-01",
+        "BC-IN-03",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "str_subclass",
+        "value": "\u0000"
+      },
+      "rationale": "ชนิด str subclass ผิดก่อนพิจารณา NUL ที่ฝังในค่า",
+      "source_scenarios": [
+        "S17"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "TypeError",
+        "reason": "invalid_type"
+      }
+    },
+    {
+      "case_id": "NORM-01",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-IN-02"
+      ],
+      "category": "normalization",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": " \tสวัสดีครับ\r\n"
+      },
+      "rationale": "trim TAB, CR, LF และ ASCII space รอบข้อความ",
+      "expected_outcome": {
+        "outcome": "matching_view",
+        "value": "สวัสดีครับ",
+        "preserve_raw": true,
+        "idempotent": true
+      }
+    },
+    {
+      "case_id": "NORM-02",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-IN-02"
+      ],
+      "category": "normalization",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": " สวัสดีครับ　"
+      },
+      "rationale": "trim Unicode whitespace ที่อนุญาตและรักษา Raw",
+      "expected_outcome": {
+        "outcome": "matching_view",
+        "value": "สวัสดีครับ",
+        "preserve_raw": true,
+        "idempotent": true
+      }
+    },
+    {
+      "case_id": "NORM-03",
+      "requirement_ids": [
+        "BC-IN-03"
+      ],
+      "category": "normalization",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "Café ค่ะ"
+      },
+      "rationale": "NFC รูปประกอบ R1 N06",
+      "expected_outcome": {
+        "outcome": "matching_view",
+        "value": "Café ค่ะ",
+        "preserve_raw": true,
+        "idempotent": true
+      }
+    },
+    {
+      "case_id": "NORM-04",
+      "requirement_ids": [
+        "BC-IN-03"
+      ],
+      "category": "normalization",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "Café ค่ะ"
+      },
+      "rationale": "NFC canonical equivalence R1 N05",
+      "expected_outcome": {
+        "outcome": "matching_view",
+        "value": "Café ค่ะ",
+        "preserve_raw": true,
+        "idempotent": true
+      }
+    },
+    {
+      "case_id": "NORM-05",
+      "requirement_ids": [
+        "BC-IN-03"
+      ],
+      "category": "normalization",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ạ́"
+      },
+      "rationale": "จัดลำดับและประกอบ combining marks R1 N07",
+      "expected_outcome": {
+        "outcome": "matching_view",
+        "value": "ạ́",
+        "preserve_raw": true,
+        "idempotent": true
+      }
+    },
+    {
+      "case_id": "NORM-06",
+      "requirement_ids": [
+        "BC-IN-03"
+      ],
+      "category": "normalization",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "กำ"
+      },
+      "rationale": "NFC คงสระอำ R1 N03",
+      "expected_outcome": {
+        "outcome": "matching_view",
+        "value": "กำ",
+        "preserve_raw": true,
+        "idempotent": true
+      }
+    },
+    {
+      "case_id": "NORM-07",
+      "requirement_ids": [
+        "BC-IN-03"
+      ],
+      "category": "normalization",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "กํา"
+      },
+      "rationale": "NFC คงรูปแยก R1 N04",
+      "expected_outcome": {
+        "outcome": "matching_view",
+        "value": "กํา",
+        "preserve_raw": true,
+        "idempotent": true
+      }
+    },
+    {
+      "case_id": "NORM-08",
+      "requirement_ids": [
+        "BC-IN-03"
+      ],
+      "category": "normalization",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": " ﻿สวัสดี "
+      },
+      "rationale": "คง BOM ใน str หลัง trim",
+      "expected_outcome": {
+        "outcome": "matching_view",
+        "value": "﻿สวัสดี",
+        "preserve_raw": true,
+        "idempotent": true
+      }
+    },
+    {
+      "case_id": "NORM-09",
+      "requirement_ids": [
+        "BC-IN-03"
+      ],
+      "category": "normalization",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "สวัส​ดี"
+      },
+      "rationale": "คง ZWSP กลางคำ",
+      "expected_outcome": {
+        "outcome": "matching_view",
+        "value": "สวัส​ดี",
+        "preserve_raw": true,
+        "idempotent": true
+      }
+    },
+    {
+      "case_id": "NORM-10",
+      "requirement_ids": [
+        "BC-IN-03"
+      ],
+      "category": "normalization",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ก‌ข"
+      },
+      "rationale": "คง ZWNJ ตาม R1 H08",
+      "expected_outcome": {
+        "outcome": "matching_view",
+        "value": "ก‌ข",
+        "preserve_raw": true,
+        "idempotent": true
+      }
+    },
+    {
+      "case_id": "NORM-11",
+      "requirement_ids": [
+        "BC-IN-03"
+      ],
+      "category": "normalization",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "👩‍💻 ✈️"
+      },
+      "rationale": "คง ZWJ และ variation selector ตาม R1 N11",
+      "source_scenarios": [
+        "S16"
+      ],
+      "expected_outcome": {
+        "outcome": "matching_view",
+        "value": "👩‍💻 ✈️",
+        "preserve_raw": true,
+        "idempotent": true
+      }
+    },
+    {
+      "case_id": "NORM-12",
+      "requirement_ids": [
+        "BC-IN-03"
+      ],
+      "category": "normalization",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "เมนู Ｈｅｌｐ"
+      },
+      "rationale": "คง fullwidth และ case ในข้อความไทยผสมอังกฤษ",
+      "expected_outcome": {
+        "outcome": "matching_view",
+        "value": "เมนู Ｈｅｌｐ",
+        "preserve_raw": true,
+        "idempotent": true
+      }
+    },
+    {
+      "case_id": "NORM-13",
+      "requirement_ids": [
+        "BC-IN-03"
+      ],
+      "category": "normalization",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ดู https://example.org/A?ref=๑๒.๕ และป้าย ①"
+      },
+      "rationale": "คง URL, จุดทศนิยม, ตัวพิมพ์และเลขวงกลม",
+      "expected_outcome": {
+        "outcome": "matching_view",
+        "value": "ดู https://example.org/A?ref=๑๒.๕ และป้าย ①",
+        "preserve_raw": true,
+        "idempotent": true
+      }
+    },
+    {
+      "case_id": "NORM-14",
+      "requirement_ids": [
+        "BC-IN-03"
+      ],
+      "category": "normalization",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "เขาพูดว่า “สวัสดี!”\nไม่ต้องช่วยครับ"
+      },
+      "rationale": "คงเครื่องหมายคำพูด newline และคำปฏิเสธ",
+      "expected_outcome": {
+        "outcome": "matching_view",
+        "value": "เขาพูดว่า “สวัสดี!”\nไม่ต้องช่วยครับ",
+        "preserve_raw": true,
+        "idempotent": true
+      }
+    },
+    {
+      "case_id": "NORM-15",
+      "requirement_ids": [
+        "BC-IN-03"
+      ],
+      "category": "normalization",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "مرحبا שלום"
+      },
+      "rationale": "อักษร RTL ปกติผ่าน validation ไม่ถูกปฏิเสธตาม bidi class",
+      "source_scenarios": [
+        "S16"
+      ],
+      "expected_outcome": {
+        "outcome": "matching_view",
+        "value": "مرحبا שלום",
+        "preserve_raw": true,
+        "idempotent": true
+      }
+    },
+    {
+      "case_id": "NORM-16",
+      "requirement_ids": [
+        "BC-IN-03"
+      ],
+      "category": "normalization",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "́"
+      },
+      "rationale": "combining mark ปกติไม่ใช่ Cf หรือ Variation_Selector",
+      "expected_outcome": {
+        "outcome": "matching_view",
+        "value": "́",
+        "preserve_raw": true,
+        "idempotent": true
+      }
+    },
+    {
+      "case_id": "NORM-17",
+      "requirement_ids": [
+        "BC-IN-03"
+      ],
+      "category": "normalization",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "กกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกก ไม่ต้องช่วยครับ"
+      },
+      "rationale": "ตรวจคงส่วนท้ายในตัวอย่างยาว โดยไม่กำหนดเพดาน",
+      "expected_outcome": {
+        "outcome": "matching_view",
+        "value": "กกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกก ไม่ต้องช่วยครับ",
+        "preserve_raw": true,
+        "idempotent": true
+      }
+    },
+    {
+      "case_id": "INT-01",
+      "requirement_ids": [
+        "BC-INT-02",
+        "BC-OUT-02",
+        "BC-INT-01",
+        "BC-SEL-01"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "สวัสดีครับ คุณคือใคร"
+      },
+      "rationale": "คำถามตัวตนหลักชนะคำทักนำ",
+      "source_scenarios": [
+        "S05"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "BOT_IDENTITY",
+        "path": "matched",
+        "response_template": "identity",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "INT-02",
+      "requirement_ids": [
+        "BC-INT-03",
+        "BC-OUT-02",
+        "BC-SEL-01"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "สวัสดีครับ คุณช่วยอะไรได้บ้าง"
+      },
+      "rationale": "คำถามขอบเขตชนะคำทักนำ",
+      "source_scenarios": [
+        "S06"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "BOT_CAPABILITIES",
+        "path": "matched",
+        "response_template": "capabilities",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "INT-03",
+      "requirement_ids": [
+        "BC-INT-07",
+        "BC-OUT-02",
+        "BC-INT-06"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ไม่ต้องช่วยครับ"
+      },
+      "rationale": "ปฏิเสธการช่วย",
+      "source_scenarios": [
+        "S07"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "no_match",
+        "response_template": "unknown_no_match",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "INT-04",
+      "requirement_ids": [
+        "BC-INT-07",
+        "BC-OUT-02",
+        "BC-INT-01"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "เขาบอกว่าสวัสดี"
+      },
+      "rationale": "เป็นรายงานคำพูดผู้อื่น",
+      "source_scenarios": [
+        "S08"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "no_match",
+        "response_template": "unknown_no_match",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "INT-05",
+      "requirement_ids": [
+        "BC-INT-04",
+        "BC-OUT-02",
+        "BC-INT-06"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ขอบคุณ แต่ยังไม่ต้องช่วย"
+      },
+      "rationale": "ขอบคุณตรงและปฏิเสธเฉพาะการช่วย",
+      "source_scenarios": [
+        "S09"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "THANKS",
+        "path": "matched",
+        "response_template": "thanks",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "INT-06",
+      "requirement_ids": [
+        "BC-INT-08",
+        "BC-OUT-02",
+        "BC-IN-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "\r\n"
+      },
+      "rationale": "LF และ CR เป็น blank ที่อนุญาต",
+      "source_scenarios": [
+        "S13"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "EMPTY_INPUT",
+        "path": "empty",
+        "response_template": "empty",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "INT-07",
+      "requirement_ids": [
+        "BC-INT-08",
+        "BC-OUT-02",
+        "BC-IN-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": " \t　"
+      },
+      "rationale": "Unicode whitespace รอบ TAB",
+      "source_scenarios": [
+        "S13"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "EMPTY_INPUT",
+        "path": "empty",
+        "response_template": "empty",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "INT-08",
+      "requirement_ids": [
+        "BC-INT-01",
+        "BC-OUT-02",
+        "BC-IN-02",
+        "BC-SEL-01",
+        "BC-OUT-01"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": " สวัสดีครับ　"
+      },
+      "rationale": "padding ที่อนุญาตให้ผลเท่ากับรูปเดิม",
+      "source_scenarios": [
+        "S14"
+      ],
+      "same_result_as": "DEV-001",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "GREETING",
+        "path": "matched",
+        "response_template": "greeting",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "INT-09",
+      "requirement_ids": [
+        "BC-INT-07",
+        "BC-OUT-02",
+        "BC-IN-03"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "﻿"
+      },
+      "rationale": "BOM ล้วนผ่าน validation และเป็น format-only",
+      "source_scenarios": [
+        "S15"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "format_only",
+        "response_template": "unknown_format_only",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "INT-10",
+      "requirement_ids": [
+        "BC-INT-07",
+        "BC-OUT-02",
+        "BC-IN-03"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": " ​‌‍ "
+      },
+      "rationale": "joiners และ ZWSP ผสม whitespace ยังไม่มีเนื้อหาปกติ",
+      "source_scenarios": [
+        "S15"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "format_only",
+        "response_template": "unknown_format_only",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "INT-11",
+      "requirement_ids": [
+        "BC-INT-07",
+        "BC-OUT-02",
+        "BC-IN-03"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "️"
+      },
+      "rationale": "variation selector เข้ากรณี format-only ด้วยคุณสมบัติของตัวเอง",
+      "source_scenarios": [
+        "S15"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "format_only",
+        "response_template": "unknown_format_only",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "INT-12",
+      "requirement_ids": [
+        "BC-INT-07",
+        "BC-OUT-02",
+        "BC-IN-03"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "👩‍💻 ✈️"
+      },
+      "rationale": "มีฐาน emoji จึงไม่ใช่ format-only",
+      "source_scenarios": [
+        "S16"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "no_match",
+        "response_template": "unknown_no_match",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "INT-13",
+      "requirement_ids": [
+        "BC-INT-07",
+        "BC-OUT-02",
+        "BC-IN-03"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "مرحبا שלום"
+      },
+      "rationale": "อักษร RTL ปกติ valid และนอกขอบเขต V0.1",
+      "source_scenarios": [
+        "S16"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "no_match",
+        "response_template": "unknown_no_match",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "INT-14",
+      "requirement_ids": [
+        "BC-INT-07",
+        "BC-OUT-02",
+        "BC-SEL-01",
+        "BC-INT-02",
+        "BC-INT-03"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "คุณคือใคร คุณทำอะไรได้บ้าง"
+      },
+      "rationale": "มีสองคำถามตรงที่ไม่มี precedence ระหว่างกัน",
+      "source_scenarios": [
+        "S22"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "ambiguity",
+        "response_template": "unknown_ambiguity",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "INT-15",
+      "requirement_ids": [
+        "BC-INT-07",
+        "BC-OUT-02",
+        "BC-INT-04"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "เขาพูดว่า “ขอบคุณครับ”"
+      },
+      "rationale": "ขอบคุณในคำอ้าง",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "no_match",
+        "response_template": "unknown_no_match",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "INT-16",
+      "requirement_ids": [
+        "BC-INT-07",
+        "BC-OUT-02",
+        "BC-INT-04"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ไม่ได้ขอบคุณครับ"
+      },
+      "rationale": "ปฏิเสธการขอบคุณ",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "no_match",
+        "response_template": "unknown_no_match",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "INT-17",
+      "requirement_ids": [
+        "BC-INT-07",
+        "BC-OUT-02",
+        "BC-INT-01"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "กรุณาทักทายเพื่อนให้หน่อย"
+      },
+      "rationale": "สั่งให้ทักผู้อื่น",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "no_match",
+        "response_template": "unknown_no_match",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "INT-18",
+      "requirement_ids": [
+        "BC-INT-03",
+        "BC-OUT-02",
+        "BC-INT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "บอตนี้ทำอะไรได้บ้าง"
+      },
+      "rationale": "ถามหน้าที่ของบอต เทียบ DEV-007",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "BOT_CAPABILITIES",
+        "path": "matched",
+        "response_template": "capabilities",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "INT-19",
+      "requirement_ids": [
+        "BC-INT-02",
+        "BC-OUT-02"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "คุณเป็นใครครับ"
+      },
+      "rationale": "ถามตัวตนโดยตรงพร้อมคำลงท้าย",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "BOT_IDENTITY",
+        "path": "matched",
+        "response_template": "identity",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "INT-CR-ONLY",
+      "requirement_ids": [
+        "BC-IN-02",
+        "BC-INT-08",
+        "BC-OUT-01"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "\r"
+      },
+      "rationale": "CR เดี่ยวเป็น whitespace ที่อนุญาตด้วยตัวเอง",
+      "source_scenarios": [
+        "S13"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "EMPTY_INPUT",
+        "path": "empty",
+        "response_template": "empty",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "INT-ZWSP-ONLY",
+      "requirement_ids": [
+        "BC-INT-07",
+        "BC-OUT-02",
+        "BC-IN-03"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "​"
+      },
+      "rationale": "ZWSP เดี่ยวผ่าน validation และเป็น format-only ตาม S15 ที่เจ้าของอนุมัติใน R6",
+      "source_scenarios": [
+        "S15"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "format_only",
+        "response_template": "unknown_format_only",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "RES-01",
+      "requirement_ids": [
+        "BC-SEL-01",
+        "BC-OUT-01",
+        "BC-INT-07"
+      ],
+      "category": "resolver",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "candidates",
+        "candidates": [],
+        "greeting_is_intro": false,
+        "check_permutations": false
+      },
+      "rationale": "ไม่มี candidate",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "no_match",
+        "response_template": "unknown_no_match",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "RES-02",
+      "requirement_ids": [
+        "BC-SEL-01",
+        "BC-OUT-01",
+        "BC-INT-01"
+      ],
+      "category": "resolver",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "candidates",
+        "candidates": [
+          {
+            "fixture_rule_id": "single",
+            "intent": "GREETING",
+            "priority": 0,
+            "specificity": 1,
+            "guard_passes": true
+          }
+        ],
+        "greeting_is_intro": false,
+        "check_permutations": false
+      },
+      "rationale": "มี candidate ที่ผ่านหนึ่งรายการ",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "GREETING",
+        "path": "matched",
+        "response_template": "greeting",
+        "rule_id": "must_reference_winning_rule",
+        "winning_candidate": "single"
+      }
+    },
+    {
+      "case_id": "RES-03",
+      "requirement_ids": [
+        "BC-SEL-01",
+        "BC-OUT-01",
+        "BC-INT-07"
+      ],
+      "category": "resolver",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "candidates",
+        "candidates": [
+          {
+            "fixture_rule_id": "origin",
+            "intent": "UNKNOWN",
+            "priority": 0,
+            "specificity": 2,
+            "guard_passes": true
+          }
+        ],
+        "greeting_is_intro": false,
+        "check_permutations": false
+      },
+      "rationale": "explicit UNKNOWN มีผู้ชนะจริง",
+      "source_scenarios": [
+        "S12"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "matched",
+        "response_template": "unknown_explicit",
+        "rule_id": "must_reference_winning_rule",
+        "winning_candidate": "origin"
+      }
+    },
+    {
+      "case_id": "RES-04",
+      "requirement_ids": [
+        "BC-SEL-01",
+        "BC-OUT-01",
+        "BC-INT-01"
+      ],
+      "category": "resolver",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "candidates",
+        "candidates": [
+          {
+            "fixture_rule_id": "a",
+            "intent": "GREETING",
+            "priority": 8,
+            "specificity": 0,
+            "guard_passes": true
+          },
+          {
+            "fixture_rule_id": "b",
+            "intent": "GREETING",
+            "priority": 3,
+            "specificity": 2,
+            "guard_passes": true
+          }
+        ],
+        "greeting_is_intro": false,
+        "check_permutations": true
+      },
+      "rationale": "Priority ชนะก่อน Specificity",
+      "source_scenarios": [
+        "S20"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "GREETING",
+        "path": "matched",
+        "response_template": "greeting",
+        "rule_id": "must_reference_winning_rule",
+        "winning_candidate": "a"
+      }
+    },
+    {
+      "case_id": "RES-05",
+      "requirement_ids": [
+        "BC-SEL-01",
+        "BC-OUT-01",
+        "BC-INT-01"
+      ],
+      "category": "resolver",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "candidates",
+        "candidates": [
+          {
+            "fixture_rule_id": "a",
+            "intent": "GREETING",
+            "priority": 0,
+            "specificity": 1,
+            "guard_passes": true
+          },
+          {
+            "fixture_rule_id": "b",
+            "intent": "GREETING",
+            "priority": 0,
+            "specificity": 2,
+            "guard_passes": true
+          }
+        ],
+        "greeting_is_intro": false,
+        "check_permutations": true
+      },
+      "rationale": "Priority เสมอให้ใช้ specificity ของหลักฐาน",
+      "source_scenarios": [
+        "S21"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "GREETING",
+        "path": "matched",
+        "response_template": "greeting",
+        "rule_id": "must_reference_winning_rule",
+        "winning_candidate": "b"
+      }
+    },
+    {
+      "case_id": "RES-06",
+      "requirement_ids": [
+        "BC-SEL-01",
+        "BC-OUT-01",
+        "BC-INT-01"
+      ],
+      "category": "resolver",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "candidates",
+        "candidates": [
+          {
+            "fixture_rule_id": "b.2",
+            "intent": "GREETING",
+            "priority": 0,
+            "specificity": 1,
+            "guard_passes": true
+          },
+          {
+            "fixture_rule_id": "a.9",
+            "intent": "GREETING",
+            "priority": 0,
+            "specificity": 1,
+            "guard_passes": true
+          }
+        ],
+        "greeting_is_intro": false,
+        "check_permutations": true
+      },
+      "rationale": "ทั้งสองอันดับเสมอ ใช้ลำดับ ASCII ภายใน Intent",
+      "source_scenarios": [
+        "S21"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "GREETING",
+        "path": "matched",
+        "response_template": "greeting",
+        "rule_id": "must_reference_winning_rule",
+        "winning_candidate": "a.9"
+      }
+    },
+    {
+      "case_id": "RES-07",
+      "requirement_ids": [
+        "BC-SEL-01",
+        "BC-OUT-01",
+        "BC-INT-06"
+      ],
+      "category": "resolver",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "candidates",
+        "candidates": [
+          {
+            "fixture_rule_id": "a",
+            "intent": "GREETING",
+            "priority": 50,
+            "specificity": 1,
+            "guard_passes": false
+          },
+          {
+            "fixture_rule_id": "b",
+            "intent": "HELP",
+            "priority": 0,
+            "specificity": 1,
+            "guard_passes": true
+          }
+        ],
+        "greeting_is_intro": false,
+        "check_permutations": true
+      },
+      "rationale": "ตัด guard False แม้ priority สูง",
+      "source_scenarios": [
+        "S23"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "HELP",
+        "path": "matched",
+        "response_template": "help",
+        "rule_id": "must_reference_winning_rule",
+        "winning_candidate": "b"
+      }
+    },
+    {
+      "case_id": "RES-08",
+      "requirement_ids": [
+        "BC-SEL-01",
+        "BC-OUT-01",
+        "BC-INT-07",
+        "BC-INT-01"
+      ],
+      "category": "resolver",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "candidates",
+        "candidates": [
+          {
+            "fixture_rule_id": "a",
+            "intent": "GREETING",
+            "priority": 0,
+            "specificity": 1,
+            "guard_passes": false
+          }
+        ],
+        "greeting_is_intro": false,
+        "check_permutations": false
+      },
+      "rationale": "candidate ทั้งหมดถูกตัด จึงเป็น no-match",
+      "source_scenarios": [
+        "S08"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "no_match",
+        "response_template": "unknown_no_match",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "RES-09",
+      "requirement_ids": [
+        "BC-SEL-01",
+        "BC-OUT-01",
+        "BC-INT-02",
+        "BC-INT-01"
+      ],
+      "category": "resolver",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "candidates",
+        "candidates": [
+          {
+            "fixture_rule_id": "a",
+            "intent": "GREETING",
+            "priority": 9,
+            "specificity": 1,
+            "guard_passes": true
+          },
+          {
+            "fixture_rule_id": "z",
+            "intent": "BOT_IDENTITY",
+            "priority": 0,
+            "specificity": 1,
+            "guard_passes": true
+          }
+        ],
+        "greeting_is_intro": true,
+        "check_permutations": true
+      },
+      "rationale": "คำทักเป็นคำขึ้นต้น คำถามตรงชนะตาม C08",
+      "source_scenarios": [
+        "S05"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "BOT_IDENTITY",
+        "path": "matched",
+        "response_template": "identity",
+        "rule_id": "must_reference_winning_rule",
+        "winning_candidate": "z"
+      }
+    },
+    {
+      "case_id": "RES-10",
+      "requirement_ids": [
+        "BC-SEL-01",
+        "BC-OUT-01",
+        "BC-INT-03"
+      ],
+      "category": "resolver",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "candidates",
+        "candidates": [
+          {
+            "fixture_rule_id": "a",
+            "intent": "GREETING",
+            "priority": 0,
+            "specificity": 1,
+            "guard_passes": true
+          },
+          {
+            "fixture_rule_id": "z",
+            "intent": "BOT_CAPABILITIES",
+            "priority": 0,
+            "specificity": 1,
+            "guard_passes": true
+          }
+        ],
+        "greeting_is_intro": true,
+        "check_permutations": true
+      },
+      "rationale": "คำถามความสามารถชนะคำทักนำตาม C08",
+      "source_scenarios": [
+        "S06"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "BOT_CAPABILITIES",
+        "path": "matched",
+        "response_template": "capabilities",
+        "rule_id": "must_reference_winning_rule",
+        "winning_candidate": "z"
+      }
+    },
+    {
+      "case_id": "RES-11",
+      "requirement_ids": [
+        "BC-SEL-01",
+        "BC-OUT-01",
+        "BC-INT-07"
+      ],
+      "category": "resolver",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "candidates",
+        "candidates": [
+          {
+            "fixture_rule_id": "a",
+            "intent": "BOT_IDENTITY",
+            "priority": 90,
+            "specificity": 1,
+            "guard_passes": true
+          },
+          {
+            "fixture_rule_id": "z",
+            "intent": "BOT_CAPABILITIES",
+            "priority": 0,
+            "specificity": 1,
+            "guard_passes": true
+          }
+        ],
+        "greeting_is_intro": false,
+        "check_permutations": true
+      },
+      "rationale": "คะแนนดิบและ ASCII ไม่ตัดสินข้าม Intent",
+      "source_scenarios": [
+        "S22"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "ambiguity",
+        "response_template": "unknown_ambiguity",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "RES-12",
+      "requirement_ids": [
+        "BC-SEL-01",
+        "BC-OUT-01",
+        "BC-INT-07"
+      ],
+      "category": "resolver",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "candidates",
+        "candidates": [
+          {
+            "fixture_rule_id": "a",
+            "intent": "GREETING",
+            "priority": 0,
+            "specificity": 1,
+            "guard_passes": true
+          },
+          {
+            "fixture_rule_id": "b",
+            "intent": "BOT_IDENTITY",
+            "priority": 0,
+            "specificity": 1,
+            "guard_passes": true
+          },
+          {
+            "fixture_rule_id": "z",
+            "intent": "BOT_CAPABILITIES",
+            "priority": 0,
+            "specificity": 1,
+            "guard_passes": true
+          }
+        ],
+        "greeting_is_intro": true,
+        "check_permutations": true
+      },
+      "rationale": "ทั้งสองคำถามชนะคำทักแต่ไม่มีผู้ชนะเหนือทุกกลุ่ม",
+      "source_scenarios": [
+        "S22"
+      ],
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "ambiguity",
+        "response_template": "unknown_ambiguity",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "RES-13",
+      "requirement_ids": [
+        "BC-SEL-01",
+        "BC-OUT-01",
+        "BC-INT-07"
+      ],
+      "category": "resolver",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "candidates",
+        "candidates": [
+          {
+            "fixture_rule_id": "a",
+            "intent": "GREETING",
+            "priority": 7,
+            "specificity": 1,
+            "guard_passes": true
+          },
+          {
+            "fixture_rule_id": "z",
+            "intent": "BOT_IDENTITY",
+            "priority": 0,
+            "specificity": 1,
+            "guard_passes": true
+          }
+        ],
+        "greeting_is_intro": false,
+        "check_permutations": true
+      },
+      "rationale": "ไม่มีหลักฐานว่าคำทักเป็นคำขึ้นต้นอย่างเดียว",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "ambiguity",
+        "response_template": "unknown_ambiguity",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "ERR-MATCHING",
+      "requirement_ids": [
+        "BC-ERR-01",
+        "BC-OUT-01"
+      ],
+      "category": "resolver",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "fault",
+        "stage": "matching"
+      },
+      "rationale": "ฉีด RuntimeError เพื่อให้ตรวจว่าสาเหตุเดิมถูกส่งต่อและไม่มี fallback",
+      "source_scenarios": [
+        "S24"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "RuntimeError",
+        "reason": "propagate_fixture_fault"
+      }
+    },
+    {
+      "case_id": "ERR-GUARD",
+      "requirement_ids": [
+        "BC-ERR-01",
+        "BC-OUT-01"
+      ],
+      "category": "resolver",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "fault",
+        "stage": "guard"
+      },
+      "rationale": "ฉีด RuntimeError เพื่อให้ตรวจว่าสาเหตุเดิมถูกส่งต่อและไม่มี fallback",
+      "source_scenarios": [
+        "S24"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "RuntimeError",
+        "reason": "propagate_fixture_fault"
+      }
+    },
+    {
+      "case_id": "ERR-SELECTION",
+      "requirement_ids": [
+        "BC-ERR-01",
+        "BC-OUT-01"
+      ],
+      "category": "resolver",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "fault",
+        "stage": "selection"
+      },
+      "rationale": "ฉีด RuntimeError เพื่อให้ตรวจว่าสาเหตุเดิมถูกส่งต่อและไม่มี fallback",
+      "source_scenarios": [
+        "S24"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "RuntimeError",
+        "reason": "propagate_fixture_fault"
+      }
+    },
+    {
+      "case_id": "ERR-RESPONSE",
+      "requirement_ids": [
+        "BC-ERR-01",
+        "BC-OUT-01"
+      ],
+      "category": "resolver",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "fault",
+        "stage": "response"
+      },
+      "rationale": "ฉีด RuntimeError เพื่อให้ตรวจว่าสาเหตุเดิมถูกส่งต่อและไม่มี fallback",
+      "source_scenarios": [
+        "S24"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "RuntimeError",
+        "reason": "propagate_fixture_fault"
+      }
+    },
+    {
+      "case_id": "ERR-OUTPUT",
+      "requirement_ids": [
+        "BC-ERR-01",
+        "BC-OUT-01"
+      ],
+      "category": "response",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "invalid_result",
+        "values": {
+          "intent": "GREETING",
+          "response": " \t",
+          "rule_id": "a"
+        }
+      },
+      "rationale": "ผลภายใน response ว่างหลัง trim ต้องแยกจาก EMPTY_INPUT",
+      "source_scenarios": [
+        "S24"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "RuntimeError",
+        "reason": "invalid_result"
+      }
+    },
+    {
+      "case_id": "ERR-CONFIG",
+      "requirement_ids": [
+        "BC-ERR-01",
+        "BC-OUT-01"
+      ],
+      "category": "resolver",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "invalid_configuration",
+        "candidates": [
+          {
+            "fixture_rule_id": "same",
+            "intent": "GREETING",
+            "priority": 0,
+            "specificity": 1,
+            "guard_passes": true
+          },
+          {
+            "fixture_rule_id": "same",
+            "intent": "HELP",
+            "priority": 0,
+            "specificity": 1,
+            "guard_passes": true
+          }
+        ]
+      },
+      "rationale": "รหัสที่ซ้ำกันย้อนกลับไปหากฎผู้ชนะไม่ได้",
+      "source_scenarios": [
+        "S26"
+      ],
+      "expected_outcome": {
+        "outcome": "exception",
+        "type": "RuntimeError",
+        "reason": "duplicate_rule_id"
+      }
+    },
+    {
+      "case_id": "REVIEW-GREETING",
+      "requirement_ids": [
+        "BC-OUT-02",
+        "BC-INT-01"
+      ],
+      "category": "response",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "response_review",
+        "template_id": "greeting",
+        "text": "สวัสดีครับ ยินดีที่ได้คุยด้วยครับ"
+      },
+      "rationale": "ผู้ตรวจทานอ่านทั้งประโยคตาม Rubric ของ Intent ก่อนใช้ Template",
+      "expected_outcome": {
+        "outcome": "manual_review",
+        "verdict": "accept"
+      }
+    },
+    {
+      "case_id": "REVIEW-IDENTITY",
+      "requirement_ids": [
+        "BC-OUT-02",
+        "BC-INT-02"
+      ],
+      "category": "response",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "response_review",
+        "template_id": "identity",
+        "text": "ผมเป็นต้นแบบบอตภาษาไทยแบบใช้กฎของโครงการ thai-anti-scam-ai ครับ"
+      },
+      "rationale": "ผู้ตรวจทานอ่านทั้งประโยคตาม Rubric ของ Intent ก่อนใช้ Template",
+      "expected_outcome": {
+        "outcome": "manual_review",
+        "verdict": "accept"
+      }
+    },
+    {
+      "case_id": "REVIEW-CAPABILITIES",
+      "requirement_ids": [
+        "BC-OUT-02",
+        "BC-INT-03"
+      ],
+      "category": "response",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "response_review",
+        "template_id": "capabilities",
+        "text": "ผมเป็นต้นแบบบอตภาษาไทยแบบใช้กฎ รองรับการทักทาย แนะนำตัว และสนทนาพื้นฐาน รวมถึงสอบถามรายละเอียดเมื่อคุณต้องการความช่วยเหลือ รุ่นนี้ยังไม่สามารถตรวจจับการหลอกลวงได้ครับ"
+      },
+      "rationale": "ผู้ตรวจทานอ่านทั้งประโยคตาม Rubric ของ Intent ก่อนใช้ Template",
+      "expected_outcome": {
+        "outcome": "manual_review",
+        "verdict": "accept"
+      }
+    },
+    {
+      "case_id": "REVIEW-THANKS",
+      "requirement_ids": [
+        "BC-OUT-02",
+        "BC-INT-04"
+      ],
+      "category": "response",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "response_review",
+        "template_id": "thanks",
+        "text": "ยินดีครับ"
+      },
+      "rationale": "ผู้ตรวจทานอ่านทั้งประโยคตาม Rubric ของ Intent ก่อนใช้ Template",
+      "expected_outcome": {
+        "outcome": "manual_review",
+        "verdict": "accept"
+      }
+    },
+    {
+      "case_id": "REVIEW-FAREWELL",
+      "requirement_ids": [
+        "BC-OUT-02",
+        "BC-INT-05"
+      ],
+      "category": "response",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "response_review",
+        "template_id": "farewell",
+        "text": "แล้วพบกันใหม่ครับ"
+      },
+      "rationale": "ผู้ตรวจทานอ่านทั้งประโยคตาม Rubric ของ Intent ก่อนใช้ Template",
+      "expected_outcome": {
+        "outcome": "manual_review",
+        "verdict": "accept"
+      }
+    },
+    {
+      "case_id": "REVIEW-HELP",
+      "requirement_ids": [
+        "BC-OUT-02",
+        "BC-INT-06"
+      ],
+      "category": "response",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "response_review",
+        "template_id": "help",
+        "text": "อยากให้ช่วยเรื่องอะไรครับ เล่าเพิ่มได้เลย เช่น อยากรู้ว่าบอตนี้ทำอะไรได้บ้าง"
+      },
+      "rationale": "ผู้ตรวจทานอ่านทั้งประโยคตาม Rubric ของ Intent ก่อนใช้ Template",
+      "expected_outcome": {
+        "outcome": "manual_review",
+        "verdict": "accept"
+      }
+    },
+    {
+      "case_id": "REVIEW-UNKNOWN-EXPLICIT",
+      "requirement_ids": [
+        "BC-OUT-02",
+        "BC-INT-07"
+      ],
+      "category": "response",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "response_review",
+        "template_id": "unknown_explicit",
+        "text": "ผมยังตอบเรื่องนี้ไม่ได้ครับ ลองบอกได้ไหมว่าต้องการให้ช่วยเรื่องอะไร"
+      },
+      "rationale": "ผู้ตรวจทานอ่านทั้งประโยคตาม Rubric ของ Intent ก่อนใช้ Template",
+      "expected_outcome": {
+        "outcome": "manual_review",
+        "verdict": "accept"
+      }
+    },
+    {
+      "case_id": "REVIEW-UNKNOWN-NO-MATCH",
+      "requirement_ids": [
+        "BC-OUT-02",
+        "BC-INT-07"
+      ],
+      "category": "response",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "response_review",
+        "template_id": "unknown_no_match",
+        "text": "ผมยังตอบเรื่องนี้ไม่ได้ครับ ลองบอกได้ไหมว่าต้องการให้ช่วยเรื่องอะไร"
+      },
+      "rationale": "ผู้ตรวจทานอ่านทั้งประโยคตาม Rubric ของ Intent ก่อนใช้ Template",
+      "expected_outcome": {
+        "outcome": "manual_review",
+        "verdict": "accept"
+      }
+    },
+    {
+      "case_id": "REVIEW-UNKNOWN-FORMAT-ONLY",
+      "requirement_ids": [
+        "BC-OUT-02",
+        "BC-INT-07"
+      ],
+      "category": "response",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "response_review",
+        "template_id": "unknown_format_only",
+        "text": "ข้อความนี้ยังตีความไม่ได้ครับ กรุณาพิมพ์รายละเอียดเพิ่มเติมครับ"
+      },
+      "rationale": "ผู้ตรวจทานอ่านทั้งประโยคตาม Rubric ของ Intent ก่อนใช้ Template",
+      "expected_outcome": {
+        "outcome": "manual_review",
+        "verdict": "accept"
+      }
+    },
+    {
+      "case_id": "REVIEW-UNKNOWN-AMBIGUITY",
+      "requirement_ids": [
+        "BC-OUT-02",
+        "BC-INT-07"
+      ],
+      "category": "response",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "response_review",
+        "template_id": "unknown_ambiguity",
+        "text": "ข้อความนี้อาจมีหลายคำขอครับ คุณต้องการให้ช่วยเรื่องใดเป็นหลักครับ?"
+      },
+      "rationale": "ผู้ตรวจทานอ่านทั้งประโยคตาม Rubric ของ Intent ก่อนใช้ Template",
+      "expected_outcome": {
+        "outcome": "manual_review",
+        "verdict": "accept"
+      }
+    },
+    {
+      "case_id": "REVIEW-EMPTY",
+      "requirement_ids": [
+        "BC-OUT-02",
+        "BC-INT-08"
+      ],
+      "category": "response",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "response_review",
+        "template_id": "empty",
+        "text": "กรุณาพิมพ์ข้อความก่อนครับ"
+      },
+      "rationale": "ผู้ตรวจทานอ่านทั้งประโยคตาม Rubric ของ Intent ก่อนใช้ Template",
+      "expected_outcome": {
+        "outcome": "manual_review",
+        "verdict": "accept"
+      }
+    },
+    {
+      "case_id": "REJECT-CAPABILITIES",
+      "requirement_ids": [
+        "BC-OUT-02",
+        "BC-INT-03"
+      ],
+      "category": "response",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "response_review",
+        "template_id": "capabilities",
+        "text": "ผมตรวจจับการหลอกลวงได้แล้ว และมั่นใจว่าข้อความนี้ปลอดภัยครับ"
+      },
+      "rationale": "กล่าวอ้างความสามารถและผลความเสี่ยงเกินขอบเขต",
+      "source_scenarios": [
+        "S25"
+      ],
+      "expected_outcome": {
+        "outcome": "manual_review",
+        "verdict": "reject"
+      }
+    },
+    {
+      "case_id": "REJECT-HELP",
+      "requirement_ids": [
+        "BC-OUT-02",
+        "BC-INT-06"
+      ],
+      "category": "response",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "response_review",
+        "template_id": "help",
+        "text": "ผมทราบแล้วว่าเป็นเหตุฉุกเฉินและกำลังดำเนินการครับ"
+      },
+      "rationale": "วินิจฉัยและอ้างว่าดำเนินการทั้งที่ยังไม่มีข้อมูล",
+      "expected_outcome": {
+        "outcome": "manual_review",
+        "verdict": "reject"
+      }
+    },
+    {
+      "case_id": "REJECT-UNKNOWN-NO-MATCH",
+      "requirement_ids": [
+        "BC-OUT-02",
+        "BC-INT-07"
+      ],
+      "category": "response",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "response_review",
+        "template_id": "unknown_no_match",
+        "text": "จากข้อมูลที่ตรวจแล้ว ผู้ส่งเป็นมิจฉาชีพแน่นอนครับ"
+      },
+      "rationale": "กล่าวหาผู้ส่งและแต่งผลการตรวจ",
+      "expected_outcome": {
+        "outcome": "manual_review",
+        "verdict": "reject"
+      }
+    },
+    {
+      "case_id": "WIRE-EMPTY",
+      "requirement_ids": [
+        "BC-OUT-01"
+      ],
+      "category": "response",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "wire_fields",
+        "fields": {
+          "intent": "EMPTY_INPUT",
+          "response": "กรุณาพิมพ์ข้อความก่อนครับ",
+          "rule_id": null
+        }
+      },
+      "rationale": "ตรวจสาม field โดยคง rule_id เป็น JSON null หรือรหัสตัวอย่างตามเส้นทาง",
+      "expected_outcome": {
+        "outcome": "serialization",
+        "fields": {
+          "intent": "EMPTY_INPUT",
+          "response": "กรุณาพิมพ์ข้อความก่อนครับ",
+          "rule_id": null
+        }
+      }
+    },
+    {
+      "case_id": "WIRE-UNKNOWN-NO-MATCH",
+      "requirement_ids": [
+        "BC-OUT-01"
+      ],
+      "category": "response",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "wire_fields",
+        "fields": {
+          "intent": "UNKNOWN",
+          "response": "ผมยังตอบเรื่องนี้ไม่ได้ครับ ลองบอกได้ไหมว่าต้องการให้ช่วยเรื่องอะไร",
+          "rule_id": null
+        }
+      },
+      "rationale": "ตรวจสาม field โดยคง rule_id เป็น JSON null หรือรหัสตัวอย่างตามเส้นทาง",
+      "expected_outcome": {
+        "outcome": "serialization",
+        "fields": {
+          "intent": "UNKNOWN",
+          "response": "ผมยังตอบเรื่องนี้ไม่ได้ครับ ลองบอกได้ไหมว่าต้องการให้ช่วยเรื่องอะไร",
+          "rule_id": null
+        }
+      }
+    },
+    {
+      "case_id": "WIRE-UNKNOWN-EXPLICIT",
+      "requirement_ids": [
+        "BC-OUT-01"
+      ],
+      "category": "response",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "wire_fields",
+        "fields": {
+          "intent": "UNKNOWN",
+          "response": "ผมยังตอบเรื่องนี้ไม่ได้ครับ ลองบอกได้ไหมว่าต้องการให้ช่วยเรื่องอะไร",
+          "rule_id": "fixture-a"
+        }
+      },
+      "rationale": "ตรวจสาม field โดยคง rule_id เป็น JSON null หรือรหัสตัวอย่างตามเส้นทาง",
+      "expected_outcome": {
+        "outcome": "serialization",
+        "fields": {
+          "intent": "UNKNOWN",
+          "response": "ผมยังตอบเรื่องนี้ไม่ได้ครับ ลองบอกได้ไหมว่าต้องการให้ช่วยเรื่องอะไร",
+          "rule_id": "fixture-a"
+        }
+      }
+    },
+    {
+      "case_id": "OPEN-BOM-PREFIX",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-INT-01"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "﻿สวัสดีครับ"
+      },
+      "rationale": "คง BOM ต้นข้อความตาม Input Policy ผล no-match ตามที่เจ้าของอนุมัติใน R6",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "no_match",
+        "response_template": "unknown_no_match",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "OPEN-ZWSP-IN-WORD",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-INT-01"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "สวัส​ดีครับ"
+      },
+      "rationale": "คง ZWSP กลางคำโดยไม่เชื่อมคำอัตโนมัติ ผล no-match ตามที่เจ้าของอนุมัติใน R6",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "no_match",
+        "response_template": "unknown_no_match",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "OPEN-COMBINING-ONLY",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-INT-07"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "́"
+      },
+      "rationale": "combining mark ล้วนผ่าน validation และไม่ได้เป็น format-only ผล no-match ตามที่เจ้าของอนุมัติใน R6",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "UNKNOWN",
+        "path": "no_match",
+        "response_template": "unknown_no_match",
+        "rule_id": "must_be_none"
+      }
+    },
+    {
+      "case_id": "OPEN-MIXED-REQUEST",
+      "requirement_ids": [
+        "BC-SEL-01",
+        "BC-INT-04",
+        "BC-INT-06"
+      ],
+      "category": "intent",
+      "status": "mandatory",
+      "fixture": {
+        "kind": "text",
+        "value": "ขอบคุณครับ ช่วยเริ่มให้หน่อย"
+      },
+      "rationale": "คำขอให้ช่วยเริ่มต้นยังมีผลร่วมกับคำขอบคุณ เจ้าของอนุมัติ HELP สำหรับกรณีนี้ใน R6",
+      "expected_outcome": {
+        "outcome": "result",
+        "intent": "HELP",
+        "path": "matched",
+        "response_template": "help",
+        "rule_id": "must_reference_winning_rule"
+      }
+    },
+    {
+      "case_id": "OPEN-LENGTH-LIMIT",
+      "requirement_ids": [
+        "BC-IN-03",
+        "BC-ERR-01"
+      ],
+      "category": "input_validation",
+      "status": "pending",
+      "fixture": {
+        "kind": "text",
+        "value": "กกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกกก คำท้าย"
+      },
+      "rationale": "ใช้ประกอบพิจารณาข้อจำกัดความยาวและลำดับการแจ้งข้อผิดพลาดเมื่อมี budget",
+      "open_decision": "Q-05"
+    },
+    {
+      "case_id": "OPEN-REGEX-BUDGET",
+      "requirement_ids": [
+        "BC-SEL-01",
+        "BC-ERR-01"
+      ],
+      "category": "resolver",
+      "status": "pending",
+      "fixture": {
+        "kind": "text",
+        "value": "สวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีสวัสดีผิด"
+      },
+      "rationale": "near-match สำหรับพิจารณาขอบเขต worst-case หลังมีกฎจริง",
+      "open_decision": "Q-14"
+    }
+  ]
+}
