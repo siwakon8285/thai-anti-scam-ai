@@ -2,7 +2,7 @@
 
 > เอกสารกลางสำหรับการออกแบบ แผนพัฒนา และประวัติการทดลองของโครงการจบ  
 > ฉบับเอกสาร: 0.2 (ปรับสถานะ Repository และ Adaptive Roadmap) | วันที่: 28 พฤศจิกายน 2569 (2026-11-28)  
-> สถานะ AI: Runtime V0.1 ถึง Candidate Resolver ผ่าน Local Tests การเลือกคำตอบและการประเมินแบบอิสระยังอยู่ในแผน  
+> สถานะ AI: Runtime V0.1 ถึง Response Selection ผ่าน Local Tests การประกอบ Engine และการประเมินแบบอิสระยังอยู่ในแผน  
 > Repository: `thai-anti-scam-ai` (ชื่อที่เจ้าของโครงการเลือก); ชื่อทางการของงานวิจัยยังไม่สรุป
 
 ## 1. วัตถุประสงค์และขอบเขต
@@ -314,6 +314,7 @@ Local Verification ยืนยันว่าโค้ดและชุดท�
 | 04c | `design/v0.1-candidate-resolver` | Candidate Resolver Design & Behavioral Analysis (TASK-008) | ANALYSIS_COMPLETE_PENDING_OWNER_REVIEW · H-036 |
 | 04d | `design/v0.1-candidate-resolver` | Candidate Resolver Design Decision Closure (TASK-008-R1) | DESIGN_REVISION_COMPLETE_PENDING_OWNER_REVIEW · H-037 |
 | 04e | `feat/v0.1-candidate-resolver` | Candidate Resolver Implementation (TASK-009) | READY_FOR_COMMIT · H-038 |
+| 04f | `feat/v0.1-response-selection` | Response Selection (TASK-010) | READY_FOR_COMMIT · H-039 |
 | 04 | `feat/v0.1-basic-chatbot` | AI Prototype V0.1 ตามแผนเดิม | PLANNED · รออนุมัติขอบเขตงานต่อ |
 | 05 | `feat/v0.2-intent-variants` | V0.2 | PLANNED |
 | 06 | `feat/v0.3-informal-thai` | V0.3 | PLANNED |
@@ -383,6 +384,8 @@ TASK-007 ส่งมอบ Candidate Collection แล้ว TASK-008 วิเ
 หลัง Review TASK-008 เจ้าของโครงการอนุมัติ D1–D4 ใน TASK-008-R1 รายละเอียดสเปกพร้อมให้ตรวจทาน ขั้นที่เสนอถัดไปคือ Rule Registry, การผลิต Role Evidence และ Resolver แบบ Test-first ส่วนจุดประกอบ Input Routing กับ Response Selection รอกำหนดขอบเขตตามลำดับ Dependency [Candidate Resolver Design Specification](docs/v0.1-candidate-resolver-analysis.md)
 
 TASK-009 ส่งมอบ Registry, Role Evidence, Resolver และ Input Routing ถึง Decision Record ขั้นที่เสนอถัดไปคือ Response Selection จาก Template ที่อนุมัติใน R6 แล้วประกอบและตรวจ public Result ตามแผนเดิม ผลตรวจอยู่ใน H-038
+
+TASK-010 ส่งมอบ `select_response()` สำหรับสร้าง public Result จาก Decision Record และ Template R6 งานถัดไปที่เสนอคือ Engine Integration ตามลำดับเดิมเพื่อทดสอบผลและข้อผิดพลาดผ่านจุดเข้าเดียว ผลตรวจอยู่ใน H-039
 
 **เป้าหมาย:** สร้าง Rule-based Chatbot ภาษาไทยตัวแรกที่รันจริง
 
@@ -581,6 +584,7 @@ TASK-009 ส่งมอบ Registry, Role Evidence, Resolver และ Input Ro
 | D-045 | 2026-11-28 | อนุมัติ Role Evidence และ frozen Decision Record (TASK-008-R1 D1–D2) | Owner Review ของ TASK-008 อนุมัติให้ใช้หลักฐานจากกฎและบริบทที่ตรวจย้อนกลับได้ ใช้ผู้ชนะเฉพาะ RESOLVED รวม explicit UNKNOWN และแยก Record จาก Response Text |
 | D-046 | 2026-11-28 | อนุมัติ Rule Registry และ Input Routing ก่อน Resolver (TASK-008-R1 D3–D4) | ตรวจ Candidate เทียบ Registry และรายงาน metadata mismatch เป็น Configuration Error ส่งเฉพาะ content เข้า Resolver หลังแยก empty กับ format_only หลักการนี้ใช้แทนส่วนที่เกี่ยวข้องในข้อเสนอ D-044 |
 | D-047 | 2026-11-28 | เจ้าของโครงการกำหนด TASK-009 บน `feat/v0.1-candidate-resolver` | ใช้ D1–D4 ทำ Registry, Role Evidence, Resolver และ Input Routing แบบ Test-first ให้ `decide` คืน Decision Record เพื่อทดสอบก่อนเชื่อม Response Selection |
+| D-048 | 2026-11-28 | ใช้ Template R6 แบบคงที่ใน Response Selection (TASK-010) | ใช้แค็ตตาล็อกใน Runtime และเทียบถ้อยคำทุกเส้นทางกับ Regression JSON ผ่านเทสต์ เลือกด้วย Intent และ path จาก Decision ที่ผ่านการตรวจ ทวน Rule Registry แล้วคืน Result เดิม |
 
 ## 11. Development History (บันทึกเพิ่มตามงานจริง)
 
@@ -974,6 +978,17 @@ TASK-009 ส่งมอบ Registry, Role Evidence, Resolver และ Input Ro
 - ตรวจด้วย `python3 -B -` Exit `0` ผ่าน Python Syntax ตาม CI 29 ไฟล์ ตัวอย่าง README 3 รายการ UTF-8 และ Markdown fences 10 ไฟล์ และ Relative Links/Anchors 108 จุด ตรวจ Matrix เทียบ JSON 148/148 แถวและยืนยันประวัติเดิม D-001–D-046 และ H-001–H-037 ตรงต้นฉบับ
 - เพิ่ม `thai_ai/{_evidence,registry,resolver}.py` กับ `tests/test_resolver.py` แก้ `thai_ai/{_rule_metadata,matching,candidates}.py`, README.md และ DESIGN.md งานถัดไปให้เจ้าของโครงการตรวจ TASK-009 และพิจารณา Response Selection เพื่อพิสูจน์ Template, Rule ID และ fault propagation ที่จุดคืน public Result
 
+### H-039 — `feat/v0.1-response-selection` / TASK-010
+
+- วันที่ 2026-11-28 · Local Quality Gate `READY_FOR_COMMIT` · Remote CI `PENDING_REMOTE_VERIFICATION` · Merge รอหลักฐานจากเจ้าของโครงการ คำสั่ง TASK-010 อ้างถึง TASK-009 ที่ Merge เข้า `main` แต่หลักฐานที่มีใน Repository ยังสิ้นสุดที่สถานะ H-038 และยังไม่มี PR, SHA หรือ Remote CI เพิ่มเติม การตรวจครั้งนี้ใช้ Resolver ที่อยู่ใน Working Tree
+- เพิ่ม `thai_ai/response.py` และ `tests/test_response.py` อัปเดต README และ DESIGN.md `select_response()` ใช้การตรวจ invariant ของ Decision Record เดิมและทวน Candidate เทียบ Rule Registry เลือก Template R6 แบบอ่านอย่างเดียวครบ 11 เส้นทาง และสร้าง public `Result` เดิม หาก Template หายหรือ Configuration ผิดให้ส่ง Exception กฎกำหนดเองใช้ Registry จากชุดกฎเดียวกับที่สร้าง Decision
+- **Test-first** `python3 -B -m unittest tests.test_response` บน API stub คืน Exit `1` (12 methods, 8 failures, 107 errors) เพราะ Template Registry และการเลือกคำตอบยังคืน `NotImplementedError` หลัง Implement เป็น GREEN 12/12 (Exit `0`) ชุดรวม `python3 -B -m scripts.run_tests` ก่อนงาน 95/95 หลังงาน 107/107 ทั้งสองรอบ Exit `0`, Failure 0, Error 0, Skip 0
+- **ชุดเฉพาะส่วน** `python3 -B -m unittest` แยก Template Tests 4/4, Response Integrity ร่วมกับ Result Contract 10/10, Resolver Integration ร่วมกับ Resolver เดิม 21/21 และ Regression Specification 24/24 ทุกคำสั่ง Exit `0`
+- **Regression IDs** ตัวสังเกต `python3 -B -` Exit `0` นับเทสต์ใหม่ 12 methods และ top-level unittest assertions 330 ครั้ง ตรวจ 89 Case IDs ไม่ซ้ำ ได้แก่ 57 text fixtures และ `RES-01`–`RES-13` ที่ประกอบถึง public Result, `WIRE-EMPTY`, `WIRE-UNKNOWN-NO-MATCH`, `WIRE-UNKNOWN-EXPLICIT`, 14 `REVIEW-*` / `REJECT-*` และ `ERR-RESPONSE` / `ERR-OUTPUT` ที่ขอบเขต Response Selection ตรวจ Rubric จากความหมายของข้อความจริงและกรณีปฏิเสธประกอบกับการเทียบข้อความที่อนุมัติ
+- **Verification** ตรวจ Syntax ตาม CI 31 ไฟล์และรัน `python3 -B -m scripts.evaluate_baseline` Exit `0` ได้ Always-UNKNOWN 4/32 (12.5%) ตรงรายงานทุกไบต์ SHA-256 ของ Development Dataset, Regression JSON, Baseline Report และรายงาน R1 ตรงกับ H-038
+- ตรวจเอกสารด้วย `python3 -B -` ได้ Exit `0` ครอบคลุม UTF-8 และ Markdown fences 10 ไฟล์, Relative Links/Anchors 108 จุด, ตัวอย่าง Python ใน README 4 รายการ, Matrix 148/148 แถว และประวัติเดิม D-001–D-047 กับ H-001–H-038 รอบแรกได้ Exit `1` เพราะคำสั่งตรวจ README มี string literal ไม่สมบูรณ์ แก้คำสั่งและรันตรวจใหม่แล้วผ่าน
+- งานถัดไปให้เจ้าของโครงการตรวจ TASK-010 และพิจารณา Engine Integration เพื่อทดสอบการส่งต่อ stage faults และผล public Result ผ่านจุดเข้าเดียว `ERR-SELECTION` และการทดสอบ faults ผ่าน Engine ยังรอ ส่วน `OPEN-LENGTH-LIMIT` กับ `OPEN-REGEX-BUDGET` ยัง Pending
+
 ### แบบบันทึกผล Branch (คัดลอกเมื่อเริ่มงาน ไม่ใช่ผลจริง)
 
 ```markdown
@@ -1051,11 +1066,12 @@ TASK-009 ส่งมอบ Registry, Role Evidence, Resolver และ Input Ro
 - [x] จัดทำ Candidate Resolver Analysis และ Traceability ใน TASK-008
 - [x] เจ้าของโครงการอนุมัติหลักการ D1–D4 และจัดทำสเปก TASK-008-R1
 - [x] เจ้าของโครงการกำหนดขอบเขต Implementation และพัฒนา Candidate Resolver ใน TASK-009
+- [x] พัฒนา Response Selection และตรวจ public Result ที่ขอบเขต Component ใน TASK-010
 - [ ] พัฒนาและวัดผล AI ทีละ Milestone
 
-**Current Branch** `feat/v0.1-candidate-resolver` ตามที่เจ้าของโครงการแจ้ง  
-**Current Task** TASK-009 — Candidate Resolver Implementation  
-**Status** `READY_FOR_COMMIT` · Local Tests 95/95  
-**Next Step** เจ้าของโครงการตรวจ TASK-009 ก่อนพิจารณา Response Selection  
-**Reason** Decision Record พร้อมใช้เป็นข้อมูลเข้าเพื่อทดสอบ Template, ผล public Result และข้อผิดพลาดตาม R6  
-**Git Status** เจ้าของโครงการตรวจและจัดการ Commit/Push · Remote CI และ Merge ของ TASK-009 รอหลักฐาน
+**Current Branch** `feat/v0.1-response-selection` ตามที่เจ้าของโครงการแจ้ง  
+**Current Task** TASK-010 — Response Selection  
+**Status** `READY_FOR_COMMIT` · Local Tests 107/107  
+**Next Step** เจ้าของโครงการตรวจ TASK-010 ก่อนพิจารณา Engine Integration  
+**Reason** Resolver และ Response Selection พร้อมให้ทดสอบร่วมผ่านจุดเข้า Engine เดียวและตรวจการส่งต่อข้อผิดพลาดตาม R6  
+**Git Status** เจ้าของโครงการตรวจและจัดการ Commit/Push · Remote CI และ Merge ของ TASK-010 รอหลักฐาน

@@ -8,7 +8,7 @@
 
 [![CI on main](https://github.com/siwakon8285/thai-anti-scam-ai/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/siwakon8285/thai-anti-scam-ai/actions/workflows/ci.yml?query=branch%3Amain)
 
-**สถานะ** Runtime V0.1 ถึงการตัดสิน Intent · **Python อ้างอิง** 3.14.8 · **Runtime** Python Standard Library
+**สถานะ** Runtime V0.1 ถึง Response Selection · **Python อ้างอิง** 3.14.8 · **Runtime** Python Standard Library
 
 [ความสามารถปัจจุบัน](#current-capabilities) · [สถาปัตยกรรม](#system-architecture) · [เริ่มต้นใช้งาน](#getting-started) · [ผลประเมิน](#testing-and-evaluation) · [เอกสาร](#documentation) · [แผนพัฒนา](#capability-roadmap)
 
@@ -23,13 +23,14 @@
 | Runtime Foundation | ตรวจชนิดและอักขระดิบ สร้าง Matching Text ด้วย `strip()` และ NFC และตรวจโครงสร้างผลลัพธ์สามฟิลด์ |
 | Candidate Collection | จับวลีที่มีหลักฐานรองรับ ตรวจบริบทของคำปฏิเสธและคำพูดที่ถูกอ้าง และคืน Candidate ที่ผ่านพร้อมตำแหน่งใน Matching Text |
 | Candidate Resolver | เลือก Intent จาก Candidate ที่ผ่าน Guard และหลักฐานบทบาท หรือคืนเหตุผลที่งดตัดสิน |
+| Response Selection | เลือกข้อความตอบกลับจาก Template ที่อนุมัติใน R6 และคืน `Result` พร้อม Rule ID ของผู้ชนะตามเส้นทาง |
 | [Development Dataset v0.1](datasets/development/v0.1.json) | ข้อความสมมติภาษาไทยและกรณีข้อความว่าง รวม 32 ตัวอย่าง ครบ 8 Intent |
 | [Baseline Evaluator](scripts/evaluate_baseline.py) | ตรวจ JSON และ Schema แล้ววัด Intent Accuracy และ Confusion Matrix ของตัวจำแนก Always-UNKNOWN |
-| [Automated Tests](tests/) | ตรวจ Runtime Foundation, Candidate Collection, Resolver, Regression Specification, ชุดข้อมูล และ Evaluator |
+| [Automated Tests](tests/) | ตรวจ Runtime Foundation, Candidate Collection, Resolver, Response Selection, Regression Specification, ชุดข้อมูล และ Evaluator |
 
 ## System Architecture
 
-เส้นทึบแสดงขั้นตอนที่เรียกใช้ได้ถึงการตัดสิน Intent เส้นประแสดงการเลือกคำตอบที่อยู่ในแผน
+เรียก Resolver และ Response Selection ต่อกันผ่าน Python Interface ได้ ส่วนจุดเข้า Engine เดียวอยู่ในแผน
 
 ```mermaid
 flowchart LR
@@ -39,8 +40,8 @@ flowchart LR
     candidates --> selection["Candidate Resolver"]
     selection --> decision["Decision Record"]
     text -->|empty หรือ format-only| decision
-    decision -.-> response["เลือกคำตอบ"]
-    response -.-> output["ตรวจ Result"]
+    decision --> response["เลือก Template ที่อนุมัติ"]
+    response --> output["ตรวจ Result"]
 ```
 
 ## Evaluation Architecture
@@ -100,9 +101,20 @@ assert decision.rule_id == "identity.direct"
 assert decision.selection_basis == "C08_INTRO_QUESTION"
 ```
 
+ใช้ `select_response()` กับ Decision Record เพื่อรับ `Result` หากใช้กฎที่กำหนดเอง ให้ส่ง `registry=RuleRegistry(rules)` จากชุดกฎเดียวกัน
+
+```python
+from thai_ai.resolver import decide
+from thai_ai.response import select_response
+
+result = select_response(decide("คุณคือใคร"))
+assert result.intent == "BOT_IDENTITY"
+assert result.rule_id == "identity.direct"
+```
+
 ## Testing and Evaluation
 
-Test Runner ใช้ `unittest` ส่วน GitHub Actions ตรวจ Python Syntax และรันชุดทดสอบเดียวกัน Badge ด้านบนแสดงสถานะ CI ของ `main` ผลตรวจ Resolver และกรณีที่รอ Engine อยู่ในประวัติการพัฒนา [GitHub Actions](.github/workflows/ci.yml) · [DESIGN.md](DESIGN.md#h-038--featv01-candidate-resolver--task-009)
+Test Runner ใช้ `unittest` ส่วน GitHub Actions ตรวจ Python Syntax และรันชุดทดสอบเดียวกัน Badge ด้านบนแสดงสถานะ CI ของ `main` ผลตรวจ Response Selection และกรณีที่รอ Engine อยู่ในประวัติการพัฒนา [GitHub Actions](.github/workflows/ci.yml) · [DESIGN.md](DESIGN.md#h-039--featv01-response-selection--task-010)
 
 | ผล Reference Baseline v0.1 | ค่า |
 | --- | --- |
@@ -147,6 +159,7 @@ thai-anti-scam-ai/
 │   ├── normalization.py
 │   ├── registry.py
 │   ├── resolver.py
+│   ├── response.py
 │   ├── result.py
 │   └── validation.py
 └── DESIGN.md
@@ -167,14 +180,14 @@ thai-anti-scam-ai/
 
 | ขอบเขต | ความสามารถ |
 | --- | --- |
-| ปัจจุบัน | Runtime Foundation, Candidate Collection, Candidate Resolver, ชุดทดสอบ และการประเมิน Reference Baseline |
-| แผนต้นแบบ V0.1 | เลือกคำตอบภาษาไทยและประกอบผลจากการตัดสินตามข้อกำหนด |
+| ปัจจุบัน | Runtime Foundation, Candidate Collection, Candidate Resolver, Response Selection และ Reference Baseline |
+| แผนต้นแบบ V0.1 | ประกอบจุดเข้า Engine และตรวจพฤติกรรมรวมตามข้อกำหนด |
 | ระยะถัดไปตามผลทดลอง | เพิ่มความครอบคลุมของภาษาไทย ศึกษาบริบทและ Session Memory แล้วพัฒนาการประเมินความเสี่ยงและการทดสอบอิสระ |
 
 ลำดับการเพิ่มความสามารถปรับได้ตามผลการทดลองใน [Adaptive Roadmap](DESIGN.md)
 
 ## Limitations and Ethical Considerations
 
-- กฎปัจจุบันรองรับวลีและรูปแบบบริบทที่มีกรณีทดสอบอนุมัติ การเลือกคำตอบและ Scam Detection ยังอยู่ในแผน
+- กฎปัจจุบันรองรับวลีและรูปแบบบริบทที่มีกรณีทดสอบอนุมัติ Engine Integration และ Scam Detection ยังอยู่ในแผน
 - ใช้ข้อมูลสมมติหรือข้อมูลที่ได้รับอนุญาตและตัดข้อมูลระบุตัวตน ชุด Held-out สำหรับการประเมินอิสระในอนาคตต้องแยกจากข้อมูลที่ใช้ปรับกฎ
 - หากพัฒนาการประเมินความเสี่ยงในอนาคต ผลต้องอธิบายหลักฐานและข้อจำกัด หลีกเลี่ยงการกล่าวหาบุคคลหรือรับรองความปลอดภัยจากการไม่พบสัญญาณ
